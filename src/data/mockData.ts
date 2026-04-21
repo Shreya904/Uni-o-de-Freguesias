@@ -1,0 +1,56 @@
+export interface NewsItem {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  image?: string;
+}
+
+export interface EventItem {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  isPast: boolean;
+}
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+}
+
+export const newsItems: NewsItem[] = [
+  { id: "1", title: "Requalificação do Parque Central Aprovada", excerpt: "A Junta aprovou o projeto de requalificação do parque central, com novas áreas verdes e equipamentos de lazer.", date: "2026-04-07", category: "Obras" },
+  { id: "2", title: "Inscrições Abertas para Atividades de Verão", excerpt: "Estão abertas as inscrições para as atividades desportivas e culturais de verão destinadas a todas as idades.", date: "2026-04-05", category: "Atividades" },
+  { id: "3", title: "Novo Horário de Atendimento ao Público", excerpt: "A partir de maio, o atendimento ao público passará a funcionar em horário alargado às quartas-feiras.", date: "2026-04-02", category: "Avisos" },
+  { id: "4", title: "Campanha de Limpeza Comunitária", excerpt: "Junte-se à campanha de limpeza comunitária no próximo sábado. Voluntários são bem-vindos!", date: "2026-03-28", category: "Eventos" },
+];
+
+export const eventItems: EventItem[] = [
+  { id: "1", title: "Festa da Primavera", description: "Celebração anual com música ao vivo, gastronomia local e atividades para toda a família.", date: "2026-04-20", time: "10:00 - 22:00", location: "Praça Central", category: "Cultural", isPast: false },
+  { id: "2", title: "Sessão de Esclarecimento – Orçamento Participativo", description: "Apresentação dos projetos candidatos ao orçamento participativo 2026.", date: "2026-04-25", time: "18:30 - 20:00", location: "Auditório da Junta", category: "Institucional", isPast: false },
+  { id: "3", title: "Torneio de Futsal Interfreguesias", description: "Torneio desportivo entre freguesias vizinhas.", date: "2026-05-03", time: "09:00 - 18:00", location: "Pavilhão Desportivo", category: "Desporto", isPast: false },
+  { id: "4", title: "Workshop de Jardinagem Urbana", description: "Aprenda técnicas de jardinagem para espaços pequenos.", date: "2026-05-10", time: "14:00 - 17:00", location: "Centro Comunitário", category: "Formação", isPast: false },
+  { id: "5", title: "Reunião de Assembleia de Freguesia", description: "Reunião ordinária da Assembleia de Freguesia aberta ao público.", date: "2026-03-15", time: "18:00 - 20:00", location: "Sede da Junta", category: "Institucional", isPast: true },
+  { id: "6", title: "Feira de Artesanato Local", description: "Mostra de artesanato e produtos regionais.", date: "2026-03-01", time: "10:00 - 18:00", location: "Largo da Igreja", category: "Cultural", isPast: true },
+];
+
+export const faqItems: FAQItem[] = [
+  { id: "1", question: "Como posso solicitar um atestado de residência?", answer: "Pode solicitar presencialmente na Junta de Freguesia ou através do Balcão Digital, apresentando documento de identificação e comprovativo de morada.", category: "Serviços" },
+  { id: "2", question: "Qual o horário de atendimento?", answer: "O atendimento ao público funciona de segunda a sexta-feira, das 9h00 às 17h00. Às quartas-feiras, horário alargado até às 19h00.", category: "Informações Gerais" },
+  { id: "3", question: "Como reportar um problema na via pública?", answer: "Pode utilizar o mapa interativo no nosso website para assinalar e descrever o problema, ou contactar-nos diretamente por telefone ou email.", category: "Ocorrências" },
+  { id: "4", question: "Posso agendar um atendimento presencial?", answer: "Sim, pode agendar através do calendário disponível no nosso website ou contactando-nos por telefone.", category: "Serviços" },
+  { id: "5", question: "Como posso participar no orçamento participativo?", answer: "As inscrições para o orçamento participativo abrem anualmente. Consulte a secção de notícias para informações sobre os prazos.", category: "Participação" },
+  { id: "6", question: "Que documentos preciso para pedir uma licença?", answer: "Os documentos variam conforme o tipo de licença. Consulte a secção de Serviços ou contacte-nos para informações específicas.", category: "Serviços" },
+  { id: "7", question: "A Junta oferece apoio social?", answer: "Sim, dispomos de programas de apoio social. Contacte os nossos serviços para avaliação da sua situação.", category: "Apoio Social" },
+  { id: "8", question: "Como me inscrevo nas atividades desportivas?", answer: "As inscrições podem ser feitas presencialmente ou através do formulário disponível na secção de Atividades.", category: "Atividades" },
+];
+
+export const eventCategories = ["Todos", "Cultural", "Institucional", "Desporto", "Formação"];
+export const faqCategories = ["Todos", "Serviços", "Informações Gerais", "Ocorrências", "Participação", "Apoio Social", "Atividades"];

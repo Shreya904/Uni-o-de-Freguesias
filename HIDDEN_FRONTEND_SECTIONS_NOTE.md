@@ -1,0 +1,2 @@
+Temporariamente foram comentados/ocultados do frontend: a secao "Participacao - Mapa Interativo de Ocorrencias" da homepage, o item de navegacao "Reportar Ocorrencia" e a pagina completa "/mapa" (Mapa de Ocorrencias).
+Temporariamente foram comentados/ocultados do frontend: a secao "Agende o seu Atendimento Presencial" da homepage, os links de navegacao para "/agendar" e a pagina completa "/agendar" (Agendar Atendimento).
