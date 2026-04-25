@@ -53,10 +53,10 @@ export default function DocumentacaoPage() {
         <section className="relative bg-primary py-20 md:py-28">
           <div className="container max-w-6xl mx-auto px-4">
             <Link
-              href="/institucional"
+              href="/"
               className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground text-sm mb-5"
             >
-              <ArrowLeft className="w-4 h-4" /> Voltar para Institucional
+              <ArrowLeft className="w-4 h-4" /> Voltar ao início
             </Link>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
               Documentacao

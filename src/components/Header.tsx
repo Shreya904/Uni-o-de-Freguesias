@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, Mail, MapPin, ChevronDown, Search, Accessibility } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -113,7 +113,6 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
@@ -121,7 +120,6 @@ const Header = () => {
   useEffect(() => {
     setOpenDropdown(null);
     setMobileOpen(false);
-    setSearchOpen(false);
   }, [pathname]);
 
   // Close dropdown when clicking outside
@@ -142,69 +140,31 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Top utility bar */}
-      <div className="bg-primary">
-        <div className="container max-w-7xl mx-auto flex items-center justify-between py-1.5 px-4 text-xs">
-          <div className="hidden md:flex items-center gap-5 text-primary-foreground/80">
-            <span className="flex items-center gap-1.5">
-              <Phone className="w-3 h-3" /> +351 XXX XXX XXX
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Mail className="w-3 h-3" /> geral@ufgvc.pt
-            </span>
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3 h-3" /> Aveiro, Portugal
-            </span>
-          </div>
-          <div className="flex items-center gap-3 ml-auto">
-            <span className="text-primary-foreground/60 hidden sm:inline">Seg–Sex: 9h00–17h00</span>
-            <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="p-1 rounded hover:bg-primary-foreground/10 text-primary-foreground/80 transition-colors"
-              aria-label="Pesquisar"
-            >
-              <Search className="w-3.5 h-3.5" />
-            </button>
-            <button
-              className="p-1 rounded hover:bg-primary-foreground/10 text-primary-foreground/80 transition-colors"
-              aria-label="Acessibilidade"
-            >
-              <Accessibility className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Search bar (expandable) */}
-      {searchOpen && (
-        <div className="bg-primary/95 border-t border-primary-foreground/10">
-          <div className="container max-w-7xl mx-auto px-4 py-3">
-            <div className="relative max-w-xl mx-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                autoFocus
-                type="search"
-                placeholder="Pesquisar no site..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-card text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+      {/* Main navigation */}
+      <nav
+        className="bg-card/95 backdrop-blur-md border-b border-border/80 shadow-sm shadow-black/5"
+        ref={dropdownRef}
+      >
+        <div className="container max-w-7xl mx-auto flex items-center justify-between py-3.5 md:py-4 px-4">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 sm:gap-4 shrink-0 min-w-0 pr-3">
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-border/80 bg-card shadow-sm">
+              <Image
+                src="/ufgvc logo.png"
+                alt="Logo da União das Freguesias"
+                fill
+                sizes="(max-width: 640px) 48px, 56px"
+                className="object-cover"
+                priority
               />
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Main navigation */}
-      <nav className="bg-card/95 backdrop-blur-md border-b shadow-sm" ref={dropdownRef}>
-        <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-lg">UF</span>
-            </div>
-            <div>
-              <span className="font-display font-bold text-foreground text-lg leading-tight block">
-                UFGVC
+            <div className="min-w-0">
+              <span className="font-display font-bold text-foreground text-[12px] sm:text-[13px] md:text-[14px] leading-tight block truncate">
+                União das Freguesias de Glória e Vera-Cruz
               </span>
-              <span className="text-muted-foreground text-[11px]">União de Freguesias</span>
+              <span className="font-display font-semibold text-foreground/80 text-[12px] sm:text-[13px] md:text-[14px] leading-tight block truncate">
+                Aveiro
+              </span>
             </div>
           </Link>
 
@@ -230,7 +190,11 @@ const Header = () => {
                   </button>
 
                   {openDropdown === item.label && (
-                    <div className="absolute top-full left-0 mt-1 w-72 bg-card rounded-xl border shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div
+                      className={`absolute top-full mt-1 w-72 bg-card rounded-xl border shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200 ${
+                        item.label === "Contactos" ? "right-0" : "left-0"
+                      }`}
+                    >
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
@@ -334,6 +298,7 @@ const Header = () => {
           </div>
         )}
       </nav>
+      <div className="h-px bg-border/70" />
     </header>
   );
 };
