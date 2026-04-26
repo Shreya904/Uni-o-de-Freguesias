@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Clock, MapPin } from "lucide-react";
@@ -67,7 +68,7 @@ export default function EventsPage() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className={`bg-card rounded-xl border p-6 flex gap-5 ${event.isPast ? "opacity-60" : "hover:shadow-md"} transition-shadow`}
+                  className={`bg-card rounded-xl border p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row gap-4 sm:gap-5 ${event.isPast ? "opacity-60" : "hover:shadow-md"} transition-shadow`}
                 >
                   <div className="flex-shrink-0 w-16 h-16 rounded-lg bg-primary/10 flex flex-col items-center justify-center">
                     <span className="text-primary font-display font-bold text-xl leading-none">
@@ -105,6 +106,18 @@ export default function EventsPage() {
                       Ver detalhes
                     </Link>
                   </div>
+
+                  {event.mainImage && (
+                    <div className="relative sm:ml-auto w-full sm:w-44 md:w-48 lg:w-52 h-40 sm:h-auto sm:min-h-[140px] rounded-xl overflow-hidden border border-border/70 bg-muted/40 shrink-0">
+                      <Image
+                        src={event.mainImage}
+                        alt={event.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 176px, 208px"
+                      />
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </div>

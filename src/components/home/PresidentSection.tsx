@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 const presidenteImg = "/presidente.jpg";
 
 const PresidentSection = () => (
-  <section className="relative bg-primary overflow-hidden border-t border-primary-foreground/25">
+  <section className="relative bg-[#1f4f8f] overflow-hidden border-t border-primary-foreground/25">
     <div className="container max-w-7xl mx-auto px-4 py-16 md:py-20">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
         {/* Image */}

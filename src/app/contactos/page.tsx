@@ -148,7 +148,11 @@ export default function ContactPage() {
               </aside>
 
               <div className="lg:col-span-6 p-6 md:p-8 lg:p-10">
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form
+                  id="formulario-contacto"
+                  onSubmit={handleSubmit}
+                  className="space-y-5 scroll-mt-24"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
                       <Label htmlFor="name">Nome *</Label>

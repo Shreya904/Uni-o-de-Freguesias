@@ -2,9 +2,11 @@ export interface NewsItem {
   id: string;
   title: string;
   excerpt: string;
+  description?: string;
   date: string;
   category: string;
-  image?: string;
+  mainImage?: string;
+  galleryImages?: string[];
 }
 
 export interface EventItem {
@@ -16,6 +18,7 @@ export interface EventItem {
   location: string;
   category: string;
   isPast: boolean;
+  mainImage?: string;
 }
 
 export interface FAQItem {
@@ -26,19 +29,134 @@ export interface FAQItem {
 }
 
 export const newsItems: NewsItem[] = [
-  { id: "1", title: "Requalificação do Parque Central Aprovada", excerpt: "A Junta aprovou o projeto de requalificação do parque central, com novas áreas verdes e equipamentos de lazer.", date: "2026-04-07", category: "Obras" },
-  { id: "2", title: "Inscrições Abertas para Atividades de Verão", excerpt: "Estão abertas as inscrições para as atividades desportivas e culturais de verão destinadas a todas as idades.", date: "2026-04-05", category: "Atividades" },
-  { id: "3", title: "Novo Horário de Atendimento ao Público", excerpt: "A partir de maio, o atendimento ao público passará a funcionar em horário alargado às quartas-feiras.", date: "2026-04-02", category: "Avisos" },
-  { id: "4", title: "Campanha de Limpeza Comunitária", excerpt: "Junte-se à campanha de limpeza comunitária no próximo sábado. Voluntários são bem-vindos!", date: "2026-03-28", category: "Eventos" },
+  {
+    id: "1",
+    title: "Requalificação do Parque Central Aprovada",
+    excerpt:
+      "A Junta aprovou o projeto de requalificação do parque central, com novas áreas verdes e equipamentos de lazer.",
+    description:
+      "Após consulta pública, foi aprovado o plano final de intervenção no Parque Central. A proposta inclui novas zonas de sombra, equipamentos infantis inclusivos, melhoria da iluminação e percursos pedonais acessíveis. Durante os próximos meses serão divulgadas fases de obra e condicionamentos temporários.",
+    date: "2026-04-07",
+    category: "Obras",
+    mainImage: "/hero-bg.jpg",
+    galleryImages: [
+      "/hero-bg.jpg",
+      "/Casa da Comunidade Sustentável.jpg",
+      "/presidente.jpg",
+      "/Sede - Mudança Provisória de Instalações.webp",
+      "/ufgvc flag.png",
+      "/ufgvc logo.png",
+      "/hero-bg.jpg",
+      "/Casa da Comunidade Sustentável.jpg",
+      "/presidente.jpg",
+    ],
+  },
+  {
+    id: "2",
+    title: "Inscrições Abertas para Atividades de Verão",
+    excerpt:
+      "Estão abertas as inscrições para as atividades desportivas e culturais de verão destinadas a todas as idades.",
+    description:
+      "As atividades decorrem entre junho e setembro e incluem oficinas criativas, sessões de leitura ao ar livre, modalidades desportivas e ações para famílias. As vagas são limitadas e a prioridade é dada a residentes da freguesia.",
+    date: "2026-04-05",
+    category: "Atividades",
+    mainImage: "/hero-bg.jpg",
+    galleryImages: ["/hero-bg.jpg"],
+  },
+  {
+    id: "3",
+    title: "Novo Horário de Atendimento ao Público",
+    excerpt:
+      "A partir de maio, o atendimento ao público passará a funcionar em horário alargado às quartas-feiras.",
+    description:
+      "Com o objetivo de melhorar a acessibilidade dos serviços, a Junta irá alargar o horário à quarta-feira até às 19h00. Recomenda-se marcação prévia para serviços com maior procura.",
+    date: "2026-04-02",
+    category: "Avisos",
+    mainImage: "/hero-bg.jpg",
+    galleryImages: ["/hero-bg.jpg", "/hero-bg.jpg", "/hero-bg.jpg"],
+  },
+  {
+    id: "4",
+    title: "Campanha de Limpeza Comunitária",
+    excerpt:
+      "Junte-se à campanha de limpeza comunitária no próximo sábado. Voluntários são bem-vindos!",
+    description:
+      "A iniciativa inclui recolha de resíduos em vários pontos da freguesia, com apoio de equipas locais e distribuição de materiais de proteção. A participação é gratuita mediante inscrição.",
+    date: "2026-03-28",
+    category: "Eventos",
+    mainImage: "/hero-bg.jpg",
+    galleryImages: ["/hero-bg.jpg", "/hero-bg.jpg"],
+  },
 ];
 
 export const eventItems: EventItem[] = [
-  { id: "1", title: "Festa da Primavera", description: "Celebração anual com música ao vivo, gastronomia local e atividades para toda a família.", date: "2026-04-20", time: "10:00 - 22:00", location: "Praça Central", category: "Cultural", isPast: false },
-  { id: "2", title: "Sessão de Esclarecimento – Orçamento Participativo", description: "Apresentação dos projetos candidatos ao orçamento participativo 2026.", date: "2026-04-25", time: "18:30 - 20:00", location: "Auditório da Junta", category: "Institucional", isPast: false },
-  { id: "3", title: "Torneio de Futsal Interfreguesias", description: "Torneio desportivo entre freguesias vizinhas.", date: "2026-05-03", time: "09:00 - 18:00", location: "Pavilhão Desportivo", category: "Desporto", isPast: false },
-  { id: "4", title: "Workshop de Jardinagem Urbana", description: "Aprenda técnicas de jardinagem para espaços pequenos.", date: "2026-05-10", time: "14:00 - 17:00", location: "Centro Comunitário", category: "Formação", isPast: false },
-  { id: "5", title: "Reunião de Assembleia de Freguesia", description: "Reunião ordinária da Assembleia de Freguesia aberta ao público.", date: "2026-03-15", time: "18:00 - 20:00", location: "Sede da Junta", category: "Institucional", isPast: true },
-  { id: "6", title: "Feira de Artesanato Local", description: "Mostra de artesanato e produtos regionais.", date: "2026-03-01", time: "10:00 - 18:00", location: "Largo da Igreja", category: "Cultural", isPast: true },
+  {
+    id: "1",
+    title: "Festa da Primavera",
+    description:
+      "Celebração anual com música ao vivo, gastronomia local e atividades para toda a família.",
+    date: "2026-04-20",
+    time: "10:00 - 22:00",
+    location: "Praça Central",
+    category: "Cultural",
+    isPast: false,
+    mainImage: "/hero-bg.jpg",
+  },
+  {
+    id: "2",
+    title: "Sessão de Esclarecimento – Orçamento Participativo",
+    description: "Apresentação dos projetos candidatos ao orçamento participativo 2026.",
+    date: "2026-04-25",
+    time: "18:30 - 20:00",
+    location: "Auditório da Junta",
+    category: "Institucional",
+    isPast: false,
+    mainImage: "/Casa da Comunidade Sustentável.jpg",
+  },
+  {
+    id: "3",
+    title: "Torneio de Futsal Interfreguesias",
+    description: "Torneio desportivo entre freguesias vizinhas.",
+    date: "2026-05-03",
+    time: "09:00 - 18:00",
+    location: "Pavilhão Desportivo",
+    category: "Desporto",
+    isPast: false,
+    mainImage: "/presidente.jpg",
+  },
+  {
+    id: "4",
+    title: "Workshop de Jardinagem Urbana",
+    description: "Aprenda técnicas de jardinagem para espaços pequenos.",
+    date: "2026-05-10",
+    time: "14:00 - 17:00",
+    location: "Centro Comunitário",
+    category: "Formação",
+    isPast: false,
+    mainImage: "/Sede - Mudança Provisória de Instalações.webp",
+  },
+  {
+    id: "5",
+    title: "Reunião de Assembleia de Freguesia",
+    description: "Reunião ordinária da Assembleia de Freguesia aberta ao público.",
+    date: "2026-03-15",
+    time: "18:00 - 20:00",
+    location: "Sede da Junta",
+    category: "Institucional",
+    isPast: true,
+    mainImage: "/ufgvc flag.png",
+  },
+  {
+    id: "6",
+    title: "Feira de Artesanato Local",
+    description: "Mostra de artesanato e produtos regionais.",
+    date: "2026-03-01",
+    time: "10:00 - 18:00",
+    location: "Largo da Igreja",
+    category: "Cultural",
+    isPast: true,
+    mainImage: "/ufgvc logo.png",
+  },
 ];
 
 export const faqItems: FAQItem[] = [

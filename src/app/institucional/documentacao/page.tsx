@@ -1,16 +1,17 @@
-import Link from "next/link";
+"use client";
+
+import { useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, FileText, Download } from "lucide-react";
+import { FileText, Download } from "lucide-react";
 
 type DocumentItem = {
   id: string;
   title: string;
-  type: string;
+  docName: string;
   date: string;
-  status: "Publicado" | "Rascunho";
+  previewUrl: string;
+  downloadUrl: string;
 };
 
 // Template data. This will be replaced by CMS document entries.
@@ -18,23 +19,26 @@ const documents: DocumentItem[] = [
   {
     id: "ata-001",
     title: "Ata da Assembleia - Janeiro 2026",
-    type: "Ata",
+    docName: "Ata_Assembleia_Janeiro_2026.pdf",
     date: "2026-01-28",
-    status: "Publicado",
+    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
+    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
   },
   {
     id: "edital-004",
     title: "Edital de Consulta Publica",
-    type: "Edital",
+    docName: "Edital_Consulta_Publica_004.pdf",
     date: "2026-03-04",
-    status: "Publicado",
+    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
+    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
   },
   {
     id: "reg-002",
     title: "Regulamento de Utilizacao de Espacos",
-    type: "Regulamento",
+    docName: "Regulamento_Utilizacao_Espacos_002.pdf",
     date: "2026-02-16",
-    status: "Rascunho",
+    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
+    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
   },
 ];
 
@@ -46,60 +50,92 @@ const formatDate = (value: string) =>
   });
 
 export default function DocumentacaoPage() {
+  const [activeDocId, setActiveDocId] = useState<string | null>(null);
+
+  const activeDoc = useMemo(
+    () => documents.find((doc) => doc.id === activeDocId) ?? null,
+    [activeDocId],
+  );
+
   return (
     <div className="min-h-screen">
       <Header />
       <main>
-        <section className="relative bg-primary py-20 md:py-28">
+        <section className="section-padding bg-section-alt">
           <div className="container max-w-6xl mx-auto px-4">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground text-sm mb-5"
-            >
-              <ArrowLeft className="w-4 h-4" /> Voltar ao início
-            </Link>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
+            <div className="text-center mb-10">
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-3">
               Documentacao
-            </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-3xl">
-              Arquivo institucional com documentos oficiais da Junta e da Assembleia.
-            </p>
-          </div>
-        </section>
+              </h1>
+              <p className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto">
+                Arquivo institucional com documentos oficiais da Junta e da Assembleia.
+              </p>
+            </div>
 
-        <section className="section-padding">
-          <div className="container max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {documents.map((doc) => (
-                <Card key={doc.id} className="border-border/80">
-                  <CardHeader>
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <Badge variant="secondary">{doc.type}</Badge>
-                      <Badge variant={doc.status === "Publicado" ? "default" : "outline"}>
-                        {doc.status}
-                      </Badge>
+                <article
+                  key={doc.id}
+                  className="bg-card rounded-2xl border border-border/80 p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setActiveDocId(doc.id)}
+                    className="text-left w-full"
+                    aria-label={`Abrir pré-visualização de ${doc.title}`}
+                  >
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                      <FileText className="w-3.5 h-3.5 text-accent" />
+                      {formatDate(doc.date)}
                     </div>
-                    <CardTitle className="font-display text-xl">{doc.title}</CardTitle>
-                    <CardDescription>Data: {formatDate(doc.date)}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex items-center justify-between gap-4">
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-accent" />
-                      Documento em formato template. Origem final: CMS.
-                    </p>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-primary opacity-70 cursor-not-allowed"
-                      disabled
+
+                    <h2 className="font-display text-xl font-semibold text-foreground leading-snug mb-2">
+                      {doc.title}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-5 break-all">{doc.docName}</p>
+                  </button>
+
+                  <div className="pt-2 border-t border-border/70">
+                    <a
+                      href={doc.downloadUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(event) => event.stopPropagation()}
+                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                     >
-                      <Download className="w-4 h-4" /> Download
-                    </button>
-                  </CardContent>
-                </Card>
+                      <Download className="w-4 h-4" /> Transferir
+                    </a>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
         </section>
+
+        {activeDoc && (
+          <div className="fixed inset-0 z-50 bg-black/70 p-4 md:p-8">
+            <div className="relative w-full max-w-6xl h-full max-h-[92vh] mx-auto bg-card rounded-2xl border border-border/70 overflow-hidden shadow-2xl">
+              <button
+                type="button"
+                onClick={() => setActiveDocId(null)}
+                className="absolute top-3 right-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-background/90 border border-border hover:bg-background"
+                aria-label="Fechar pré-visualização"
+              >
+                <svg viewBox="0 0 24 24" className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M18 6L6 18" />
+                  <path d="M6 6l12 12" />
+                </svg>
+              </button>
+
+              <iframe
+                src={activeDoc.previewUrl}
+                title={`Pré-visualização de ${activeDoc.title}`}
+                className="w-full h-full"
+                allow="autoplay"
+              />
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </div>
