@@ -32,7 +32,8 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   }
 
   const galleryFromCMS = (event as { galleryImages?: string[] }).galleryImages ?? [];
-  const galleryImages = galleryFromCMS.length > 0 ? galleryFromCMS : event.mainImage ? [event.mainImage] : [];
+  const galleryImages =
+    galleryFromCMS.length > 0 ? galleryFromCMS : event.mainImage ? [event.mainImage] : [];
 
   return (
     <div className="min-h-screen">
@@ -40,7 +41,10 @@ export default async function EventDetailPage({ params }: EventPageProps) {
       <main>
         <section className="bg-section-alt pt-3 pb-12 md:pt-4 md:pb-16">
           <div className="container max-w-6xl mx-auto px-4 space-y-6">
-            <Link href="/eventos" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
+            <Link
+              href="/eventos"
+              className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+            >
               <ArrowLeft className="w-4 h-4" /> Voltar para Eventos
             </Link>
 
@@ -77,25 +81,31 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
                   <div className="bg-background rounded-xl border p-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Data</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
+                      Data
+                    </p>
                     <p className="flex items-center gap-2 text-sm text-foreground font-medium">
                       <CalendarDays className="w-4 h-4 text-accent" /> {formatDate(event.date)}
                     </p>
                   </div>
                   <div className="bg-background rounded-xl border p-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Horário</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
+                      Horário
+                    </p>
                     <p className="flex items-center gap-2 text-sm text-foreground font-medium">
                       <Clock className="w-4 h-4 text-accent" /> {event.time}
                     </p>
                   </div>
                   <div className="bg-background rounded-xl border p-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Local</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
+                      Local
+                    </p>
                     <p className="flex items-center gap-2 text-sm text-foreground font-medium">
                       <MapPin className="w-4 h-4 text-accent" /> {event.location}
                     </p>
                   </div>
                 </div>
-            </div>
+              </div>
               {galleryImages.length > 0 && (
                 <div className="border-t p-6 md:p-8 lg:p-10 pt-6 space-y-4 bg-background/70">
                   <h2 className="font-display text-xl font-semibold text-foreground">Galeria</h2>
@@ -133,14 +143,14 @@ export default async function EventDetailPage({ params }: EventPageProps) {
               </p>
 
               <div className="flex flex-wrap gap-3">
-              <Button asChild>
-                <Link href="/institucional/documentacao">Ver Documentação</Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/contactos">
-                  Contactar organização <Share2 className="w-4 h-4 ml-2" />
-                </Link>
-              </Button>
+                <Button asChild>
+                  <Link href="/institucional/documentacao">Ver Documentação</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/contactos">
+                    Contactar organização <Share2 className="w-4 h-4 ml-2" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

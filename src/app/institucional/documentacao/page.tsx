@@ -65,7 +65,7 @@ export default function DocumentacaoPage() {
           <div className="container max-w-6xl mx-auto px-4">
             <div className="text-center mb-10">
               <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-3">
-              Documentacao
+                Documentacao
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto">
                 Arquivo institucional com documentos oficiais da Junta e da Assembleia.
@@ -121,7 +121,16 @@ export default function DocumentacaoPage() {
                 className="absolute top-3 right-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-background/90 border border-border hover:bg-background"
                 aria-label="Fechar pré-visualização"
               >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-4 h-4 text-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
                   <path d="M18 6L6 18" />
                   <path d="M6 6l12 12" />
                 </svg>

@@ -160,15 +160,71 @@ export const eventItems: EventItem[] = [
 ];
 
 export const faqItems: FAQItem[] = [
-  { id: "1", question: "Como posso solicitar um atestado de residência?", answer: "Pode solicitar presencialmente na Junta de Freguesia ou através do Balcão Digital, apresentando documento de identificação e comprovativo de morada.", category: "Serviços" },
-  { id: "2", question: "Qual o horário de atendimento?", answer: "O atendimento ao público funciona de segunda a sexta-feira, das 9h00 às 17h00. Às quartas-feiras, horário alargado até às 19h00.", category: "Informações Gerais" },
-  { id: "3", question: "Como reportar um problema na via pública?", answer: "Pode utilizar o mapa interativo no nosso website para assinalar e descrever o problema, ou contactar-nos diretamente por telefone ou email.", category: "Ocorrências" },
-  { id: "4", question: "Posso agendar um atendimento presencial?", answer: "Sim, pode agendar através do calendário disponível no nosso website ou contactando-nos por telefone.", category: "Serviços" },
-  { id: "5", question: "Como posso participar no orçamento participativo?", answer: "As inscrições para o orçamento participativo abrem anualmente. Consulte a secção de notícias para informações sobre os prazos.", category: "Participação" },
-  { id: "6", question: "Que documentos preciso para pedir uma licença?", answer: "Os documentos variam conforme o tipo de licença. Consulte a secção de Serviços ou contacte-nos para informações específicas.", category: "Serviços" },
-  { id: "7", question: "A Junta oferece apoio social?", answer: "Sim, dispomos de programas de apoio social. Contacte os nossos serviços para avaliação da sua situação.", category: "Apoio Social" },
-  { id: "8", question: "Como me inscrevo nas atividades desportivas?", answer: "As inscrições podem ser feitas presencialmente ou através do formulário disponível na secção de Atividades.", category: "Atividades" },
+  {
+    id: "1",
+    question: "Como posso solicitar um atestado de residência?",
+    answer:
+      "Pode solicitar presencialmente na Junta de Freguesia ou através do Balcão Digital, apresentando documento de identificação e comprovativo de morada.",
+    category: "Serviços",
+  },
+  {
+    id: "2",
+    question: "Qual o horário de atendimento?",
+    answer:
+      "O atendimento ao público funciona de segunda a sexta-feira, das 9h00 às 17h00. Às quartas-feiras, horário alargado até às 19h00.",
+    category: "Informações Gerais",
+  },
+  {
+    id: "3",
+    question: "Como reportar um problema na via pública?",
+    answer:
+      "Pode utilizar o mapa interativo no nosso website para assinalar e descrever o problema, ou contactar-nos diretamente por telefone ou email.",
+    category: "Ocorrências",
+  },
+  {
+    id: "4",
+    question: "Posso agendar um atendimento presencial?",
+    answer:
+      "Sim, pode agendar através do calendário disponível no nosso website ou contactando-nos por telefone.",
+    category: "Serviços",
+  },
+  {
+    id: "5",
+    question: "Como posso participar no orçamento participativo?",
+    answer:
+      "As inscrições para o orçamento participativo abrem anualmente. Consulte a secção de notícias para informações sobre os prazos.",
+    category: "Participação",
+  },
+  {
+    id: "6",
+    question: "Que documentos preciso para pedir uma licença?",
+    answer:
+      "Os documentos variam conforme o tipo de licença. Consulte a secção de Serviços ou contacte-nos para informações específicas.",
+    category: "Serviços",
+  },
+  {
+    id: "7",
+    question: "A Junta oferece apoio social?",
+    answer:
+      "Sim, dispomos de programas de apoio social. Contacte os nossos serviços para avaliação da sua situação.",
+    category: "Apoio Social",
+  },
+  {
+    id: "8",
+    question: "Como me inscrevo nas atividades desportivas?",
+    answer:
+      "As inscrições podem ser feitas presencialmente ou através do formulário disponível na secção de Atividades.",
+    category: "Atividades",
+  },
 ];
 
 export const eventCategories = ["Todos", "Cultural", "Institucional", "Desporto", "Formação"];
-export const faqCategories = ["Todos", "Serviços", "Informações Gerais", "Ocorrências", "Participação", "Apoio Social", "Atividades"];
+export const faqCategories = [
+  "Todos",
+  "Serviços",
+  "Informações Gerais",
+  "Ocorrências",
+  "Participação",
+  "Apoio Social",
+  "Atividades",
+];
