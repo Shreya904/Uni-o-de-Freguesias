@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowRight, Download, FileText } from "lucide-react";
+import { deriveDocumentPreviewUrl } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +19,7 @@ type HomeDocumentItem = {
   title: string;
   docName: string;
   date: string;
-  previewUrl: string;
-  downloadUrl: string;
+  sourceUrl: string;
 };
 
 // Template data. This will be replaced by CMS document entries.
@@ -29,40 +29,40 @@ const homeDocuments: HomeDocumentItem[] = [
     title: "Ata da Assembleia - Janeiro 2026",
     docName: "Ata_Assembleia_Janeiro_2026.pdf",
     date: "2026-01-28",
-    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
-    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
+    sourceUrl:
+      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
   },
   {
     id: "edital-004",
     title: "Edital de Consulta Publica",
     docName: "Edital_Consulta_Publica_004.pdf",
     date: "2026-03-04",
-    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
-    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
+    sourceUrl:
+      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
   },
   {
     id: "reg-002",
     title: "Regulamento de Utilizacao de Espacos",
     docName: "Regulamento_Utilizacao_Espacos_002.pdf",
     date: "2026-02-16",
-    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
-    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
+    sourceUrl:
+      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
   },
   {
     id: "orc-2026",
     title: "Resumo Orcamental 2026",
     docName: "Resumo_Orcamental_2026.pdf",
     date: "2026-01-12",
-    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
-    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
+    sourceUrl:
+      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
   },
   {
     id: "aviso-07",
     title: "Aviso de Atendimento Extraordinario",
     docName: "Aviso_Atendimento_Extraordinario_07.pdf",
     date: "2026-04-11",
-    previewUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/preview",
-    downloadUrl: "https://drive.google.com/file/d/1t_IKnEP0FddArhM4LQ7EFMKvAYVc5NLj/view",
+    sourceUrl:
+      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
   },
 ];
 
@@ -126,7 +126,7 @@ const DocumentsSection = () => {
 
                     <Button size="sm" asChild>
                       <a
-                        href={doc.downloadUrl}
+                        href={doc.sourceUrl}
                         target="_blank"
                         rel="noreferrer"
                         onClick={(event) => event.stopPropagation()}
@@ -178,7 +178,7 @@ const DocumentsSection = () => {
             </button>
 
             <iframe
-              src={activeDoc.previewUrl}
+              src={deriveDocumentPreviewUrl(activeDoc.sourceUrl)}
               title={`Pré-visualização de ${activeDoc.title}`}
               className="w-full h-full"
               allow="autoplay"
