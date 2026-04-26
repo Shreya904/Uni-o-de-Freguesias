@@ -5,8 +5,8 @@ import { Mail, MapPin, Facebook } from "lucide-react";
 const Footer = () => (
   <footer className="bg-primary text-primary-foreground">
     <div className="container max-w-7xl mx-auto px-4 py-12 md:py-14">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 xl:gap-6 items-start">
-        <div className="md:col-span-2 lg:col-span-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 xl:gap-8 items-start">
+        <div className="md:col-span-2 lg:col-span-5">
           <div className="flex items-center gap-4 mb-4">
             <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden border border-primary-foreground/25 bg-primary-foreground/10 shrink-0">
               <Image
@@ -30,12 +30,12 @@ const Footer = () => (
           </p>
         </div>
 
-        <div className="lg:col-span-2">
-          <h4 className="font-display font-semibold mb-4">Freguesia</h4>
+        <div className="lg:col-span-3">
+          <h4 className="font-display font-semibold mb-4">Navegação</h4>
           <ul className="space-y-2 text-sm text-primary-foreground/70">
             <li>
-              <Link href="/freguesia" className="hover:text-primary-foreground transition-colors">
-                Sobre a Freguesia
+              <Link href="/" className="hover:text-primary-foreground transition-colors">
+                Início
               </Link>
             </li>
             <li>
@@ -44,72 +44,14 @@ const Footer = () => (
               </Link>
             </li>
             <li>
-              <Link href="/eventos" className="hover:text-primary-foreground transition-colors">
-                Eventos
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/freguesia/galeria"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Galeria
+              <Link href="/contactos" className="hover:text-primary-foreground transition-colors">
+                Contactos
               </Link>
             </li>
           </ul>
         </div>
 
-        <div className="lg:col-span-3">
-          <h4 className="font-display font-semibold mb-4">Institucional</h4>
-          <ul className="space-y-2 text-sm text-primary-foreground/70">
-            <li>
-              <Link
-                href="/institucional/presidente"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Presidente
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/institucional/orgaos"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Órgãos
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/institucional/documentacao"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Documentação
-              </Link>
-            </li>
-            <li>
-              <Link href="/instituicao" className="hover:text-primary-foreground transition-colors">
-                Instituição
-              </Link>
-            </li>
-            <li>
-              <Link href="/servicos" className="hover:text-primary-foreground transition-colors">
-                Serviços Online
-              </Link>
-            </li>
-            <li>
-              <Link href="/mapa" className="hover:text-primary-foreground transition-colors">
-                Reportar Ocorrência
-              </Link>
-            </li>
-            <li>
-              <Link href="/faq" className="hover:text-primary-foreground transition-colors">
-                Centro de Ajuda
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-4">
           <h4 className="font-display font-semibold mb-4">Contactos</h4>
           <ul className="space-y-3 text-sm text-primary-foreground/70">
             <li className="flex items-start gap-3">
@@ -126,7 +68,15 @@ const Footer = () => (
             </li>
             <li className="pl-9">
               <Link href="/contactos" className="hover:text-primary-foreground transition-colors">
-                Contacto
+                Formulário de Contacto
+              </Link>
+            </li>
+            <li className="pl-9">
+              <Link
+                href="/contactos-uteis"
+                className="hover:text-primary-foreground transition-colors"
+              >
+                Contactos Úteis
               </Link>
             </li>
           </ul>

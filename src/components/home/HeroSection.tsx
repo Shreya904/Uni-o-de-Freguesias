@@ -50,7 +50,7 @@ const HeroSection = () => (
             className="bg-primary-foreground/15 text-primary-foreground border border-primary-foreground/25 hover:bg-primary-foreground/25"
             asChild
           >
-            <Link href="/eventos">Ver Eventos</Link>
+            <Link href="/noticias">Ver Notícias</Link>
           </Button>
         </div>
       </motion.div>

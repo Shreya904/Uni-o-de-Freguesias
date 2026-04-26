@@ -3,7 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/home/HeroSection";
-import EventsSection from "@/components/home/EventsSection";
+// import EventsSection from "@/components/home/EventsSection";
 import PresidentSection from "@/components/home/PresidentSection";
 // import CalendarSection from "@/components/home/CalendarSection";
 import NewsSection from "@/components/home/NewsSection";
@@ -18,7 +18,7 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection />
         <PresidentSection />
-        <EventsSection />
+        {/* <EventsSection /> */}
         {/* <CalendarSection /> */}
         <NewsSection />
         <DocumentsSection />
