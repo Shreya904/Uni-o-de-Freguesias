@@ -39,13 +39,11 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // Close dropdown on route change
   useEffect(() => {
     setOpenDropdown(null);
     setMobileOpen(false);
   }, [pathname]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -63,66 +61,57 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Main navigation */}
-      <nav
-        className="bg-card/95 backdrop-blur-md border-b border-border/80 shadow-sm shadow-black/5"
-        ref={dropdownRef}
-      >
-        <div className="container max-w-7xl mx-auto flex items-center justify-between py-3.5 md:py-4 px-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 sm:gap-4 shrink-0 min-w-0 pr-3">
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-border/80 bg-card shadow-sm">
-              <Image
-                src="/ufgvc logo.png"
-                alt="Logo da União das Freguesias"
-                fill
-                sizes="(max-width: 640px) 48px, 56px"
-                className="object-cover"
-                priority
-              />
-            </div>
-            <div className="min-w-0">
-              <span className="font-display font-bold text-foreground text-[12px] sm:text-[13px] md:text-[14px] leading-tight block truncate">
-                União das Freguesias de Glória e Vera-Cruz
-              </span>
-              <span className="font-display font-semibold text-foreground/80 text-[12px] sm:text-[13px] md:text-[14px] leading-tight block truncate">
-                Aveiro
-              </span>
-            </div>
+      <nav ref={dropdownRef} className="bg-card/95 backdrop-blur-md border-b border-border/70">
+        <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between">
+          {/* LOGO (clean, no box) */}
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/header logo.png"
+              alt="Logo"
+              width={110}
+              height={110}
+              className="object-contain"
+              priority
+            />
           </Link>
 
-          {/* Desktop navigation */}
-          <div className="hidden lg:flex items-center gap-0.5">
-            {navItems.map((item) =>
-              item.children ? (
+          {/* DESKTOP NAV */}
+          <div className="hidden lg:flex items-center gap-2">
+            {navItems.map((item, index) => {
+              const isLast = index === navItems.length - 1;
+
+              return item.children ? (
                 <div key={item.label} className="relative">
                   <button
                     onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
-                    className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    className={`flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition ${
                       isActive(item)
-                        ? "text-foreground bg-muted"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
-                    aria-expanded={openDropdown === item.label}
-                    aria-haspopup="true"
                   >
                     {item.label}
                     <ChevronDown
-                      className={`w-3.5 h-3.5 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`}
+                      className={`w-3.5 h-3.5 transition-transform ${
+                        openDropdown === item.label ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
 
                   {openDropdown === item.label && (
                     <div
-                      className={`absolute top-full mt-1 w-72 bg-card rounded-xl border shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200 ${
-                        item.label === "Contactos" ? "right-0" : "left-0"
-                      }`}
+                      className={`
+              absolute top-full mt-2 w-72
+              bg-card rounded-xl border shadow-lg py-2
+              animate-in fade-in slide-in-from-top-2 duration-200
+              ${isLast ? "right-0" : "left-0"}
+            `}
                     >
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-4 py-2.5 hover:bg-muted transition-colors"
+                          className="block px-4 py-2.5 hover:bg-muted transition"
                         >
                           <span className="text-sm font-medium text-foreground">{child.label}</span>
                           {child.description && (
@@ -139,37 +128,30 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition ${
                     isActive(item)
-                      ? "text-foreground bg-muted"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {item.label}
                 </Link>
-              ),
-            )}
-            {/*
-            <Button size="sm" className="ml-3" asChild>
-              <Link href="/agendar">Agendar</Link>
-            </Button>
-            */}
+              );
+            })}
           </div>
 
-          {/* Mobile toggle */}
+          {/* MOBILE BUTTON */}
           <button
             className="lg:hidden p-2 rounded-md hover:bg-muted"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menu"
-            aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile menu */}
+        {/* MOBILE MENU */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-card px-4 py-4 space-y-1 max-h-[70vh] overflow-y-auto">
+          <div className="lg:hidden border-t bg-card px-4 py-4 space-y-1">
             {navItems.map((item) =>
               item.children ? (
                 <div key={item.label}>
@@ -178,20 +160,22 @@ const Header = () => {
                       setMobileExpanded(mobileExpanded === item.label ? null : item.label)
                     }
                     className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-muted"
-                    aria-expanded={mobileExpanded === item.label}
                   >
                     {item.label}
                     <ChevronDown
-                      className={`w-4 h-4 transition-transform ${mobileExpanded === item.label ? "rotate-180" : ""}`}
+                      className={`w-4 h-4 transition-transform ${
+                        mobileExpanded === item.label ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
+
                   {mobileExpanded === item.label && (
-                    <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-muted pl-3">
+                    <div className="ml-4 mt-1 border-l border-muted pl-3">
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-muted"
+                          className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
                           onClick={() => setMobileOpen(false)}
                         >
                           {child.label}
@@ -204,24 +188,16 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className="block px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-muted"
+                  className="block px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
                   onClick={() => setMobileOpen(false)}
                 >
                   {item.label}
                 </Link>
               ),
             )}
-            {/*
-            <Button className="w-full mt-3" size="sm" asChild>
-              <Link href="/agendar" onClick={() => setMobileOpen(false)}>
-                Agendar Atendimento
-              </Link>
-            </Button>
-            */}
           </div>
         )}
       </nav>
-      <div className="h-px bg-border/70" />
     </header>
   );
 };

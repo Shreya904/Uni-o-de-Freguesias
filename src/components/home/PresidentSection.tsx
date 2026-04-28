@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 
 const presidenteImg = "/presidente.jpg";
 
 const PresidentSection = () => (
-  <section className="relative bg-[#1f4f8f] overflow-hidden border-t border-primary-foreground/25">
-    <div className="container max-w-7xl mx-auto px-4 py-16 md:py-20">
+  <section className="py-16 md:py-20">
+    <div className="container max-w-6xl mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
         {/* Image */}
         <motion.div
@@ -15,19 +14,16 @@ const PresidentSection = () => (
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="md:col-span-4 flex justify-center"
+          className="md:col-span-5 flex justify-center"
         >
-          <div className="relative">
-            <div className="absolute -inset-3 bg-accent/20 rounded-2xl rotate-3" />
-            <img
-              src={presidenteImg}
-              alt="Presidente da Junta de Freguesia"
-              className="relative rounded-2xl w-64 md:w-full max-w-xs object-cover shadow-2xl"
-              loading="lazy"
-              width={640}
-              height={800}
-            />
-          </div>
+          <img
+            src={presidenteImg}
+            alt="Presidente da Junta de Freguesia"
+            className="rounded-2xl w-full max-w-sm md:max-w-none object-cover shadow-lg"
+            loading="lazy"
+            width={720}
+            height={900}
+          />
         </motion.div>
 
         {/* Message */}
@@ -36,20 +32,19 @@ const PresidentSection = () => (
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="md:col-span-8"
+          className="md:col-span-7"
         >
-          <Quote className="w-10 h-10 text-accent/60 mb-4" />
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground mb-2">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
             Presidência
           </h2>
-          <span className="inline-block text-accent font-medium text-sm mb-6">
+          <p className="text-primary font-semibold text-base md:text-lg mb-5">
             Bruno José Ferreira · Presidente da Junta
-          </span>
+          </p>
 
-          <p className="text-primary-foreground/85 leading-relaxed mb-4">
+          <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-5">
             Bem vindos à Página pública da União das Freguesias de Glória e Vera Cruz - Aveiro.
           </p>
-          <p className="text-primary-foreground/80 leading-relaxed mb-4">
+          <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">
             Pelas suas potencialidades e consequente visibilidade em qualquer momento e a partir de
             qualquer lugar do território urbano da Cidade de Aveiro, na sua dimensão institucional,
             esta página torna-se mais acessível e interativa.
@@ -57,7 +52,7 @@ const PresidentSection = () => (
 
           <Link
             href="/institucional/presidente"
-            className="inline-flex items-center gap-2 text-accent font-semibold text-sm hover:underline transition-colors"
+            className="inline-flex items-center gap-2 text-primary font-semibold text-sm md:text-base hover:underline transition-colors"
           >
             Ler mensagem completa <ArrowRight className="w-4 h-4" />
           </Link>

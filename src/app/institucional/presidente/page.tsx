@@ -43,11 +43,11 @@ export default function PresidentePage() {
                     width={900}
                     height={1200}
                   />
-                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-primary/85 to-transparent">
-                    <p className="font-display text-xl font-semibold text-primary-foreground">
+                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                    <p className="font-display text-xl font-semibold text-white">
                       {presidentInfo.name}
                     </p>
-                    <p className="text-primary-foreground/85 text-sm">{presidentInfo.role}</p>
+                    <p className="text-white/80 text-sm">{presidentInfo.role}</p>
                   </div>
                 </div>
 

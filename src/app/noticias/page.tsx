@@ -3,13 +3,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Calendar } from "lucide-react";
-import { CmsNewsItem, fetchPublishedNews } from "@/lib/cms";
+import { fetchPublishedNews } from "@/lib/cms";
+
+type News = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt?: string;
+  date: string;
+  mainImage?: string;
+};
 
 export default function NoticiasPage() {
-  const [newsItems, setNewsItems] = useState<CmsNewsItem[]>([]);
+  const [newsItems, setNewsItems] = useState<News[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -17,13 +26,9 @@ export default function NoticiasPage() {
     const loadNews = async () => {
       try {
         const items = await fetchPublishedNews();
-        if (isMounted) {
-          setNewsItems(items);
-        }
+        if (isMounted) setNewsItems(items);
       } catch {
-        if (isMounted) {
-          setNewsItems([]);
-        }
+        if (isMounted) setNewsItems([]);
       }
     };
 
@@ -37,115 +42,71 @@ export default function NoticiasPage() {
   return (
     <div className="min-h-screen">
       <Header />
+
       <main>
-        <section className="relative bg-primary py-10 md:py-14">
-          <div className="container max-w-4xl mx-auto px-4 text-center">
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-3">
-              Notícias
-            </h1>
-            <p className="text-primary-foreground/80 text-base md:text-lg max-w-2xl mx-auto">
-              Fique a par das últimas novidades e informações da nossa freguesia.
-            </p>
-          </div>
-        </section>
-
         <section className="section-padding">
-          <div className="container max-w-5xl mx-auto px-4">
-            {/* Sidebar style: featured + grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main news grid */}
-              <div className="lg:col-span-2 space-y-6">
-                {newsItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/noticias/${item.slug}`}
-                    className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-                  >
-                    <article className="bg-card rounded-xl border overflow-hidden hover:shadow-md transition-shadow">
-                      <div className="p-4 sm:p-5 flex gap-4 items-start">
-                        {item.mainImage && (
-                          <div className="relative w-28 h-24 sm:w-36 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-muted/40 border border-border/60">
-                            <Image
-                              src={item.mainImage}
-                              alt={item.title}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 640px) 112px, 144px"
-                            />
-                          </div>
-                        )}
+          <div className="container max-w-6xl mx-auto px-4">
+            <div className="mb-10">
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+                Notícias
+              </h1>
+              <div className="h-[2px] w-20 bg-primary mt-3" />
+            </div>
 
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                            <Calendar className="w-3.5 h-3.5" />
-                            {new Date(item.date).toLocaleDateString("pt-PT")}
-                            <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
-                              {item.category}
-                            </span>
-                          </div>
-                          <h2 className="font-display text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
-                            {item.title}
-                          </h2>
-                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {newsItems.map((item) => {
+                const image =
+                  typeof item.mainImage === "string" && item.mainImage.trim()
+                    ? item.mainImage.trim()
+                    : null;
+
+                return (
+                  <Link key={item.id} href={`/noticias/${item.slug}`} className="group block">
+                    <article className="flex flex-col gap-3 h-full">
+                      {/* IMAGE (no reserved spacing, no forced layout) */}
+                      {image && (
+                        <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted rounded-md">
+                          <Image
+                            src={image}
+                            alt={item.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      )}
+
+                      {/* TEXT */}
+                      <div className="flex flex-col gap-1 flex-1">
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(item.date).toLocaleDateString("pt-PT")}
+                        </div>
+
+                        {/* UNDERLINED HEADLINE (restored) */}
+                        <h2 className="font-display text-lg md:text-xl font-bold leading-snug underline decoration-primary/30 underline-offset-4 group-hover:text-primary transition-colors">
+                          {item.title}
+                        </h2>
+
+                        {item.excerpt && (
+                          <p className="text-sm text-muted-foreground line-clamp-3">
                             {item.excerpt}
                           </p>
-                        </div>
+                        )}
                       </div>
                     </article>
                   </Link>
-                ))}
-
-                {newsItems.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    Sem noticias publicadas de momento.
-                  </p>
-                )}
-              </div>
-
-              {/* Sidebar */}
-              <aside className="space-y-6">
-                <div className="bg-card rounded-xl border p-5">
-                  <h3 className="font-display font-semibold text-foreground mb-4">
-                    A Acontecer Agora
-                  </h3>
-                  <ul className="space-y-3">
-                    {newsItems.slice(0, 3).map((item) => (
-                      <li key={item.id} className="text-sm">
-                        <Link
-                          href={`/noticias/${item.slug}`}
-                          className="text-foreground font-medium block leading-snug hover:text-primary transition-colors"
-                        >
-                          {item.title}
-                        </Link>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(item.date).toLocaleDateString("pt-PT")}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/*
-                <div className="bg-accent/10 rounded-xl p-5">
-                  <h3 className="font-display font-semibold text-foreground mb-2">Subscreva</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Receba as últimas notícias diretamente no seu email.
-                  </p>
-                  <input
-                    type="email"
-                    placeholder="O seu email"
-                    className="w-full px-3 py-2 rounded-md border bg-card text-sm mb-2"
-                  />
-                  <button className="w-full text-sm font-medium bg-primary text-primary-foreground rounded-md py-2 hover:bg-primary/90 transition-colors">
-                    Subscrever
-                  </button>
-                </div>
-                */}
-              </aside>
+                );
+              })}
             </div>
+
+            {newsItems.length === 0 && (
+              <p className="text-sm text-muted-foreground mt-10">
+                Sem noticias publicadas de momento.
+              </p>
+            )}
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );
