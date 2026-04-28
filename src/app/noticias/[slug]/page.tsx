@@ -6,8 +6,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NewsContentMedia from "@/components/noticias/NewsContentMedia";
 import { Button } from "@/components/ui/button";
-import { newsItems } from "@/data/mockData";
-import { slugify } from "@/lib/utils";
+import { fetchNewsBySlug } from "@/lib/cms";
 
 type NewsPageProps = {
   params: Promise<{ slug: string }>;
@@ -23,7 +22,7 @@ const formatDate = (value: string) =>
 export default async function NewsDetailPage({ params }: NewsPageProps) {
   const { slug } = await params;
 
-  const newsItem = newsItems.find((item) => slugify(item.title) === slug);
+  const newsItem = await fetchNewsBySlug(slug);
 
   if (!newsItem) {
     notFound();

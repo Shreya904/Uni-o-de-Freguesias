@@ -1,46 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { FileText, Download } from "lucide-react";
 import { deriveDocumentPreviewUrl } from "@/lib/utils";
-
-type DocumentItem = {
-  id: string;
-  title: string;
-  docName: string;
-  date: string;
-  sourceUrl: string;
-};
-
-// Template data. This will be replaced by CMS document entries.
-const documents: DocumentItem[] = [
-  {
-    id: "ata-001",
-    title: "Ata da Assembleia - Janeiro 2026",
-    docName: "Ata_Assembleia_Janeiro_2026.pdf",
-    date: "2026-01-28",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-  {
-    id: "edital-004",
-    title: "Edital de Consulta Publica",
-    docName: "Edital_Consulta_Publica_004.pdf",
-    date: "2026-03-04",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-  {
-    id: "reg-002",
-    title: "Regulamento de Utilizacao de Espacos",
-    docName: "Regulamento_Utilizacao_Espacos_002.pdf",
-    date: "2026-02-16",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-];
+import { CmsDocumentItem, fetchPublishedDocuments } from "@/lib/cms";
 
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("pt-PT", {
@@ -51,6 +16,30 @@ const formatDate = (value: string) =>
 
 export default function DocumentacaoPage() {
   const [activeDocId, setActiveDocId] = useState<string | null>(null);
+  const [documents, setDocuments] = useState<CmsDocumentItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDocuments = async () => {
+      try {
+        const items = await fetchPublishedDocuments();
+        if (isMounted) {
+          setDocuments(items);
+        }
+      } catch {
+        if (isMounted) {
+          setDocuments([]);
+        }
+      }
+    };
+
+    void loadDocuments();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const activeDoc = useMemo(
     () => documents.find((doc) => doc.id === activeDocId) ?? null,
@@ -108,6 +97,12 @@ export default function DocumentacaoPage() {
                   </div>
                 </article>
               ))}
+
+              {documents.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Sem documentos publicados de momento.
+                </p>
+              )}
             </div>
           </div>
         </section>

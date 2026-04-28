@@ -108,8 +108,8 @@ public/                     # Static assets
 Create a `.env.local` file in the root directory:
 
 ```bash
-# API endpoints
-NEXT_PUBLIC_API_URL=your_api_url
+# Payload CMS base URL
+NEXT_PUBLIC_PAYLOAD_URL=http://localhost:3000
 ```
 
 ### Tailwind CSS
@@ -166,4 +166,5 @@ See LICENSE file for details.
 ## Support
 
 For issues or questions, please open an issue in the repository.
+
 #

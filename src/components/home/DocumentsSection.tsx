@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Download, FileText } from "lucide-react";
 import { deriveDocumentPreviewUrl } from "@/lib/utils";
+import { CmsDocumentItem, fetchPublishedDocuments } from "@/lib/cms";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,58 +15,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-type HomeDocumentItem = {
-  id: string;
-  title: string;
-  docName: string;
-  date: string;
-  sourceUrl: string;
-};
-
-// Template data. This will be replaced by CMS document entries.
-const homeDocuments: HomeDocumentItem[] = [
-  {
-    id: "ata-001",
-    title: "Ata da Assembleia - Janeiro 2026",
-    docName: "Ata_Assembleia_Janeiro_2026.pdf",
-    date: "2026-01-28",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-  {
-    id: "edital-004",
-    title: "Edital de Consulta Publica",
-    docName: "Edital_Consulta_Publica_004.pdf",
-    date: "2026-03-04",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-  {
-    id: "reg-002",
-    title: "Regulamento de Utilizacao de Espacos",
-    docName: "Regulamento_Utilizacao_Espacos_002.pdf",
-    date: "2026-02-16",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-  {
-    id: "orc-2026",
-    title: "Resumo Orcamental 2026",
-    docName: "Resumo_Orcamental_2026.pdf",
-    date: "2026-01-12",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-  {
-    id: "aviso-07",
-    title: "Aviso de Atendimento Extraordinario",
-    docName: "Aviso_Atendimento_Extraordinario_07.pdf",
-    date: "2026-04-11",
-    sourceUrl:
-      "https://37734829-6d22-4c58-9181-3975325eb308.filesusr.com/ugd/1b8a70_86450d7d6120468a815751db3afe06ff.pdf",
-  },
-];
-
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("pt-PT", {
     day: "2-digit",
@@ -74,7 +23,31 @@ const formatDate = (value: string) =>
   });
 
 const DocumentsSection = () => {
+  const [homeDocuments, setHomeDocuments] = useState<CmsDocumentItem[]>([]);
   const [activeDocId, setActiveDocId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDocuments = async () => {
+      try {
+        const items = await fetchPublishedDocuments(8);
+        if (isMounted) {
+          setHomeDocuments(items);
+        }
+      } catch {
+        if (isMounted) {
+          setHomeDocuments([]);
+        }
+      }
+    };
+
+    void loadDocuments();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const activeDoc = useMemo(
     () => homeDocuments.find((doc) => doc.id === activeDocId) ?? null,
@@ -139,6 +112,14 @@ const DocumentsSection = () => {
                 </article>
               </CarouselItem>
             ))}
+
+            {homeDocuments.length === 0 && (
+              <CarouselItem className="basis-full">
+                <article className="h-full bg-card rounded-xl border p-5 text-sm text-muted-foreground">
+                  Sem documentos publicados de momento.
+                </article>
+              </CarouselItem>
+            )}
           </CarouselContent>
 
           <CarouselPrevious className="hidden md:inline-flex" />

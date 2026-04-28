@@ -2,13 +2,38 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { newsItems } from "@/data/mockData";
 import { Calendar } from "lucide-react";
-import { slugify } from "@/lib/utils";
+import { CmsNewsItem, fetchPublishedNews } from "@/lib/cms";
 
 export default function NoticiasPage() {
+  const [newsItems, setNewsItems] = useState<CmsNewsItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadNews = async () => {
+      try {
+        const items = await fetchPublishedNews();
+        if (isMounted) {
+          setNewsItems(items);
+        }
+      } catch {
+        if (isMounted) {
+          setNewsItems([]);
+        }
+      }
+    };
+
+    void loadNews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -33,7 +58,7 @@ export default function NoticiasPage() {
                 {newsItems.map((item) => (
                   <Link
                     key={item.id}
-                    href={`/noticias/${slugify(item.title)}`}
+                    href={`/noticias/${item.slug}`}
                     className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
                   >
                     <article className="bg-card rounded-xl border overflow-hidden hover:shadow-md transition-shadow">
@@ -51,24 +76,30 @@ export default function NoticiasPage() {
                         )}
 
                         <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {new Date(item.date).toLocaleDateString("pt-PT")}
-                          <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
-                            {item.category}
-                          </span>
-                        </div>
-                        <h2 className="font-display text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
-                          {item.title}
-                        </h2>
-                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                          {item.excerpt}
-                        </p>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                            <Calendar className="w-3.5 h-3.5" />
+                            {new Date(item.date).toLocaleDateString("pt-PT")}
+                            <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
+                              {item.category}
+                            </span>
+                          </div>
+                          <h2 className="font-display text-lg sm:text-xl font-semibold text-foreground mb-2 line-clamp-2">
+                            {item.title}
+                          </h2>
+                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                            {item.excerpt}
+                          </p>
                         </div>
                       </div>
                     </article>
                   </Link>
                 ))}
+
+                {newsItems.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    Sem noticias publicadas de momento.
+                  </p>
+                )}
               </div>
 
               {/* Sidebar */}
@@ -81,7 +112,7 @@ export default function NoticiasPage() {
                     {newsItems.slice(0, 3).map((item) => (
                       <li key={item.id} className="text-sm">
                         <Link
-                          href={`/noticias/${slugify(item.title)}`}
+                          href={`/noticias/${item.slug}`}
                           className="text-foreground font-medium block leading-snug hover:text-primary transition-colors"
                         >
                           {item.title}

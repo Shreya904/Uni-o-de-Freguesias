@@ -18,11 +18,11 @@ import { Send, Paperclip, X, CheckCircle, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 const categories = [
-  "Serviços e Atestados",
-  "Obras e Infraestruturas",
-  "Apoio Social",
-  "Atividades e Eventos",
-  "Outras Questões",
+  { label: "Serviços e Atestados", value: "Servicos e Atestados" },
+  { label: "Obras e Infraestruturas", value: "Obras e Infraestruturas" },
+  { label: "Apoio Social", value: "Apoio Social" },
+  { label: "Atividades e Eventos", value: "Atividades e Eventos" },
+  { label: "Outras Questões", value: "Outras Questoes" },
 ];
 
 const MAX_CHARS = 200;
@@ -32,7 +32,11 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", category: "", message: "" });
   const [file, setFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submissionRef, setSubmissionRef] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const payloadBaseUrl =
+    process.env.NEXT_PUBLIC_PAYLOAD_URL?.replace(/\/$/, "") || "http://localhost:3000";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -45,15 +49,57 @@ export default function ContactPage() {
     setFile(f || null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.category || !formData.message) {
       toast.error("Por favor preencha todos os campos obrigatórios.");
       return;
     }
-    // Simulated submission
-    setSubmitted(true);
-    toast.success("Questão submetida com sucesso!");
+
+    try {
+      setIsSubmitting(true);
+
+      const payloadUrl = `${payloadBaseUrl}/api/contact-submissions`;
+
+      const res = await fetch(payloadUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          category: formData.category,
+          message: formData.message,
+          sourcePage: "/contactos",
+          locale: "pt-PT",
+          consent: true,
+        }),
+      });
+
+      const data = (await res.json().catch(() => null)) as {
+        doc?: { id?: string | number };
+        error?: string;
+        errors?: Array<{ message?: string }>;
+      } | null;
+
+      const responseError =
+        data?.error || data?.errors?.[0]?.message || `Server error: ${res.status}`;
+
+      if (!res.ok || !data.doc?.id) {
+        throw new Error(responseError);
+      }
+
+      setSubmissionRef(String(data.doc.id));
+      setSubmitted(true);
+      toast.success(`Questão submetida com sucesso! Ref: ${data.doc.id}`);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Nao foi possivel submeter a questao. Tente novamente.";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -69,9 +115,15 @@ export default function ContactPage() {
             <p className="text-muted-foreground mb-6">
               Obrigado pelo seu contacto. Responderemos assim que possível.
             </p>
+            {submissionRef && (
+              <p className="text-sm text-muted-foreground mb-4">
+                Referência da submissão: {submissionRef}
+              </p>
+            )}
             <Button
               onClick={() => {
                 setSubmitted(false);
+                setSubmissionRef("");
                 setFormData({ name: "", email: "", category: "", message: "" });
                 setFile(null);
               }}
@@ -188,8 +240,8 @@ export default function ContactPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map((c) => (
-                          <SelectItem key={c} value={c}>
-                            {c}
+                          <SelectItem key={c.value} value={c.value}>
+                            {c.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -254,7 +306,7 @@ export default function ContactPage() {
                     type="submit"
                     className="w-full"
                     size="lg"
-                    disabled={formData.message.length > MAX_CHARS}
+                    disabled={formData.message.length > MAX_CHARS || isSubmitting}
                   >
                     <Send className="w-4 h-4 mr-2" /> Enviar Questão
                   </Button>
