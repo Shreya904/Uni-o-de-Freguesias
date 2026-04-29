@@ -1,16 +1,16 @@
-// import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-// import { getPublishedDocuments } from "@/lib/cms";
+import { fetchPublishedDocuments } from "@/lib/cms";
 
-// export async function GET(request: NextRequest) {
-//   try {
-//     const limitParam = request.nextUrl.searchParams.get("limit");
-//     const limit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
+export async function GET(request: NextRequest) {
+  try {
+    const limitParam = request.nextUrl.searchParams.get("limit");
+    const limit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
 
-//     const documents = await getPublishedDocuments(Number.isFinite(limit) ? limit : undefined);
-//     return NextResponse.json({ docs: documents });
-//   } catch (error) {
-//     const message = error instanceof Error ? error.message : "Failed to fetch documents.";
-//     return NextResponse.json({ error: message }, { status: 502 });
-//   }
-// }
+    const documents = await fetchPublishedDocuments(Number.isFinite(limit) ? limit : undefined);
+    return NextResponse.json({ docs: documents });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to fetch documents.";
+    return NextResponse.json({ error: message }, { status: 502 });
+  }
+}

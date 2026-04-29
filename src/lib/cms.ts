@@ -2,6 +2,40 @@ type PayloadList<T> = {
   docs: T[];
 };
 
+export type CmsDocumentItem = {
+  id: string;
+  title: string;
+  date: string;
+  docName: string;
+  sourceUrl: string;
+};
+
+export type CmsNewsItem = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  description: string;
+  date: string;
+  mainImage?: string;
+  galleryImages: string[];
+};
+
+export type CmsEventItem = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  isPast: boolean;
+  mainImage?: string;
+  galleryImages: string[];
+};
+
 const CMS_URL =
   process.env.NEXT_PUBLIC_PAYLOAD_URL || process.env.NEXT_PUBLIC_API_URL || process.env.PAYLOAD_URL;
 
@@ -33,15 +67,18 @@ async function cmsFetch<T>(path: string, query?: Record<string, string | number>
 
 /* ---------------- SAFE HELPERS ---------------- */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function asText(v: any): string {
   if (typeof v === "string") return v;
   if (typeof v === "number") return String(v);
   return "";
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function lexicalToText(value: any): string {
   if (!value?.root?.children) return "";
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const walk = (nodes: any[]): string =>
     nodes
       .map((n) => {
@@ -54,6 +91,7 @@ function lexicalToText(value: any): string {
   return walk(value.root.children).trim();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function media(v: any): string | undefined {
   if (!v) return undefined;
   if (typeof v === "string") return v;
@@ -63,6 +101,7 @@ function media(v: any): string | undefined {
 
 /* ---------------- MAPPER (IMPORTANT FIX) ---------------- */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapNews(n: any) {
   return {
     id: String(n.id),
@@ -77,6 +116,7 @@ function mapNews(n: any) {
 }
 /* ---------------- EVENT MAPPER ---------------- */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapEvent(e: any) {
   return {
     id: String(e.id),
@@ -97,7 +137,8 @@ function mapEvent(e: any) {
 
 /* ---------------- API ---------------- */
 
-export async function fetchPublishedNews(limit = 50) {
+export async function fetchPublishedNews(limit = 50): Promise<CmsNewsItem[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/news", {
     "where[isPublished][equals]": "true",
     sort: "-date",
@@ -108,7 +149,8 @@ export async function fetchPublishedNews(limit = 50) {
   return (data.docs ?? []).map(mapNews);
 }
 
-export async function fetchNewsBySlug(slug: string) {
+export async function fetchNewsBySlug(slug: string): Promise<CmsNewsItem | null> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/news", {
     "where[isPublished][equals]": "true",
     "where[slug][equals]": decodeURIComponent(slug),
@@ -120,7 +162,8 @@ export async function fetchNewsBySlug(slug: string) {
   return item ? mapNews(item) : null;
 }
 
-export async function fetchPublishedDocuments(limit = 50) {
+export async function fetchPublishedDocuments(limit = 50): Promise<CmsDocumentItem[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/documents", {
     "where[isPublished][equals]": "true",
     sort: "-date",
@@ -131,7 +174,8 @@ export async function fetchPublishedDocuments(limit = 50) {
 }
 /* ---------------- EVENTS API ---------------- */
 
-export async function fetchPublishedEvents(limit = 50) {
+export async function fetchPublishedEvents(limit = 50): Promise<CmsEventItem[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/events", {
     "where[isPublished][equals]": "true",
     sort: "date", // upcoming first
@@ -142,7 +186,8 @@ export async function fetchPublishedEvents(limit = 50) {
   return (data.docs ?? []).map(mapEvent);
 }
 
-export async function fetchEventBySlug(slug: string) {
+export async function fetchEventBySlug(slug: string): Promise<CmsEventItem | null> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/events", {
     "where[isPublished][equals]": "true",
     "where[slug][equals]": decodeURIComponent(slug),

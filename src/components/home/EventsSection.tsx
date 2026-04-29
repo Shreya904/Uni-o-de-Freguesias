@@ -10,6 +10,7 @@ import { fetchPublishedEvents } from "@/lib/cms";
 import EmptyState from "@/components/ui/emptystate"; // fix path if needed
 
 const EventsSection = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {

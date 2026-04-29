@@ -12,6 +12,7 @@ import { fetchPublishedEvents } from "@/lib/cms";
 import EmptyState from "@/components/ui/emptystate";
 
 export default function EventsPage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [events, setEvents] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [showPast, setShowPast] = useState(false);

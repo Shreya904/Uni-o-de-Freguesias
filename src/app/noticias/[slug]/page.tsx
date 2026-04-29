@@ -12,6 +12,7 @@ const formatDate = (value: string) =>
     year: "numeric",
   });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function renderDescription(input: any): string[] {
   if (!input) return [];
 
@@ -25,6 +26,7 @@ function renderDescription(input: any): string[] {
   if (typeof input === "object" && input.root?.children) {
     const result: string[] = [];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const walk = (nodes: any[]) => {
       let buffer = "";
 

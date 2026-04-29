@@ -32,6 +32,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", category: "", message: "" });
   const [file, setFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [submissionRef, setSubmissionRef] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -51,6 +52,7 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!formData.name || !formData.email || !formData.category || !formData.message) {
       toast.error("Por favor preencha todos os campos obrigatórios.");
       return;
@@ -59,9 +61,29 @@ export default function ContactPage() {
     try {
       setIsSubmitting(true);
 
-      const payloadUrl = `${payloadBaseUrl}/api/contact-submissions`;
+      let mediaId = null;
 
-      const res = await fetch(payloadUrl, {
+      // 1. Upload file to Media FIRST
+      if (file) {
+        const formDataUpload = new FormData();
+        formDataUpload.append("file", file);
+
+        const uploadRes = await fetch(`${payloadBaseUrl}/api/media`, {
+          method: "POST",
+          body: formDataUpload,
+        });
+
+        const uploadData = await uploadRes.json();
+
+        if (!uploadRes.ok || !uploadData.doc?.id) {
+          throw new Error("Falha ao fazer upload do ficheiro");
+        }
+
+        mediaId = uploadData.doc.id;
+      }
+
+      // 2. Submit contact form with media reference
+      const res = await fetch(`${payloadBaseUrl}/api/contact-submissions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -69,34 +91,23 @@ export default function ContactPage() {
           email: formData.email,
           category: formData.category,
           message: formData.message,
+          attachment: mediaId, // 👈 IMPORTANT CHANGE
           sourcePage: "/contactos",
           locale: "pt-PT",
           consent: true,
         }),
       });
 
-      const data = (await res.json().catch(() => null)) as {
-        doc?: { id?: string | number };
-        error?: string;
-        errors?: Array<{ message?: string }>;
-      } | null;
-
-      const responseError =
-        data?.error || data?.errors?.[0]?.message || `Server error: ${res.status}`;
+      const data = await res.json();
 
       if (!res.ok || !data.doc?.id) {
-        throw new Error(responseError);
+        throw new Error("Server error");
       }
 
-      setSubmissionRef(String(data.doc.id));
       setSubmitted(true);
       toast.success(`Questão submetida com sucesso! Ref: ${data.doc.id}`);
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Nao foi possivel submeter a questao. Tente novamente.";
-      toast.error(message);
+      toast.error(error instanceof Error ? error.message : "Erro ao submeter");
     } finally {
       setIsSubmitting(false);
     }
@@ -115,11 +126,7 @@ export default function ContactPage() {
             <p className="text-muted-foreground mb-6">
               Obrigado pelo seu contacto. Responderemos assim que possível.
             </p>
-            {submissionRef && (
-              <p className="text-sm text-muted-foreground mb-4">
-                Referência da submissão: {submissionRef}
-              </p>
-            )}
+            {/* Submission reference hidden per request */}
             <Button
               onClick={() => {
                 setSubmitted(false);
