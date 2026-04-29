@@ -3,12 +3,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/home/HeroSection";
-// import EventsSection from "@/components/home/EventsSection";
+import EventsSection from "@/components/home/EventsSection";
 import PresidentSection from "@/components/home/PresidentSection";
 // import CalendarSection from "@/components/home/CalendarSection";
 import NewsSection from "@/components/home/NewsSection";
 import DocumentsSection from "@/components/home/DocumentsSection";
-import FAQSection from "@/components/home/FAQSection";
+// import FAQSection from "@/components/home/FAQSection";
 // import MapSection from "@/components/home/MapSection";
 
 export default function Home() {
@@ -18,11 +18,12 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection />
         <PresidentSection />
-        {/* <EventsSection /> */}
+
         {/* <CalendarSection /> */}
         <NewsSection />
         <DocumentsSection />
-        <FAQSection />
+        <EventsSection />
+        {/* <FAQSection /> */}
         {/* <MapSection /> */}
       </main>
       <Footer />

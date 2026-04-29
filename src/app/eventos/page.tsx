@@ -1,47 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Clock, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
-import { eventItems, eventCategories } from "@/data/mockData";
 import Link from "next/link";
-import { slugify } from "@/lib/utils";
+
+import { fetchPublishedEvents } from "@/lib/cms";
+import EmptyState from "@/components/ui/emptystate";
 
 export default function EventsPage() {
+  const [events, setEvents] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [showPast, setShowPast] = useState(false);
 
-  const upcoming = eventItems.filter((e) => !e.isPast);
-  const displayEvents = showPast ? eventItems : upcoming;
+  useEffect(() => {
+    let mounted = true;
+
+    fetchPublishedEvents().then((data) => {
+      if (mounted) setEvents(data);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const now = new Date();
+
+  const upcoming = events.filter((e) => new Date(e.date) >= now);
+  const displayEvents = showPast ? events : upcoming;
+
+  const categories = [
+    "Todos",
+    ...Array.from(new Set(events.map((e) => e.category).filter(Boolean))),
+  ];
+
   const filtered =
     activeCategory === "Todos"
       ? displayEvents
       : displayEvents.filter((e) => e.category === activeCategory);
 
+  const isEmpty = filtered.length === 0;
+
   return (
     <div className="min-h-screen">
       <Header />
+
       <main>
-        <section className="section-padding bg-section-alt">
-          <div className="container max-w-5xl mx-auto">
-            <div className="text-center mb-10">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
-                Agenda de Eventos
+        <section className="section-padding pt-6 md:pt-8">
+          <div className="container max-w-6xl mx-auto px-4">
+            {/* TITLE */}
+            <div className="mb-6">
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+                Agenda
               </h1>
-              <p className="text-muted-foreground mt-3">
-                Descubra as próximas atividades e eventos na freguesia.
-              </p>
+              <div className="h-[2px] w-24 bg-primary mt-3" />
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
-              {eventCategories.map((cat) => (
+            {/* FILTERS */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                     activeCategory === cat
                       ? "bg-primary text-primary-foreground"
                       : "bg-card border text-muted-foreground hover:text-foreground"
@@ -52,84 +77,89 @@ export default function EventsPage() {
               ))}
             </div>
 
-            <div className="flex justify-center mb-8">
+            {/* TOGGLE */}
+            <div className="mb-6">
               <button
                 onClick={() => setShowPast(!showPast)}
-                className="text-sm text-primary hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 {showPast ? "Ocultar eventos passados" : "Mostrar todos (incluindo passados)"}
               </button>
             </div>
 
-            <div className="space-y-4">
-              {filtered.map((event, i) => (
-                <motion.div
-                  key={event.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className={`bg-card rounded-xl border p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row gap-4 sm:gap-5 ${event.isPast ? "opacity-60" : "hover:shadow-md"} transition-shadow`}
-                >
-                  <div className="flex-shrink-0 w-16 h-16 rounded-lg bg-primary/10 flex flex-col items-center justify-center">
-                    <span className="text-primary font-display font-bold text-xl leading-none">
-                      {new Date(event.date).getDate()}
-                    </span>
-                    <span className="text-primary/70 text-xs uppercase mt-0.5">
-                      {new Date(event.date).toLocaleDateString("pt-PT", { month: "short" })}
-                    </span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium text-accent">{event.category}</span>
-                      {event.isPast && (
-                        <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                          Passado
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-display font-semibold text-foreground mb-2">
-                      {event.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">{event.description}</p>
-                    <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" /> {event.time}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5" /> {event.location}
-                      </span>
-                    </div>
-                    <Link
-                      href={`/eventos/${slugify(event.title)}`}
-                      className="inline-flex mt-3 text-sm font-medium text-primary hover:underline"
-                    >
-                      Ver detalhes
+            {/* ✅ EMPTY STATE */}
+            {isEmpty ? (
+              <EmptyState
+                title={
+                  activeCategory !== "Todos"
+                    ? `Sem eventos em "${activeCategory}"`
+                    : showPast
+                      ? "Sem eventos disponíveis"
+                      : "Sem eventos futuros"
+                }
+                description={
+                  showPast
+                    ? "Ainda não existem eventos registados."
+                    : "Não há eventos futuros agendados de momento."
+                }
+                primaryAction={{
+                  label: "Contactar organização",
+                  href: "/contactos",
+                }}
+              />
+            ) : (
+              /* GRID */
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filtered.map((event, i) => (
+                  <motion.div
+                    key={event.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                  >
+                    <Link href={`/eventos/${event.slug}`} className="group block">
+                      <article className={`${new Date(event.date) < now ? "opacity-50" : ""}`}>
+                        {event.mainImage && (
+                          <div className="relative w-full aspect-[4/2.6] mb-3 overflow-hidden bg-muted">
+                            <Image
+                              src={event.mainImage}
+                              alt={event.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-1 text-sm text-foreground/80 mb-1">
+                          <MapPin className="w-3.5 h-3.5" />
+                          {event.location}
+                        </div>
+
+                        <h3 className="font-display text-xl md:text-2xl font-bold text-foreground leading-snug mb-1 group-hover:text-primary transition-colors">
+                          {event.title}
+                        </h3>
+
+                        <div className="flex items-center gap-3 text-sm text-foreground/70 mb-2">
+                          <span>{new Date(event.date).toLocaleDateString("pt-PT")}</span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5" />
+                            {event.time}
+                          </span>
+                        </div>
+
+                        <p className="text-base text-foreground/70 leading-relaxed line-clamp-3">
+                          {event.excerpt}
+                        </p>
+                      </article>
                     </Link>
-                  </div>
-
-                  {event.mainImage && (
-                    <div className="relative sm:ml-auto w-full sm:w-44 md:w-48 lg:w-52 h-40 sm:h-auto sm:min-h-[140px] rounded-xl overflow-hidden border border-border/70 bg-muted/40 shrink-0">
-                      <Image
-                        src={event.mainImage}
-                        alt={event.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 176px, 208px"
-                      />
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-
-            {filtered.length === 0 && (
-              <p className="text-center text-muted-foreground py-16">
-                Sem eventos nesta categoria.
-              </p>
+                  </motion.div>
+                ))}
+              </div>
             )}
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );

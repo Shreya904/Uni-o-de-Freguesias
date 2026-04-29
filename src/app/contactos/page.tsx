@@ -141,21 +141,29 @@ export default function ContactPage() {
     <div className="min-h-screen">
       <Header />
       <main>
-        <section className="section-padding bg-section-alt">
+        <div className="mt-10 mb-4 container max-w-6xl mx-auto px-4">
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
+            Contacte-nos
+          </h1>
+          <div className="h-[2px] w-20 bg-primary mt-3" />
+        </div>
+        <section className="pt-8 pb-16 bg-section-alt">
           <div className="container max-w-6xl mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-12 rounded-2xl overflow-hidden border bg-card shadow-sm">
               <aside className="relative lg:col-span-6 min-h-[360px] lg:min-h-full">
                 <img
                   src="/hero-bg.jpg"
                   alt="Contacto institucional"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover grayscale"
                   width={1200}
                   height={1600}
                 />
-                <div className="absolute inset-0 bg-primary/75" />
+                {/* bluish cinematic overlays */}
+                <div className="absolute inset-0 bg-blue-950/40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 via-blue-950/40 to-transparent" />
                 <div className="relative z-10 h-full p-6 md:p-8 text-primary-foreground flex flex-col justify-between gap-5">
                   <div className="space-y-5">
-                    <h1 className="font-display text-3xl md:text-4xl font-bold">Contacte-nos</h1>
+                    {/* <h1 className="font-display text-3xl md:text-4xl font-bold">Contacte-nos</h1> */}
                     <p className="text-primary-foreground/85 text-sm md:text-base leading-relaxed">
                       Envie a sua questão ou sugestão. Responderemos brevemente.
                     </p>
@@ -207,7 +215,9 @@ export default function ContactPage() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Nome *</Label>
+                      <Label htmlFor="name" className="text-[hsl(var(--primary))]/90">
+                        Nome *
+                      </Label>
                       <Input
                         id="name"
                         value={formData.name}
@@ -217,7 +227,9 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email" className="text-[hsl(var(--primary))]/90">
+                        Email *
+                      </Label>
                       <Input
                         id="email"
                         type="email"
@@ -230,7 +242,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Categoria *</Label>
+                    <Label className="text-[hsl(var(--primary))]/90">Categoria *</Label>
                     <Select
                       value={formData.category}
                       onValueChange={(v) => setFormData({ ...formData, category: v })}
@@ -250,7 +262,9 @@ export default function ContactPage() {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="message">Mensagem *</Label>
+                      <Label htmlFor="message" className="text-[hsl(var(--primary))]/90">
+                        Mensagem *
+                      </Label>
                       <span
                         className={`text-xs ${formData.message.length > MAX_CHARS ? "text-destructive" : "text-muted-foreground"}`}
                       >
@@ -272,7 +286,9 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Anexo (opcional, máx. 3 MB)</Label>
+                    <Label className="text-[hsl(var(--primary))]/90">
+                      Anexo (opcional, máx. 3 MB)
+                    </Label>
                     <div className="flex items-center gap-3">
                       <Button
                         type="button"
@@ -304,7 +320,7 @@ export default function ContactPage() {
 
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full bg-foreground text-white hover:bg-foreground/90"
                     size="lg"
                     disabled={formData.message.length > MAX_CHARS || isSubmitting}
                   >

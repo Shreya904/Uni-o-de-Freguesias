@@ -15,6 +15,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Início", href: "/" },
   { label: "Notícias", href: "/noticias" },
+  { label: "Agenda", href: "/eventos" },
   {
     label: "Contactos",
     children: [
@@ -63,7 +64,7 @@ const Header = () => {
     <header className="sticky top-0 z-50">
       <nav ref={dropdownRef} className="bg-card/95 backdrop-blur-md border-b border-border/70">
         <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between">
-          {/* LOGO (clean, no box) */}
+          {/* LOGO */}
           <Link href="/" className="flex items-center">
             <Image
               src="/header logo.png"
@@ -86,8 +87,8 @@ const Header = () => {
                     onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
                     className={`flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition ${
                       isActive(item)
-                        ? "text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "text-[#DE092D] font-bold"
+                        : "text-muted-foreground hover:text-[#DE092D]"
                     }`}
                   >
                     {item.label}
@@ -100,18 +101,17 @@ const Header = () => {
 
                   {openDropdown === item.label && (
                     <div
-                      className={`
-              absolute top-full mt-2 w-72
-              bg-card rounded-xl border shadow-lg py-2
-              animate-in fade-in slide-in-from-top-2 duration-200
-              ${isLast ? "right-0" : "left-0"}
-            `}
+                      className={`absolute top-full mt-2 w-72 bg-card rounded-xl border shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200 ${
+                        isLast ? "right-0" : "left-0"
+                      }`}
                     >
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-4 py-2.5 hover:bg-muted transition"
+                          className={`block px-4 py-2.5 transition text-muted-foreground hover:text-[#DE092D] ${
+                            pathname === child.href ? "text-[#DE092D] font-bold" : ""
+                          }`}
                         >
                           <span className="text-sm font-medium text-foreground">{child.label}</span>
                           {child.description && (
@@ -129,9 +129,9 @@ const Header = () => {
                   key={item.href}
                   href={item.href!}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition ${
-                    isActive(item)
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                    pathname === item.href
+                      ? "text-[#DE092D] font-bold"
+                      : "text-muted-foreground hover:text-[#DE092D]"
                   }`}
                 >
                   {item.label}
@@ -159,7 +159,11 @@ const Header = () => {
                     onClick={() =>
                       setMobileExpanded(mobileExpanded === item.label ? null : item.label)
                     }
-                    className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-muted"
+                    className={`flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium rounded-md transition ${
+                      isActive(item)
+                        ? "text-[#DE092D] font-bold"
+                        : "text-muted-foreground hover:text-[#DE092D] hover:bg-muted"
+                    }`}
                   >
                     {item.label}
                     <ChevronDown
@@ -175,8 +179,10 @@ const Header = () => {
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
                           onClick={() => setMobileOpen(false)}
+                          className={`block px-3 py-2 text-sm transition text-muted-foreground hover:text-[#DE092D] ${
+                            pathname === child.href ? "text-[#DE092D] font-bold" : ""
+                          }`}
                         >
                           {child.label}
                         </Link>
@@ -188,8 +194,12 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className="block px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
                   onClick={() => setMobileOpen(false)}
+                  className={`block px-3 py-2.5 text-sm font-medium transition ${
+                    pathname === item.href
+                      ? "text-[#DE092D] font-bold"
+                      : "text-muted-foreground hover:text-[#DE092D]"
+                  }`}
                 >
                   {item.label}
                 </Link>

@@ -1,112 +1,162 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, MapPin, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
-import { Button } from "@/components/ui/button";
-import { eventItems, eventCategories } from "@/data/mockData";
-import { slugify } from "@/lib/utils";
+import { fetchPublishedEvents } from "@/lib/cms";
+import EmptyState from "@/components/ui/emptystate"; // fix path if needed
 
 const EventsSection = () => {
-  const [activeCategory, setActiveCategory] = useState("Todos");
-  const upcomingEvents = eventItems.filter((e) => !e.isPast);
-  const filtered =
-    activeCategory === "Todos"
-      ? upcomingEvents
-      : upcomingEvents.filter((e) => e.category === activeCategory);
+  const [events, setEvents] = useState<any[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetchPublishedEvents().then((data) => {
+      if (mounted) setEvents(data);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const now = new Date();
+
+  const upcoming = events
+    .filter((e) => new Date(e.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // ✅ better UX
+    .slice(0, 5);
+
+  const featured = upcoming[0];
+  const rest = upcoming.slice(1);
 
   return (
-    <section className="section-padding bg-section-alt">
-      <div className="container max-w-7xl mx-auto">
-        <div className="flex items-end justify-between mb-8">
+    <section className="section-padding">
+      <div className="container max-w-6xl mx-auto px-4">
+        {/* HEADER */}
+        <div className="flex items-end justify-between mb-10">
           <div>
-            <span className="text-accent font-semibold text-sm uppercase tracking-wider">
-              Agenda
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-2">
-              Próximos Eventos
-            </h2>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground">Agenda</h2>
+            <div className="h-[2px] w-20 bg-primary mt-3" />
           </div>
+
           <Link
             href="/eventos"
-            className="hidden md:flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            className="hidden md:flex items-center gap-2 text-sm font-medium text-primary hover:underline"
           >
-            Ver todos <ArrowRight className="w-4 h-4" />
+            Ver agenda completa <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {eventCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === cat
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card border text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {filtered.map((event, i) => (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-card rounded-xl border p-6 hover:shadow-md transition-shadow flex gap-5"
-            >
-              <div className="flex-shrink-0 w-16 h-16 rounded-lg bg-primary/10 flex flex-col items-center justify-center">
-                <span className="text-primary font-display font-bold text-xl leading-none">
-                  {new Date(event.date).getDate()}
-                </span>
-                <span className="text-primary/70 text-xs uppercase mt-0.5">
-                  {new Date(event.date).toLocaleDateString("pt-PT", { month: "short" })}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-medium text-accent">{event.category}</span>
-                <h3 className="font-display font-semibold text-foreground mt-1 mb-2">
-                  {event.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                  {event.description}
-                </p>
-                <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" /> {event.time}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5" /> {event.location}
-                  </span>
-                </div>
-                <Link
-                  href={`/eventos/${slugify(event.title)}`}
-                  className="inline-flex mt-3 text-sm font-medium text-primary hover:underline"
+        {/* ✅ EMPTY STATE */}
+        {!upcoming.length ? (
+          <EmptyState
+            title="Sem eventos agendados"
+            description="Fique atento — novos eventos serão adicionados em breve."
+            primaryAction={{
+              label: "Ver agenda completa",
+              href: "/eventos",
+            }}
+          />
+        ) : (
+          /* MAIN */
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* FEATURED */}
+            {featured && (
+              <Link href={`/eventos/${featured.slug}`} className="group block">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="space-y-4"
                 >
-                  Ver detalhes
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                  {featured.mainImage && (
+                    <div className="relative w-full aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={featured.mainImage}
+                        alt={featured.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  )}
 
-        {filtered.length === 0 && (
-          <p className="text-center text-muted-foreground py-12">Sem eventos nesta categoria.</p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-primary font-medium">{featured.category}</p>
+
+                    <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
+                      {featured.title}
+                    </h3>
+
+                    <div className="flex flex-wrap gap-3 text-sm text-foreground/70">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" /> {featured.time}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" /> {featured.location}
+                      </span>
+                    </div>
+
+                    <p className="text-base text-foreground/70 line-clamp-3">{featured.excerpt}</p>
+                  </div>
+                </motion.div>
+              </Link>
+            )}
+
+            {/* SIDE LIST */}
+            <div className="flex flex-col gap-6">
+              {rest.map((event, i) => (
+                <Link key={event.id} href={`/eventos/${event.slug}`} className="group block">
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06 }}
+                    className="flex gap-4 items-start"
+                  >
+                    {event.mainImage && (
+                      <div className="relative w-24 h-20 shrink-0 overflow-hidden">
+                        <Image
+                          src={event.mainImage}
+                          alt={event.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+
+                    <div className="space-y-1">
+                      <p className="text-xs text-primary font-medium">{event.category}</p>
+
+                      <h4 className="font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
+                        {event.title}
+                      </h4>
+
+                      <div className="text-xs text-foreground/70 flex flex-wrap gap-2">
+                        <span>{event.time}</span>
+                        <span>•</span>
+                        <span>{event.location}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </div>
         )}
 
-        <div className="text-center mt-8">
-          <Button variant="outline" asChild>
-            <Link href="/eventos">
-              Ver todos os eventos <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
+        {/* MOBILE CTA */}
+        <div className="mt-8 md:hidden">
+          <Link
+            href="/eventos"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+          >
+            Ver agenda completa <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>

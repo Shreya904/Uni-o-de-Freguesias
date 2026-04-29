@@ -5,10 +5,6 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { fetchNewsBySlug, fetchPublishedNews } from "@/lib/cms";
 
-type NewsPageProps = {
-  params: { slug: string };
-};
-
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("pt-PT", {
     day: "2-digit",
@@ -16,13 +12,58 @@ const formatDate = (value: string) =>
     year: "numeric",
   });
 
-function safeText(input: any) {
-  if (typeof input === "string") return input;
-  return "";
+function renderDescription(input: any): string[] {
+  if (!input) return [];
+
+  if (typeof input === "string") {
+    return input
+      .split(/(?:\n|\r|\u2022)/g)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof input === "object" && input.root?.children) {
+    const result: string[] = [];
+
+    const walk = (nodes: any[]) => {
+      let buffer = "";
+
+      for (const node of nodes) {
+        if (typeof node?.text === "string") {
+          buffer += node.text + " ";
+        }
+
+        const isBreak =
+          node?.type === "linebreak" ||
+          node?.type === "paragraph" ||
+          node?.type === "list" ||
+          node?.type === "list-item";
+
+        if (isBreak && buffer.trim()) {
+          result.push(buffer.trim());
+          buffer = "";
+        }
+
+        if (Array.isArray(node?.children)) {
+          walk(node.children);
+        }
+      }
+
+      if (buffer.trim()) result.push(buffer.trim());
+    };
+
+    walk(input.root.children);
+
+    return result.map((t) => t.replace(/\s+/g, " ").replace(/•\s*/g, "").trim()).filter(Boolean);
+  }
+
+  return [];
 }
 
-export default async function NewsDetailPage({ params }: NewsPageProps) {
-  const newsItem = await fetchNewsBySlug(params.slug);
+export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  const newsItem = await fetchNewsBySlug(slug);
   const latestNews = await fetchPublishedNews(3);
 
   if (!newsItem) notFound();
@@ -36,20 +77,27 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
     ? newsItem.galleryImages.filter((img) => typeof img === "string" && img.trim())
     : [];
 
-  const description = safeText(newsItem.description);
+  const descriptionBlocks = renderDescription(newsItem.description);
 
   return (
     <div className="min-h-screen">
       <Header />
 
-      <main className="py-10">
+      <main className="py-12">
         <div className="container max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-            {/* LEFT CONTENT */}
-            <div className="lg:col-span-3 space-y-6">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Notícias</p>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            {/* LEFT */}
+            <div className="lg:col-span-3 space-y-7">
+              <Link href="/noticias" className="inline-flex items-center gap-2 group">
+                <span className="text-xl font-semibold group-hover:-translate-x-1 transition-transform">
+                  {"<"}
+                </span>
+                <span className="font-display text-2xl md:text-3xl font-bold text-primary">
+                  Notícias
+                </span>
+              </Link>
 
-              <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight text-foreground">
+              <h1 className="font-display text-4xl md:text-5xl font-bold leading-tight">
                 {newsItem.title}
               </h1>
 
@@ -57,46 +105,60 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
                 {newsItem.date && formatDate(newsItem.date)}
               </p>
 
-              {/* DESCRIPTION (IMPROVED READABILITY) */}
-              {description && (
-                <p className="text-[17px] md:text-[18px] leading-relaxed text-foreground/90 font-medium">
-                  {description}
-                </p>
-              )}
-
-              {mainImage && (
-                <div className="w-full overflow-hidden rounded-lg bg-muted">
-                  <img src={mainImage} alt={newsItem.title} className="w-full object-cover" />
+              {/* DESCRIPTION */}
+              {descriptionBlocks.length > 0 && (
+                <div className="space-y-6 text-[17px] md:text-[19px] leading-8 font-medium text-foreground/90">
+                  {descriptionBlocks.map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
                 </div>
               )}
 
+              {/* =========================
+                  🧱 MASONRY GALLERY
+                  ========================= */}
               {gallery.length > 0 && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="columns-2 md:columns-3 gap-4 space-y-4">
                   {gallery.map((img, i) => (
-                    <div key={i} className="aspect-square overflow-hidden rounded-md bg-muted">
+                    <div
+                      key={i}
+                      className="break-inside-avoid rounded-lg overflow-hidden bg-muted max-h-[420px]"
+                    >
                       <img
                         src={img}
                         alt={`${newsItem.title} ${i + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-auto object-contain max-h-[420px]"
                       />
                     </div>
                   ))}
                 </div>
               )}
+
+              {/* =========================
+                  🖼 MAIN IMAGE (CONTROLLED)
+                  ========================= */}
+              {mainImage && (
+                <div className="mt-8 rounded-xl overflow-hidden bg-muted max-h-[600px] flex justify-center">
+                  <img
+                    src={mainImage}
+                    alt={newsItem.title}
+                    className="w-full h-auto object-contain max-h-[600px]"
+                  />
+                </div>
+              )}
             </div>
 
             {/* RIGHT SIDEBAR */}
-            <aside className="space-y-5">
-              <h3 className="font-semibold text-sm text-foreground">Mais Notícias</h3>
+            <aside className="space-y-6">
+              <h3 className="font-semibold text-sm">Mais Notícias</h3>
 
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {latestNews.map((item) => (
                   <Link key={item.id} href={`/noticias/${item.slug}`} className="block group">
-                    <p className="text-base md:text-[17px] font-semibold leading-snug group-hover:text-primary transition-colors underline decoration-primary/30 underline-offset-4">
+                    <p className="text-lg font-bold underline decoration-primary/30 underline-offset-4 group-hover:text-primary transition-colors">
                       {item.title}
                     </p>
-
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {item.date && formatDate(item.date)}
                     </p>
                   </Link>

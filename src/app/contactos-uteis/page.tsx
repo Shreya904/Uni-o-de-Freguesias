@@ -43,21 +43,17 @@ export default function ContactosUteisPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main>
-        <section className="relative overflow-hidden bg-primary py-16 md:py-20 border-b border-primary-foreground/15">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/95 to-primary/85" />
-          <div className="relative container max-w-6xl mx-auto px-4 text-center">
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-3">
-              Contactos Úteis
-            </h1>
-            <p className="text-primary-foreground/85 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-              Encontre rapidamente os contactos dos departamentos e serviços mais relevantes da
-              freguesia.
-            </p>
-          </div>
-        </section>
 
-        <section className="section-padding">
+      <main>
+        {/* TITLE (centered + reduced whitespace) */}
+        <div className="mt-8 mb-6 text-center">
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+            Contactos Úteis
+          </h1>
+          <div className="h-[2px] w-20 bg-primary mx-auto mt-3" />
+        </div>
+
+        <section className="section-padding pt-6">
           <div className="container max-w-6xl mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {usefulContacts.map((contact) => (
@@ -67,31 +63,36 @@ export default function ContactosUteisPage() {
                       src={contact.image}
                       alt={contact.title}
                       className="w-full h-full object-cover"
-                      width={1200}
-                      height={700}
                     />
                   </div>
-                  <CardHeader className="space-y-3">
+
+                  <CardHeader>
                     <CardTitle className="font-display text-xl">{contact.title}</CardTitle>
                   </CardHeader>
+
                   <CardContent className="space-y-4 text-sm text-muted-foreground">
                     <p className="flex items-start gap-2">
                       <MapPin className="w-4 h-4 mt-0.5 text-accent" />
-                      <span>{contact.address}</span>
+                      {contact.address}
                     </p>
+
                     <p className="flex items-start gap-2">
                       <Phone className="w-4 h-4 mt-0.5 text-accent" />
-                      <span>{contact.phone}</span>
+                      {contact.phone}
                     </p>
+
                     <p className="flex items-start gap-2">
                       <Mail className="w-4 h-4 mt-0.5 text-accent" />
-                      <span>{contact.email}</span>
+                      {contact.email}
                     </p>
+
                     <div className="rounded-lg border border-border/70 bg-muted/30 p-3">
                       <p className="flex items-center gap-2 font-medium text-foreground mb-2">
-                        <Clock className="w-4 h-4 text-accent" /> Horários de Atendimento
+                        <Clock className="w-4 h-4 text-accent" />
+                        Horários de Atendimento
                       </p>
-                      <div className="space-y-1.5 text-muted-foreground">
+
+                      <div className="space-y-1.5">
                         {contact.scheduleLines.map((line) => (
                           <p key={line}>{line}</p>
                         ))}
@@ -105,22 +106,27 @@ export default function ContactosUteisPage() {
           </div>
         </section>
 
+        {/* CTA UPDATED */}
         <section className="section-padding bg-section-alt">
           <div className="container max-w-3xl mx-auto px-4 text-center">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
               Não encontrou o contacto certo?
             </h2>
+
             <p className="text-muted-foreground mb-6">
               Use o formulário de contacto e encaminharemos o seu pedido para o serviço competente.
             </p>
-            <Button size="lg" asChild>
+
+            <Button size="lg" asChild className="bg-foreground text-white hover:bg-foreground/90">
               <Link href="/contactos">
-                Ir para o formulário de contacto <ArrowRight className="w-4 h-4 ml-2" />
+                Ir para o formulário de contacto
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );

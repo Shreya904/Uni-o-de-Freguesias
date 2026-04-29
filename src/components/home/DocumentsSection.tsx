@@ -14,6 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import EmptyState from "@/components/ui/emptystate";
 
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("pt-PT", {
@@ -32,13 +33,9 @@ const DocumentsSection = () => {
     const loadDocuments = async () => {
       try {
         const items = await fetchPublishedDocuments(8);
-        if (isMounted) {
-          setHomeDocuments(items);
-        }
+        if (isMounted) setHomeDocuments(items);
       } catch {
-        if (isMounted) {
-          setHomeDocuments([]);
-        }
+        if (isMounted) setHomeDocuments([]);
       }
     };
 
@@ -51,12 +48,15 @@ const DocumentsSection = () => {
 
   const activeDoc = useMemo(
     () => homeDocuments.find((doc) => doc.id === activeDocId) ?? null,
-    [activeDocId],
+    [activeDocId, homeDocuments],
   );
+
+  const isEmpty = homeDocuments.length === 0;
 
   return (
     <section className="section-padding bg-background">
       <div className="container max-w-7xl mx-auto">
+        {/* HEADER */}
         <div className="flex items-end justify-between mb-10">
           <div>
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">
@@ -66,6 +66,7 @@ const DocumentsSection = () => {
               Documentacao em Destaque
             </h2>
           </div>
+
           <Link
             href="/institucional/documentacao"
             className="hidden md:flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
@@ -74,58 +75,70 @@ const DocumentsSection = () => {
           </Link>
         </div>
 
-        <Carousel opts={{ align: "start", loop: false }} className="w-full">
-          <CarouselContent>
-            {homeDocuments.map((doc) => (
-              <CarouselItem key={doc.id} className="sm:basis-1/2 lg:basis-1/3">
-                <article className="relative h-full bg-card rounded-xl border p-5 flex flex-col">
-                  <button
-                    type="button"
-                    onClick={() => setActiveDocId(doc.id)}
-                    className="absolute inset-0 rounded-xl"
-                    aria-label={`Abrir pré-visualização de ${doc.title}`}
-                  />
+        {/* ✅ EMPTY STATE */}
+        {isEmpty ? (
+          <EmptyState
+            title="Sem documentos disponíveis"
+            description="Ainda não existem documentos publicados. Volte em breve para consultar a documentação."
+            primaryAction={{
+              label: "Ir para documentação",
+              href: "/institucional/documentacao",
+            }}
+          />
+        ) : (
+          /* CAROUSEL */
+          <Carousel opts={{ align: "start", loop: false }} className="w-full">
+            <CarouselContent>
+              {homeDocuments.map((doc) => (
+                <CarouselItem key={doc.id} className="sm:basis-1/2 lg:basis-1/3">
+                  <article className="relative h-full bg-card rounded-xl border p-5 flex flex-col">
+                    <button
+                      type="button"
+                      onClick={() => setActiveDocId(doc.id)}
+                      className="absolute inset-0 rounded-xl"
+                      aria-label={`Abrir pré-visualização de ${doc.title}`}
+                    />
 
-                  <h3 className="font-display font-semibold text-foreground leading-snug line-clamp-2 mb-2">
-                    {doc.title}
-                  </h3>
+                    <h3 className="font-display font-semibold text-foreground leading-snug line-clamp-2 mb-2">
+                      {doc.title}
+                    </h3>
 
-                  <p className="text-xs text-muted-foreground mb-3">Data: {formatDate(doc.date)}</p>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Data: {formatDate(doc.date)}
+                    </p>
 
-                  <div className="mt-auto flex items-center justify-between gap-3 relative z-10">
-                    <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground break-all">
-                      <FileText className="w-3.5 h-3.5 text-accent" /> {doc.docName}
-                    </span>
+                    <div className="mt-auto flex items-center justify-between gap-3 relative z-10">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground break-all">
+                        <FileText className="w-3.5 h-3.5 text-accent" /> {doc.docName}
+                      </span>
 
-                    <Button size="sm" asChild>
-                      <a
-                        href={doc.sourceUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(event) => event.stopPropagation()}
-                        aria-label={`Download de ${doc.title}`}
+                      <Button
+                        size="sm"
+                        className="bg-foreground text-white hover:bg-foreground/90"
+                        asChild
                       >
-                        <Download className="w-4 h-4 mr-1.5" /> Transferir
-                      </a>
-                    </Button>
-                  </div>
-                </article>
-              </CarouselItem>
-            ))}
+                        <a
+                          href={doc.sourceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label={`Download de ${doc.title}`}
+                        >
+                          <Download className="w-4 h-4 mr-1.5" /> Transferir
+                        </a>
+                      </Button>
+                    </div>
+                  </article>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
 
-            {homeDocuments.length === 0 && (
-              <CarouselItem className="basis-full">
-                <article className="h-full bg-card rounded-xl border p-5 text-sm text-muted-foreground">
-                  Sem documentos publicados de momento.
-                </article>
-              </CarouselItem>
-            )}
-          </CarouselContent>
+            <CarouselPrevious className="hidden md:inline-flex" />
+            <CarouselNext className="hidden md:inline-flex" />
+          </Carousel>
+        )}
 
-          <CarouselPrevious className="hidden md:inline-flex" />
-          <CarouselNext className="hidden md:inline-flex" />
-        </Carousel>
-
+        {/* MOBILE CTA */}
         <Link
           href="/institucional/documentacao"
           className="md:hidden flex items-center justify-center gap-1.5 mt-8 text-sm font-medium text-primary"
@@ -134,6 +147,7 @@ const DocumentsSection = () => {
         </Link>
       </div>
 
+      {/* PREVIEW MODAL */}
       {activeDoc && (
         <div className="fixed inset-0 z-50 bg-black/70 p-4 md:p-8">
           <div className="relative w-full max-w-6xl h-full max-h-[92vh] mx-auto bg-card rounded-2xl border border-border/70 overflow-hidden shadow-2xl">
@@ -151,7 +165,6 @@ const DocumentsSection = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                aria-hidden="true"
               >
                 <path d="M18 6L6 18" />
                 <path d="M6 6l12 12" />

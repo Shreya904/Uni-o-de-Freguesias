@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 import { CmsNewsItem, fetchPublishedNews } from "@/lib/cms";
+import EmptyState from "@/components/ui/emptystate"; // adjust path if needed
 
 const NewsSection = () => {
   const [newsItems, setNewsItems] = useState<CmsNewsItem[]>([]);
@@ -17,13 +18,9 @@ const NewsSection = () => {
     const loadNews = async () => {
       try {
         const items = await fetchPublishedNews(4);
-        if (isMounted) {
-          setNewsItems(items);
-        }
+        if (isMounted) setNewsItems(items);
       } catch {
-        if (isMounted) {
-          setNewsItems([]);
-        }
+        if (isMounted) setNewsItems([]);
       }
     };
 
@@ -34,10 +31,13 @@ const NewsSection = () => {
     };
   }, []);
 
+  const isEmpty = newsItems.length === 0;
+
   return (
     <section className="section-padding bg-background">
       <div className="container max-w-7xl mx-auto">
-        <div className="flex items-end justify-between mb-10">
+        {/* HEADER */}
+        <div className="flex items-end justify-between mb-12">
           <div>
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">
               Atualidade
@@ -46,6 +46,7 @@ const NewsSection = () => {
               Últimas Notícias
             </h2>
           </div>
+
           <Link
             href="/noticias"
             className="hidden md:flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
@@ -54,56 +55,75 @@ const NewsSection = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {newsItems.map((item, i) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="group"
-            >
-              <Link
-                href={`/noticias/${item.slug}`}
-                className="block bg-card rounded-xl border overflow-hidden hover:shadow-lg transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-              >
-                {item.mainImage ? (
-                  <div className="relative h-40 bg-muted/40">
-                    <Image
-                      src={item.mainImage}
-                      alt={item.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    />
-                  </div>
-                ) : (
-                  <div className="h-40 bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground text-xs">Sem imagem</span>
-                  </div>
-                )}
-                <div className="p-5">
-                  <time className="text-xs text-muted-foreground">
-                    {new Date(item.date).toLocaleDateString("pt-PT")}
-                  </time>
-                  <h3 className="font-display font-semibold text-foreground mt-2 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{item.excerpt}</p>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+        {/* ✅ EMPTY STATE */}
+        {isEmpty ? (
+          <EmptyState
+            title="Sem notícias recentes"
+            description="Ainda não existem notícias publicadas. Volte em breve para atualizações."
+            primaryAction={{
+              label: "Ver todas as notícias",
+              href: "/noticias",
+            }}
+          />
+        ) : (
+          /* MASONRY */
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-8">
+            {newsItems.map((item, i) => {
+              const image =
+                typeof item.mainImage === "string" && item.mainImage.trim()
+                  ? item.mainImage.trim()
+                  : null;
 
-          {newsItems.length === 0 && (
-            <p className="text-sm text-muted-foreground">Sem noticias publicadas de momento.</p>
-          )}
-        </div>
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  className="mb-8 break-inside-avoid group"
+                >
+                  <Link href={`/noticias/${item.slug}`} className="block space-y-4">
+                    {/* IMAGE */}
+                    {image && (
+                      <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg bg-muted">
+                        <Image
+                          src={image}
+                          alt={item.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      </div>
+                    )}
 
+                    {/* TEXT */}
+                    <div className="space-y-2">
+                      <time className="text-xs text-muted-foreground">
+                        {new Date(item.date).toLocaleDateString("pt-PT")}
+                      </time>
+
+                      <h3 className="font-display text-xl md:text-2xl font-semibold leading-snug underline decoration-primary/40 underline-offset-4 group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h3>
+
+                      {item.excerpt && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {item.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* MOBILE CTA */}
         <Link
           href="/noticias"
-          className="md:hidden flex items-center justify-center gap-1.5 mt-8 text-sm font-medium text-primary"
+          className="md:hidden flex items-center justify-center gap-1.5 mt-10 text-sm font-medium text-primary"
         >
           Ver todas as notícias <ArrowRight className="w-4 h-4" />
         </Link>

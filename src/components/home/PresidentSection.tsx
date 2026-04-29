@@ -19,7 +19,7 @@ const PresidentSection = () => (
           <img
             src={presidenteImg}
             alt="Presidente da Junta de Freguesia"
-            className="rounded-2xl w-full max-w-sm md:max-w-none object-cover shadow-lg"
+            className="rounded-2xl w-full max-w-sm md:max-w-none object-cover shadow-md border border-border/60 bg-white"
             loading="lazy"
             width={720}
             height={900}

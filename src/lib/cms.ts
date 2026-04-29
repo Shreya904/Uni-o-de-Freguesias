@@ -75,6 +75,25 @@ function mapNews(n: any) {
     galleryImages: Array.isArray(n.galleryImages) ? n.galleryImages.map(media).filter(Boolean) : [],
   };
 }
+/* ---------------- EVENT MAPPER ---------------- */
+
+function mapEvent(e: any) {
+  return {
+    id: String(e.id),
+    slug: asText(e.slug),
+    title: asText(e.title),
+    excerpt: asText(e.excerpt),
+    description: typeof e.description === "string" ? e.description : lexicalToText(e.description),
+    date: asText(e.date),
+    time: asText(e.time),
+    location: asText(e.location),
+    category: asText(e.category),
+    isPast: Boolean(e.isPast),
+
+    mainImage: media(e.mainImage),
+    galleryImages: Array.isArray(e.galleryImages) ? e.galleryImages.map(media).filter(Boolean) : [],
+  };
+}
 
 /* ---------------- API ---------------- */
 
@@ -109,4 +128,28 @@ export async function fetchPublishedDocuments(limit = 50) {
   });
 
   return data.docs ?? [];
+}
+/* ---------------- EVENTS API ---------------- */
+
+export async function fetchPublishedEvents(limit = 50) {
+  const data = await cmsFetch<any>("/api/events", {
+    "where[isPublished][equals]": "true",
+    sort: "date", // upcoming first
+    depth: "2",
+    limit,
+  });
+
+  return (data.docs ?? []).map(mapEvent);
+}
+
+export async function fetchEventBySlug(slug: string) {
+  const data = await cmsFetch<any>("/api/events", {
+    "where[isPublished][equals]": "true",
+    "where[slug][equals]": decodeURIComponent(slug),
+    depth: "2",
+    limit: 1,
+  });
+
+  const item = data.docs?.[0];
+  return item ? mapEvent(item) : null;
 }

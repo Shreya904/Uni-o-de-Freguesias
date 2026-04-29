@@ -157,6 +157,28 @@ export const eventItems: EventItem[] = [
     isPast: true,
     mainImage: "/ufgvc logo.png",
   },
+  {
+    id: "7",
+    title: "Cinema ao Ar Livre",
+    description: "Sessão de cinema ao ar livre com exibição de filmes para toda a família.",
+    date: "2026-05-18",
+    time: "21:00 - 23:30",
+    location: "Parque Central",
+    category: "Cultural",
+    isPast: false,
+    mainImage: "/hero-bg.jpg",
+  },
+  {
+    id: "8",
+    title: "Aula Aberta de Yoga no Parque",
+    description: "Sessão gratuita de yoga para todos os níveis, com instrutor certificado.",
+    date: "2026-05-22",
+    time: "08:00 - 09:30",
+    location: "Jardim Municipal",
+    category: "Desporto",
+    isPast: false,
+    mainImage: "/Casa da Comunidade Sustentável.jpg",
+  },
 ];
 
 export const faqItems: FAQItem[] = [
