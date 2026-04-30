@@ -5,9 +5,9 @@ import { Mail, MapPin, Facebook, Calendar } from "lucide-react";
 const Footer = () => (
   <footer className="relative bg-[#1E1E1E] overflow-hidden">
     {/* Vector (smaller + pushed down) */}
-    <div className="absolute bottom-0 right-0 w-56 md:w-72 opacity-50 mix-blend-lighten pointer-events-none translate-y-6">
+    {/* <div className="absolute bottom-0 right-0 w-56 md:w-72 opacity-50 mix-blend-lighten pointer-events-none translate-y-6">
       <Image src="/footer vector.png" alt="" width={300} height={300} className="object-contain" />
-    </div>
+    </div> */}
 
     <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 relative z-10">
       {/* LEFT STRUCTURE */}
