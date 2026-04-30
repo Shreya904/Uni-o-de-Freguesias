@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const heroBg = "/hero-bg.jpg";
+const heroBg = "/hero-bg1.jpg";
 
 const HeroSection = () => (
   <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
