@@ -59,25 +59,35 @@ const Header = () => {
     if (item.href) return pathname === item.href;
     return item.children?.some((c) => pathname.startsWith(c.href)) ?? false;
   };
-
   return (
-    <header className="sticky top-0 z-50">
-      <nav ref={dropdownRef} className="bg-card/95 backdrop-blur-md border-b border-border/70">
-        <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between">
-          {/* LOGO */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/header logo1.png"
-              alt="Logo"
-              width={110}
-              height={110}
-              className="object-contain"
-              priority
-            />
-          </Link>
+    <header className="sticky top-0 z-50 px-4 lg:px-12 py-6">
+      <nav
+        ref={dropdownRef}
+        className="bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)]"
+      >
+        <div className="h-[96px] px-8 flex items-center justify-between">
+          {/* LEFT */}
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/header logo1.png"
+                alt="Logo"
+                width={170}
+                height={70}
+                className="object-contain"
+                priority
+              />
+            </Link>
+
+            <div className="hidden lg:block h-8 w-px bg-gray-300" />
+
+            <button className="hidden lg:block text-[#1C2E56] text-lg font-medium hover:text-[#DE092D] transition">
+              Começar
+            </button>
+          </div>
 
           {/* DESKTOP NAV */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-8">
             {navItems.map((item, index) => {
               const isLast = index === navItems.length - 1;
 
@@ -85,15 +95,16 @@ const Header = () => {
                 <div key={item.label} className="relative">
                   <button
                     onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
-                    className={`flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition ${
+                    className={`flex items-center gap-1 text-[18px] font-medium transition ${
                       isActive(item)
-                        ? "text-[#DE092D] font-bold"
-                        : "text-muted-foreground hover:text-[#DE092D]"
+                        ? "text-[#1C2E56] underline underline-offset-4"
+                        : "text-[#1C2E56] hover:text-[#DE092D]"
                     }`}
                   >
                     {item.label}
+
                     <ChevronDown
-                      className={`w-3.5 h-3.5 transition-transform ${
+                      className={`w-4 h-4 transition-transform ${
                         openDropdown === item.label ? "rotate-180" : ""
                       }`}
                     />
@@ -101,7 +112,7 @@ const Header = () => {
 
                   {openDropdown === item.label && (
                     <div
-                      className={`absolute top-full mt-2 w-72 bg-card rounded-xl border shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200 ${
+                      className={`absolute top-full mt-4 w-80 bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.15)] overflow-hidden ${
                         isLast ? "right-0" : "left-0"
                       }`}
                     >
@@ -109,13 +120,14 @@ const Header = () => {
                         <Link
                           key={child.href}
                           href={child.href}
-                          className={`block px-4 py-2.5 transition text-muted-foreground hover:text-[#DE092D] ${
-                            pathname === child.href ? "text-[#DE092D] font-bold" : ""
+                          className={`block px-5 py-4 hover:bg-gray-50 transition ${
+                            pathname === child.href ? "bg-gray-50" : ""
                           }`}
                         >
-                          <span className="text-sm font-medium text-foreground">{child.label}</span>
+                          <span className="block text-[#1C2E56] font-semibold">{child.label}</span>
+
                           {child.description && (
-                            <span className="block text-xs text-muted-foreground mt-0.5">
+                            <span className="block text-sm text-gray-500 mt-1">
                               {child.description}
                             </span>
                           )}
@@ -128,30 +140,43 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition ${
+                  className={`text-[18px] font-medium transition ${
                     pathname === item.href
-                      ? "text-[#DE092D] font-bold"
-                      : "text-muted-foreground hover:text-[#DE092D]"
+                      ? "text-[#1C2E56] underline underline-offset-4"
+                      : "text-[#1C2E56] hover:text-[#DE092D]"
                   }`}
                 >
                   {item.label}
                 </Link>
               );
             })}
+
+            {/* Divider */}
+            <div className="h-8 w-px bg-gray-300" />
+
+            {/* CTA */}
+            <Link
+              href="/balcao-digital"
+              className="h-[50px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-extrabold text-[18px] flex items-center justify-center hover:bg-[#DE092D]/5 transition"
+            >
+              Balcão Digital
+            </Link>
+
+            {/* Help */}
+            <button className="text-[#1C2E56] text-[18px] font-medium hover:text-[#DE092D] transition">
+              Ajuda
+            </button>
           </div>
 
           {/* MOBILE BUTTON */}
-          <button
-            className="lg:hidden p-2 rounded-md hover:bg-muted"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          <button className="lg:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* MOBILE MENU */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-card px-4 py-4 space-y-1">
+          <div className="lg:hidden border-t bg-white px-4 py-4 space-y-2">
             {navItems.map((item) =>
               item.children ? (
                 <div key={item.label}>
@@ -159,13 +184,10 @@ const Header = () => {
                     onClick={() =>
                       setMobileExpanded(mobileExpanded === item.label ? null : item.label)
                     }
-                    className={`flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium rounded-md transition ${
-                      isActive(item)
-                        ? "text-[#DE092D] font-bold"
-                        : "text-muted-foreground hover:text-[#DE092D] hover:bg-muted"
-                    }`}
+                    className="flex items-center justify-between w-full py-3 text-[#1C2E56] font-medium"
                   >
                     {item.label}
+
                     <ChevronDown
                       className={`w-4 h-4 transition-transform ${
                         mobileExpanded === item.label ? "rotate-180" : ""
@@ -174,15 +196,12 @@ const Header = () => {
                   </button>
 
                   {mobileExpanded === item.label && (
-                    <div className="ml-4 mt-1 border-l border-muted pl-3">
+                    <div className="ml-4 border-l pl-4">
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          onClick={() => setMobileOpen(false)}
-                          className={`block px-3 py-2 text-sm transition text-muted-foreground hover:text-[#DE092D] ${
-                            pathname === child.href ? "text-[#DE092D] font-bold" : ""
-                          }`}
+                          className="block py-2 text-[#1C2E56]"
                         >
                           {child.label}
                         </Link>
@@ -194,17 +213,19 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  onClick={() => setMobileOpen(false)}
-                  className={`block px-3 py-2.5 text-sm font-medium transition ${
-                    pathname === item.href
-                      ? "text-[#DE092D] font-bold"
-                      : "text-muted-foreground hover:text-[#DE092D]"
-                  }`}
+                  className="block py-3 text-[#1C2E56] font-medium"
                 >
                   {item.label}
                 </Link>
               ),
             )}
+
+            <Link
+              href="/balcao-digital"
+              className="mt-3 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold"
+            >
+              Balcão Digital
+            </Link>
           </div>
         )}
       </nav>
