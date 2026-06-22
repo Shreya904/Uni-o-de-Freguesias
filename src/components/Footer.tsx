@@ -4,11 +4,6 @@ import { Mail, MapPin, Facebook, Calendar } from "lucide-react";
 
 const Footer = () => (
   <footer className="relative bg-[#1E1E1E] overflow-hidden">
-    {/* Vector (smaller + pushed down) */}
-    {/* <div className="absolute bottom-0 right-0 w-56 md:w-72 opacity-50 mix-blend-lighten pointer-events-none translate-y-6">
-      <Image src="/footer vector.png" alt="" width={300} height={300} className="object-contain" />
-    </div> */}
-
     <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 relative z-10">
       {/* LEFT STRUCTURE */}
       <div className="max-w-2xl">
@@ -30,7 +25,6 @@ const Footer = () => (
             <h4 className="text-white font-semibold text-lg mb-5">Informação Útil</h4>
 
             <ul className="space-y-4 text-sm text-white/70">
-              {/* TIME */}
               <li className="flex gap-3 items-start">
                 <Calendar className="w-4 h-4 mt-1 text-white/60" />
                 <div className="leading-6">
@@ -41,7 +35,6 @@ const Footer = () => (
                 </div>
               </li>
 
-              {/* ADDRESS */}
               <li className="flex gap-3 items-start">
                 <MapPin className="w-4 h-4 mt-1 text-white/60" />
                 <div>
@@ -51,13 +44,11 @@ const Footer = () => (
                 </div>
               </li>
 
-              {/* EMAIL */}
               <li className="flex gap-3 items-start">
                 <Mail className="w-4 h-4 mt-1 text-white/60" />
                 <div>secretaria@ufgvc.pt</div>
               </li>
 
-              {/* FACEBOOK (replaces phone) */}
               <li className="flex gap-3 items-start">
                 <Facebook className="w-4 h-4 mt-1 text-white/60" />
                 <div>@ufgloriaveracruz</div>
@@ -68,7 +59,7 @@ const Footer = () => (
           {/* DIVIDER */}
           <div className="w-px bg-white/10"></div>
 
-          {/* NAV (UPDATED FROM HEADER navItems) */}
+          {/* NAV */}
           <div className="flex-1">
             <h4 className="text-white font-semibold text-lg mb-5">Sobre este site</h4>
 
@@ -78,28 +69,54 @@ const Footer = () => (
                   Início
                 </Link>
               </li>
-
               <li>
                 <Link href="/noticias" className="hover:text-white transition">
                   Notícias
                 </Link>
               </li>
-
               <li>
                 <Link href="/eventos" className="hover:text-white transition">
                   Agenda
                 </Link>
               </li>
-
+              <li>
+                <Link href="/freguesia" className="hover:text-white transition">
+                  Freguesia
+                </Link>
+              </li>
+              <li>
+                <Link href="/institucional" className="hover:text-white transition">
+                  Institucional
+                </Link>
+              </li>
+              <li>
+                <Link href="/servicos" className="hover:text-white transition">
+                  Serviços
+                </Link>
+              </li>
+              <li>
+                <Link href="/participacao" className="hover:text-white transition">
+                  Participação
+                </Link>
+              </li>
+              <li>
+                <Link href="/agendar" className="hover:text-white transition">
+                  Agendar Atendimento
+                </Link>
+              </li>
               <li>
                 <Link href="/contactos" className="hover:text-white transition">
                   Formulário de Contacto
                 </Link>
               </li>
-
               <li>
                 <Link href="/contactos-uteis" className="hover:text-white transition">
                   Contactos Úteis
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="hover:text-white transition">
+                  FAQ
                 </Link>
               </li>
             </ul>

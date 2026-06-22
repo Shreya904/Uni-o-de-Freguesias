@@ -9,6 +9,13 @@ const ALLOWED_EXACT = new Set([
   "/faq",
   "/institucional/documentacao",
   "/not-found",
+  "/eventos",
+  "/agendar",
+  "/mapa",
+  "/freguesia",
+  "/institucional",
+  "/servicos",
+  "/participacao",
 ]);
 
 const ALLOWED_PREFIX = ["/noticias/"];

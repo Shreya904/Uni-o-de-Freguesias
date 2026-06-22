@@ -8,7 +8,7 @@ import PresidentSection from "@/components/home/PresidentSection";
 // import CalendarSection from "@/components/home/CalendarSection";
 import NewsSection from "@/components/home/NewsSection";
 import DocumentsSection from "@/components/home/DocumentsSection";
-// import FAQSection from "@/components/home/FAQSection";
+import FAQSection from "@/components/home/FAQSection";
 // import MapSection from "@/components/home/MapSection";
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
         <NewsSection />
         <DocumentsSection />
         <EventsSection />
-        {/* <FAQSection /> */}
+        <FAQSection />
         {/* <MapSection /> */}
       </main>
       <Footer />
