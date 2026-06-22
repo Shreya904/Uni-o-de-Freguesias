@@ -49,10 +49,7 @@ const Footer = () => (
               </Link>
             </li>
             <li>
-              <Link
-                href="/freguesia/galeria"
-                className="hover:text-primary-foreground transition-colors"
-              >
+              <Link href="/freguesia/galeria" className="hover:text-primary-foreground transition-colors">
                 Galeria
               </Link>
             </li>
@@ -63,26 +60,17 @@ const Footer = () => (
           <h4 className="font-display font-semibold mb-4">Institucional</h4>
           <ul className="space-y-2 text-sm text-primary-foreground/70">
             <li>
-              <Link
-                href="/institucional/presidente"
-                className="hover:text-primary-foreground transition-colors"
-              >
+              <Link href="/institucional/presidente" className="hover:text-primary-foreground transition-colors">
                 Presidente
               </Link>
             </li>
             <li>
-              <Link
-                href="/institucional/orgaos"
-                className="hover:text-primary-foreground transition-colors"
-              >
+              <Link href="/institucional/orgaos" className="hover:text-primary-foreground transition-colors">
                 Órgãos
               </Link>
             </li>
             <li>
-              <Link
-                href="/institucional/documentacao"
-                className="hover:text-primary-foreground transition-colors"
-              >
+              <Link href="/institucional/documentacao" className="hover:text-primary-foreground transition-colors">
                 Documentação
               </Link>
             </li>
@@ -97,9 +85,9 @@ const Footer = () => (
               </Link>
             </li>
             <li>
-              <Link href="/mapa" className="hover:text-primary-foreground transition-colors">
+              <span className="text-primary-foreground/30 cursor-not-allowed">
                 Reportar Ocorrência
-              </Link>
+              </span>
             </li>
             <li>
               <Link href="/faq" className="hover:text-primary-foreground transition-colors">
@@ -131,7 +119,7 @@ const Footer = () => (
             </li>
           </ul>
           <div className="flex gap-3 mt-4 pl-9">
-            <a
+            
               href="https://www.facebook.com/ufgloriaveracruz"
               target="_blank"
               rel="noopener noreferrer"
