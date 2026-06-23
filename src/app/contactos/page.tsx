@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, Paperclip, X, CheckCircle, ExternalLink } from "lucide-react";
+import { CheckCircle, Calendar, MapPin, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 
 const categories = [
@@ -26,10 +26,16 @@ const categories = [
 ];
 
 const MAX_CHARS = 200;
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // Ajustado para 2MB conforme as novas diretrizes de texto
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", category: "", message: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    category: "",
+    message: "",
+  });
   const [file, setFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,7 +49,7 @@ export default function ContactPage() {
     const f = e.target.files?.[0];
     if (f && f.size > MAX_FILE_SIZE) {
       toast.error(
-        "Ficheiro demasiado grande. Limite: 3 MB. Considere fornecer um URL em alternativa.",
+        "Ficheiro demasiado grande. Limite: 2 MB. Ficheiros maiores do que este não serão aceites pelo sistema.",
       );
       return;
     }
@@ -53,7 +59,13 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.category || !formData.message) {
+    if (
+      !formData.name ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.category ||
+      !formData.message
+    ) {
       toast.error("Por favor preencha todos os campos obrigatórios.");
       return;
     }
@@ -87,11 +99,11 @@ export default function ContactPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.name,
+          name: `${formData.name} ${formData.lastName}`.trim(),
           email: formData.email,
           category: formData.category,
           message: formData.message,
-          attachment: mediaId, // 👈 IMPORTANT CHANGE
+          attachment: mediaId,
           sourcePage: "/contactos",
           locale: "pt-PT",
           consent: true,
@@ -104,6 +116,7 @@ export default function ContactPage() {
         throw new Error("Server error");
       }
 
+      setSubmissionRef(data.doc.id);
       setSubmitted(true);
       toast.success(`Questão submetida com sucesso! Ref: ${data.doc.id}`);
     } catch (error) {
@@ -113,232 +126,400 @@ export default function ContactPage() {
     }
   };
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen">
-        <Header />
-        <main className="section-padding">
-          <div className="container max-w-lg mx-auto text-center">
-            <CheckCircle className="w-16 h-16 text-success mx-auto mb-4" />
-            <h1 className="font-display text-3xl font-bold text-foreground mb-3">
-              Questão Submetida
-            </h1>
-            <p className="text-muted-foreground mb-6">
-              Obrigado pelo seu contacto. Responderemos assim que possível.
-            </p>
-            {/* Submission reference hidden per request */}
-            <Button
-              onClick={() => {
-                setSubmitted(false);
-                setSubmissionRef("");
-                setFormData({ name: "", email: "", category: "", message: "" });
-                setFile(null);
-              }}
-            >
-              Enviar Nova Questão
-            </Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen">
-      <Header />
+    <div className="min-h-screen bg-white font-sans">
       <main>
-        <div className="mt-10 mb-4 container max-w-6xl mx-auto px-4">
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
-            Contacte-nos
-          </h1>
-          <div className="h-[2px] w-20 bg-primary mt-3" />
-        </div>
-        <section className="pt-8 pb-16 bg-section-alt">
-          <div className="container max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-12 rounded-2xl overflow-hidden border bg-card shadow-sm">
-              <aside className="relative lg:col-span-6 min-h-[360px] lg:min-h-full">
-                <img
-                  src="/hero-bg.jpg"
-                  alt="Contacto institucional"
-                  className="absolute inset-0 w-full h-full object-cover grayscale"
-                  width={1200}
-                  height={1600}
-                />
-                {/* bluish cinematic overlays */}
-                <div className="absolute inset-0 bg-blue-950/40" />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 via-blue-950/40 to-transparent" />
-                <div className="relative z-10 h-full p-6 md:p-8 text-primary-foreground flex flex-col justify-between gap-5">
-                  <div className="space-y-5">
-                    {/* <h1 className="font-display text-3xl md:text-4xl font-bold">Contacte-nos</h1> */}
-                    <p className="text-primary-foreground/85 text-sm md:text-base leading-relaxed">
-                      Envie a sua questão ou sugestão. Responderemos brevemente.
-                    </p>
+        <Header />
+        {/* HERO */}
+        <section className="relative h-[400px] overflow-hidden">
+          <img
+            src="/contact-hero.jpg"
+            alt="Contacto"
+            className="absolute grayscale inset-0 h-full w-full object-cover"
+          />
 
-                    <div className="rounded-xl border border-primary-foreground/20 bg-primary-foreground/10 p-4 space-y-3 text-sm md:text-[15px] leading-relaxed">
-                      <h2 className="font-display text-lg md:text-xl font-semibold">
-                        Horários de Atendimento (Segunda a Sexta)
-                      </h2>
-                      <p>Serviço Secretaria (presencial ou email): 09h00-12h30 | 14h00-17h30</p>
-                      <p>Email Secretaria: secretaria.fgloriavcruz@gmail.com</p>
+          <div className="absolute inset-0 bg-[#162545]/70" />
+
+          <div className="relative z-10 flex h-full items-end px-8 lg:px-16 pb-10 max-w-[1600px] mx-auto">
+            <div>
+              <h1 className="text-white text-[56px] leading-[52px] font-extrabold tracking-[1.12px]">
+                Contacto
+              </h1>
+              <p className="text-white text-[28px] font-extrabold tracking-[0.56px] mt-2">
+                Fale connosco
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* CONTENT */}
+        <section className="max-w-[1600px] mx-auto border-x border-[#E5E5E5]">
+          <div className="grid lg:grid-cols-[450px_1fr] xl:grid-cols-[500px_1fr]">
+            {/* SIDEBAR */}
+            <aside className="bg-[#F8F8F8] px-8 py-12 lg:px-12 border-r border-[#E5E5E5]">
+              {/* SEDE */}
+              <div className="mb-14">
+                <h2 className="text-[#1C2E56] text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-1">
+                  Sede
+                </h2>
+                <p className="text-[#1C2E56] font-bold text-[16px] mb-6">
+                  Mudança Provisória de Instalações
+                </p>
+
+                <div className="space-y-6 text-[#1C2E56] text-[16px]">
+                  <div className="flex gap-3 items-start">
+                    <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Horários de Atendimento</h3>
+                      <p>Segunda a Sexta</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="rounded-xl border border-primary-foreground/20 bg-primary-foreground/10 p-4 space-y-3 text-sm md:text-[15px] leading-relaxed">
-                      <h3 className="font-display text-lg font-semibold">Redes Sociais</h3>
-                      <p>Facebook: @ufgloriaveracruz</p>
-                      <a
-                        href="https://www.facebook.com/ufgloriaveracruz"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-lg border border-white bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-white/90 transition-colors"
-                      >
-                        Abrir Facebook <ExternalLink className="w-4 h-4" />
-                      </a>
+                  <div className="flex gap-3 items-start">
+                    <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Serviço Secretaria</h3>
+                      <p>Presencial ou por email</p>
+                      <p className="font-semibold">09h00 - 12h30 | 14h00 - 17h30</p>
                     </div>
+                  </div>
 
-                    <div className="rounded-xl border border-primary-foreground/20 bg-primary-foreground/10 p-4 space-y-3 text-sm md:text-[15px] leading-relaxed">
-                      <h3 className="font-display text-lg font-semibold">Formulários Online</h3>
-                      <p>Avaliação da qualidade / Sugestões / Reclamações / Elogios</p>
-                      <a
-                        href="https://docs.google.com/forms/d/e/1FAIpQLSdY1NePDz-YMu7hInSK1v8eOjrQ9PSilF63UE_SSTVeZhiNIw/viewform"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-lg border border-white bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-white/90 transition-colors"
-                      >
-                        Abrir Formulário <ExternalLink className="w-4 h-4" />
-                      </a>
+                  <div className="flex gap-3 items-start">
+                    <MapPin className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Morada</h3>
+                      <p>
+                        Avenida Dr. Lourenço Peixinho, Edifício 15 - 1º B, 3800 - 164 Aveiro /
+                        (Apartado 84 ECAveiro)
+                      </p>
                     </div>
                   </div>
                 </div>
-              </aside>
 
-              <div className="lg:col-span-6 p-6 md:p-8 lg:p-10">
-                <form
-                  id="formulario-contacto"
-                  onSubmit={handleSubmit}
-                  className="space-y-5 scroll-mt-24"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-[hsl(var(--primary))]/90">
-                        Nome *
-                      </Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="O seu nome"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-[hsl(var(--primary))]/90">
-                        Email *
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="email@exemplo.pt"
-                        required
-                      />
+                <div className="mt-6 overflow-hidden border border-[#E5E5E5]">
+                  <iframe
+                    title="Mapa Sede"
+                    src="https://maps.google.com/maps?q=Avenida%20Dr.%20Louren%C3%A7o%20Peixinho,%20Edif%C3%ADcio%2015,%20Aveiro&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-[220px] border-0"
+                    allowFullScreen={false}
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="mt-6 space-y-4">
+                  <div className="flex gap-2 items-center text-[#1C2E56]">
+                    <Mail className="w-5 h-5 shrink-0" />
+                    <p className="font-semibold">geral.fgloriavcruz@gmail.com</p>
+                  </div>
+                  <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] rounded-none px-6 py-3 font-extrabold text-[#1C2E56] hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
+                    <Phone className="w-5 h-5" />
+                    <span>234 427 832</span>
+                  </button>
+                  <p className="text-[13px] text-[#1C2E56] mt-2">
+                    (chamada para a rede fixa nacional)
+                  </p>
+                </div>
+              </div>
+
+              {/* CASA DA COMUNIDADE SUSTENTÁVEL */}
+              <div>
+                <h2 className="text-[#1C2E56] text-[32px] font-extrabold leading-tight tracking-[0.64px]">
+                  Casa da Comunidade
+                </h2>
+                <h2 className="text-[#1C2E56] text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-6">
+                  Sustentável
+                </h2>
+
+                <div className="space-y-6 text-[#1C2E56] text-[16px]">
+                  <div className="flex gap-3 items-start">
+                    <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Horários de Atendimento</h3>
+                      <p>Segunda a Sexta</p>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-[hsl(var(--primary))]/90">Categoria *</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(v) => setFormData({ ...formData, category: v })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione uma categoria" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((c) => (
-                          <SelectItem key={c.value} value={c.value}>
-                            {c.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <div className="flex gap-3 items-start">
+                    <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Serviço Secretaria</h3>
+                      <p>Presencial ou por email</p>
+                      <p className="font-semibold">09h00 - 12h30 | 14h00 - 17h30</p>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="message" className="text-[hsl(var(--primary))]/90">
-                        Mensagem *
-                      </Label>
-                      <span
-                        className={`text-xs ${formData.message.length > MAX_CHARS ? "text-destructive" : "text-muted-foreground"}`}
-                      >
-                        {formData.message.length}/{MAX_CHARS}
-                      </span>
+                  <div className="flex gap-3 items-start">
+                    <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">
+                        Serviço Contabilidade / Tesouraria
+                      </h3>
+                      <p>por marcação telefónica ou por email</p>
                     </div>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => {
-                        if (e.target.value.length <= MAX_CHARS) {
-                          setFormData({ ...formData, message: e.target.value });
-                        }
-                      }}
-                      placeholder="Descreva a sua questão..."
-                      rows={4}
-                      required
-                    />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-[hsl(var(--primary))]/90">
-                      Anexo (opcional, máx. 3 MB)
-                    </Label>
-                    <div className="flex items-center gap-3">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fileRef.current?.click()}
-                      >
-                        <Paperclip className="w-4 h-4 mr-1.5" /> Anexar ficheiro
-                      </Button>
-                      {file && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span className="truncate max-w-[200px]">{file.name}</span>
-                          <button type="button" onClick={() => setFile(null)}>
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      )}
+                  <div className="flex gap-3 items-start">
+                    <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Serviço Cemitérios</h3>
+                      <p>Presencial ou por email</p>
+                      <p className="font-semibold">09h00 - 12h30 | 14h00 - 17h30</p>
                     </div>
-                    <input
-                      ref={fileRef}
-                      type="file"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Se o ficheiro exceder 3 MB, considere fornecer um URL de acesso na mensagem.
+                  </div>
+
+                  <div className="flex gap-3 items-start">
+                    <MapPin className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h3 className="font-extrabold tracking-wide mb-1">Morada</h3>
+                      <p>Rua das Pombas Nº9 /11, 3810 - 150 Aveiro / (Apartado 84 ECAveiro)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 overflow-hidden border border-[#E5E5E5]">
+                  <iframe
+                    title="Mapa Casa da Comunidade Sustentável"
+                    src="https://maps.google.com/maps?q=Rua%20das%20Pombas%209%2011,%20Aveiro&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-[220px] border-0"
+                    allowFullScreen={false}
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="mt-6 space-y-4">
+                  <div className="flex gap-2 items-center text-[#1C2E56]">
+                    <Mail className="w-5 h-5 shrink-0" />
+                    <p className="font-semibold">servicos.fgloriavcruz@gmail.com</p>
+                  </div>
+                  <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] rounded-none px-6 py-3 font-extrabold text-[#1C2E56] hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
+                    <Phone className="w-5 h-5" />
+                    <span>234 427 065</span>
+                  </button>
+                  <p className="text-[13px] text-[#1C2E56] mt-2">
+                    (chamada para a rede fixa nacional)
+                  </p>
+                </div>
+              </div>
+            </aside>
+
+            {/* MAIN FORM AREA */}
+            <div className="px-8 py-12 lg:px-16 lg:py-16 bg-white">
+              <div className="max-w-[700px]">
+                {submitted ? (
+                  <div className="bg-[#F8F8F8] border-2 border-[#1C2E56] p-10 text-center">
+                    <CheckCircle className="w-16 h-16 text-[#B4142F] mx-auto mb-6" />
+                    <h2 className="text-[#1C2E56] text-[36px] font-extrabold mb-4">
+                      Mensagem Enviada!
+                    </h2>
+                    <p className="text-[#1C2E56] text-[18px] leading-relaxed mb-8">
+                      Recebemos o seu contacto e responderemos com a maior brevidade possível.
                     </p>
+                    <Button
+                      onClick={() => {
+                        setSubmitted(false);
+                        setFormData({
+                          name: "",
+                          lastName: "",
+                          email: "",
+                          category: "",
+                          message: "",
+                        });
+                        setFile(null);
+                      }}
+                      className="h-[50px] px-8 bg-[#1C2E56] hover:bg-[#162545] rounded-none text-white font-extrabold text-[16px]"
+                    >
+                      Enviar Nova Mensagem
+                    </Button>
                   </div>
+                ) : (
+                  <>
+                    <h2 className="text-[#1C2E56] text-[48px] leading-tight font-extrabold tracking-[0.96px] mb-6">
+                      Estamos aqui para ajudar
+                    </h2>
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-foreground text-white hover:bg-foreground/90"
-                    size="lg"
-                    disabled={formData.message.length > MAX_CHARS || isSubmitting}
-                  >
-                    <Send className="w-4 h-4 mr-2" /> Enviar Questão
-                  </Button>
-                </form>
+                    <p className="text-[#1C2E56] text-[22px] leading-relaxed mb-12">
+                      Procuramos responder a toda a comunicação escrita o mais rapidamente possível
+                      e no prazo máximo de 20 dias úteis. Saiba mais sobre como gerimos a sua
+                      correspondência.
+                    </p>
+
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                      {/* Name & Surname Group */}
+                      <div className="grid md:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <Label
+                            htmlFor="name"
+                            className="font-extrabold text-[18px] tracking-[0.36px] text-[#1C2E56]"
+                          >
+                            Nome (Necessário)
+                          </Label>
+                          <Input
+                            id="name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="h-[50px] rounded-none border-2 border-[#1C2E56] bg-white text-[#1C2E56] text-[16px] focus-visible:ring-0 focus-visible:ring-offset-0"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <Label
+                            htmlFor="lastName"
+                            className="font-extrabold text-[18px] tracking-[0.36px] text-[#1C2E56]"
+                          >
+                            Apelido (Necessário)
+                          </Label>
+                          <Input
+                            id="lastName"
+                            value={formData.lastName}
+                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                            className="h-[50px] rounded-none border-2 border-[#1C2E56] bg-white text-[#1C2E56] text-[16px] focus-visible:ring-0 focus-visible:ring-offset-0"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Category */}
+                      <div className="space-y-3">
+                        <Label className="font-extrabold text-[18px] tracking-[0.36px] text-[#1C2E56]">
+                          Quem é? (Necessário)
+                        </Label>
+                        <Select
+                          value={formData.category}
+                          onValueChange={(v) => setFormData({ ...formData, category: v })}
+                          required
+                        >
+                          <SelectTrigger className="h-[50px] rounded-none border-2 border-[#1C2E56] text-[#1C2E56] text-[16px] focus:ring-0 focus:ring-offset-0">
+                            <SelectValue placeholder=" — Selecione" />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-none border-2 border-[#1C2E56]">
+                            {categories.map((c) => (
+                              <SelectItem
+                                key={c.value}
+                                value={c.value}
+                                className="text-[16px] focus:bg-[#F8F8F8] focus:text-[#1C2E56]"
+                              >
+                                {c.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Email */}
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="email"
+                          className="font-extrabold text-[18px] tracking-[0.36px] text-[#1C2E56]"
+                        >
+                          Email (Necessário)
+                        </Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="h-[50px] rounded-none border-2 border-[#1C2E56] bg-white text-[#1C2E56] text-[16px] focus-visible:ring-0 focus-visible:ring-offset-0"
+                          required
+                        />
+                      </div>
+
+                      {/* Message */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label
+                            htmlFor="message"
+                            className="font-extrabold text-[18px] tracking-[0.36px] text-[#1C2E56]"
+                          >
+                            A sua mensagem
+                          </Label>
+                          <span
+                            className={`text-[14px] font-bold ${formData.message.length > MAX_CHARS ? "text-[#B4142F]" : "text-[#1C2E56]/60"}`}
+                          >
+                            {formData.message.length}/{MAX_CHARS}
+                          </span>
+                        </div>
+                        <p className="text-sm text-[#1C2E56]/80 -mt-1">
+                          Por favor, explique o seu pedido. Se tiver mais detalhes a acrescentar,
+                          carregue-os como um documento Word na secção de anexos.
+                        </p>
+                        <Textarea
+                          id="message"
+                          value={formData.message}
+                          onChange={(e) => {
+                            if (e.target.value.length <= MAX_CHARS) {
+                              setFormData({ ...formData, message: e.target.value });
+                            }
+                          }}
+                          className="min-h-[126px] rounded-none border-2 border-[#1C2E56] bg-white text-[#1C2E56] text-[16px] resize-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                          required
+                        />
+                      </div>
+
+                      {/* Upload */}
+                      <div className="space-y-3">
+                        <Label className="font-extrabold text-[18px] tracking-[0.36px] text-[#1C2E56]">
+                          Carregue documentos
+                        </Label>
+                        <p className="text-sm text-[#1C2E56]/80 -mt-1">
+                          Limite de 2 MB. Ficheiros maiores do que este não serão aceites pelo
+                          sistema.
+                        </p>
+                        <p className="text-[12px] text-[#1C2E56]/60 -mt-1">
+                          Tipos permitidos: gif, jpg, jpeg, png, txt, pdf, doc, docx, ppt, pptx,
+                          xls, xlsx.
+                        </p>
+
+                        <div className="h-[50px] border-2 border-[#1C2E56] flex items-center px-[10px] gap-[10px] bg-white">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="rounded-none border border-[#D0CCCC] h-[34px] px-4 font-bold text-[#1C2E56] hover:bg-[#F8F8F8]"
+                            onClick={() => fileRef.current?.click()}
+                          >
+                            Escolher ficheiro
+                          </Button>
+                          <span className="text-[15px] text-[#1C2E56] truncate max-w-[250px]">
+                            {file ? file.name : "Nenhum ficheiro selecionado"}
+                          </span>
+                        </div>
+                        <input
+                          ref={fileRef}
+                          type="file"
+                          accept=".gif,.jpg,.jpeg,.png,.txt,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+
+                      {/* Consent & Submit */}
+                      <div className="space-y-6 pt-4">
+                        <p className="text-[14px] leading-relaxed text-[#1C2E56]/80 font-medium">
+                          Ao submeter este formulário, consente no tratamento dos seus dados
+                          pessoais para efeitos de análise e resposta ao seu pedido de contacto
+                          dirigido à Junta de Freguesia. Os seus dados serão tratados em
+                          conformidade com a nossa política de privacidade.
+                        </p>
+
+                        <div className="flex justify-end">
+                          <Button
+                            type="submit"
+                            disabled={formData.message.length > MAX_CHARS || isSubmitting}
+                            className="h-[60px] px-12 bg-[#B4142F] hover:bg-[#9B1128] rounded-none text-white font-extrabold text-[18px] tracking-[0.36px] transition-colors"
+                          >
+                            {isSubmitting ? "A submeter..." : "Continuar"}
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );

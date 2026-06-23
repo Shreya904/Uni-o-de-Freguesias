@@ -6,30 +6,158 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
 
+interface MegaMenuSection {
+  heading: string;
+  links: {
+    label: string;
+    href: string;
+  }[];
+}
+
 interface NavItem {
   label: string;
   href?: string;
-  children?: { label: string; href: string; description?: string }[];
+  megaMenu?: MegaMenuSection[];
 }
 
 const navItems: NavItem[] = [
-  { label: "Início", href: "/" },
-  { label: "Notícias", href: "/noticias" },
-  { label: "Agenda", href: "/eventos" },
   {
-    label: "Contactos",
-    children: [
+    label: "Começar",
+    href: "/",
+  },
+
+  {
+    label: "Organismo",
+    megaMenu: [
       {
-        label: "Formulário de Contacto",
-        href: "/contactos",
-        description: "Envie questões e pedidos aos serviços",
+        heading: "Conhecer a Junta",
+        links: [
+          { label: "Presidência", href: "/organismo/presidencia" },
+          { label: "Executivo", href: "/organismo/executivo" },
+          { label: "Assembleia", href: "/organismo/assembleia" },
+        ],
       },
+
       {
-        label: "Contactos Úteis",
-        href: "/contactos-uteis",
-        description: "Números e emails de departamentos relevantes",
+        heading: "Atividades da Junta",
+        links: [
+          {
+            label: "Reuniões de Executivo",
+            href: "/organismo/reunioes-executivo",
+          },
+          {
+            label: "Reuniões de Assembleia",
+            href: "/organismo/reunioes-assembleia",
+          },
+          {
+            label: "Editais",
+            href: "/organismo/editais",
+          },
+        ],
+      },
+
+      {
+        heading: "Transparência da Junta",
+        links: [
+          {
+            label: "Financeiro",
+            href: "/organismo/financeiro",
+          },
+          {
+            label: "Documentação",
+            href: "/organismo/documentacao",
+          },
+          {
+            label: "Normas e Planeamento",
+            href: "/organismo/normas-planeamento",
+          },
+        ],
+      },
+
+      {
+        heading: "Links rápidos",
+        links: [
+          {
+            label: "Inscrição em passeios",
+            href: "/balcao-digital/inscricao-passeios",
+          },
+          {
+            label: "Pedir licença de obra",
+            href: "/balcao-digital/licenca-obra",
+          },
+          {
+            label: "Marcar atendimento",
+            href: "/balcao-digital/marcar-atendimento",
+          },
+        ],
       },
     ],
+  },
+
+  {
+    label: "Freguesia",
+    megaMenu: [
+      {
+        heading: "Conhecer a Freguesia",
+        links: [
+          {
+            label: "História",
+            href: "/freguesia/historia",
+          },
+          {
+            label: "Heráldica",
+            href: "/freguesia/heraldica",
+          },
+          {
+            label: "A visitar",
+            href: "/freguesia/a-visitar",
+          },
+        ],
+      },
+
+      {
+        heading: "Viver a Freguesia",
+        links: [
+          {
+            label: "Contactos úteis",
+            href: "/contactos-uteis",
+          },
+        ],
+      },
+
+      {
+        heading: "Links rápidos",
+        links: [
+          {
+            label: "Inscrição em passeios",
+            href: "/balcao-digital/inscricao-passeios",
+          },
+          {
+            label: "Pedir licença de obra",
+            href: "/balcao-digital/licenca-obra",
+          },
+          {
+            label: "Marcar atendimento",
+            href: "/balcao-digital/marcar-atendimento",
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    label: "Notícias",
+    href: "/noticias",
+  },
+
+  {
+    label: "Agenda",
+    href: "/eventos",
+  },
+
+  {
+    label: "Contactos",
+    href: "/contactos",
   },
 ];
 
@@ -38,6 +166,7 @@ const Header = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -55,15 +184,39 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = (label: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpenDropdown(label);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 150);
+  };
+
   const isActive = (item: NavItem): boolean => {
     if (item.href) return pathname === item.href;
-    return item.children?.some((c) => pathname.startsWith(c.href)) ?? false;
+
+    return (
+      item.megaMenu?.some((section) =>
+        section.links.some((link) => pathname.startsWith(link.href)),
+      ) ?? false
+    );
   };
+
   return (
-    <header className="sticky top-0 z-50 px-4 lg:px-12 py-6">
+    <header className="absolute top-0 left-0 w-full z-50 bg-transparent px-4 lg:px-12 py-6">
       <nav
         ref={dropdownRef}
-        className="bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)]"
+        className="relative bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto"
       >
         <div className="h-[96px] px-8 flex items-center justify-between">
           {/* LEFT */}
@@ -80,25 +233,23 @@ const Header = () => {
             </Link>
 
             <div className="hidden lg:block h-8 w-px bg-gray-300" />
-
-            <button className="hidden lg:block text-[#1C2E56] text-lg font-medium hover:text-[#DE092D] transition">
-              Começar
-            </button>
           </div>
 
           {/* DESKTOP NAV */}
-          <div className="hidden lg:flex items-center gap-8">
-            {navItems.map((item, index) => {
-              const isLast = index === navItems.length - 1;
-
-              return item.children ? (
-                <div key={item.label} className="relative">
+          <div className="hidden lg:flex items-center gap-8 h-full">
+            {navItems.map((item) =>
+              item.megaMenu ? (
+                <div
+                  key={item.label}
+                  className="relative flex items-center h-full"
+                  onMouseEnter={() => handleMouseEnter(item.label)}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <button
-                    onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
-                    className={`flex items-center gap-1 text-[18px] font-medium transition ${
-                      isActive(item)
-                        ? "text-[#1C2E56] underline underline-offset-4"
-                        : "text-[#1C2E56] hover:text-[#DE092D]"
+                    className={`flex items-center gap-1 text-[18px] text-[#1C2E56] transition ${
+                      isActive(item) || openDropdown === item.label
+                        ? "font-bold"
+                        : "font-medium hover:underline hover:underline-offset-4"
                     }`}
                   >
                     {item.label}
@@ -111,28 +262,38 @@ const Header = () => {
                   </button>
 
                   {openDropdown === item.label && (
-                    <div
-                      className={`absolute top-full mt-4 w-80 bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.15)] overflow-hidden ${
-                        isLast ? "right-0" : "left-0"
-                      }`}
-                    >
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className={`block px-5 py-4 hover:bg-gray-50 transition ${
-                            pathname === child.href ? "bg-gray-50" : ""
-                          }`}
-                        >
-                          <span className="block text-[#1C2E56] font-semibold">{child.label}</span>
+                    <div className="absolute left-1/2 -translate-x-1/2 top-[calc(50%+16px)] pt-4 w-[1100px] max-w-[calc(100vw-96px)] z-50">
+                      <div className="bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+                        <div className="flex p-8 gap-10">
+                          {item.megaMenu.map((section) => (
+                            <div key={section.heading} className="flex-1 min-w-[220px]">
+                              <h3 className="font-extrabold text-[#1C2E56] text-lg mb-4">
+                                {section.heading}
+                              </h3>
 
-                          {child.description && (
-                            <span className="block text-sm text-gray-500 mt-1">
-                              {child.description}
-                            </span>
-                          )}
-                        </Link>
-                      ))}
+                              <div className="flex flex-col gap-3">
+                                {section.links.map((link) => (
+                                  <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`group flex items-center gap-2 transition ${
+                                      pathname === link.href
+                                        ? "text-[#DE092D] font-semibold"
+                                        : "text-[#1C2E56] hover:text-[#DE092D]"
+                                    }`}
+                                  >
+                                    <span className="font-bold transition-transform group-hover:translate-x-1">
+                                      &gt;
+                                    </span>
+
+                                    <span>{link.label}</span>
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -140,21 +301,19 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className={`text-[18px] font-medium transition ${
+                  className={`text-[18px] text-[#1C2E56] transition ${
                     pathname === item.href
-                      ? "text-[#1C2E56] underline underline-offset-4"
-                      : "text-[#1C2E56] hover:text-[#DE092D]"
+                      ? "font-bold"
+                      : "font-medium hover:underline hover:underline-offset-4"
                   }`}
                 >
                   {item.label}
                 </Link>
-              );
-            })}
+              ),
+            )}
 
-            {/* Divider */}
             <div className="h-8 w-px bg-gray-300" />
 
-            {/* CTA */}
             <Link
               href="/balcao-digital"
               className="h-[50px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-extrabold text-[18px] flex items-center justify-center hover:bg-[#DE092D]/5 transition"
@@ -162,8 +321,7 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            {/* Help */}
-            <button className="text-[#1C2E56] text-[18px] font-medium hover:text-[#DE092D] transition">
+            <button className="text-[#1C2E56] text-[18px] font-medium hover:underline hover:underline-offset-4 transition">
               Ajuda
             </button>
           </div>
@@ -178,13 +336,17 @@ const Header = () => {
         {mobileOpen && (
           <div className="lg:hidden border-t bg-white px-4 py-4 space-y-2">
             {navItems.map((item) =>
-              item.children ? (
+              item.megaMenu ? (
                 <div key={item.label}>
                   <button
                     onClick={() =>
                       setMobileExpanded(mobileExpanded === item.label ? null : item.label)
                     }
-                    className="flex items-center justify-between w-full py-3 text-[#1C2E56] font-medium"
+                    className={`flex items-center justify-between w-full py-3 text-[#1C2E56] transition ${
+                      isActive(item) || mobileExpanded === item.label
+                        ? "font-bold"
+                        : "font-medium hover:underline hover:underline-offset-4"
+                    }`}
                   >
                     {item.label}
 
@@ -196,15 +358,24 @@ const Header = () => {
                   </button>
 
                   {mobileExpanded === item.label && (
-                    <div className="ml-4 border-l pl-4">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="block py-2 text-[#1C2E56]"
-                        >
-                          {child.label}
-                        </Link>
+                    <div className="ml-4 border-l pl-4 space-y-4 pb-3">
+                      {item.megaMenu.map((section) => (
+                        <div key={section.heading}>
+                          <h4 className="font-bold text-[#1C2E56] mb-2">{section.heading}</h4>
+
+                          <div className="space-y-2">
+                            {section.links.map((link) => (
+                              <Link
+                                key={link.href}
+                                href={link.href}
+                                className="flex items-center gap-2 text-[#1C2E56]"
+                              >
+                                <span>&gt;</span>
+                                {link.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -213,7 +384,11 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className="block py-3 text-[#1C2E56] font-medium"
+                  className={`block py-3 text-[#1C2E56] transition ${
+                    pathname === item.href
+                      ? "font-bold"
+                      : "font-medium hover:underline hover:underline-offset-4"
+                  }`}
                 >
                   {item.label}
                 </Link>
