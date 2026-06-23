@@ -10,7 +10,7 @@ interface MegaMenuSection {
   heading: string;
   links: {
     label: string;
-    href: string;
+    href?: string;
   }[];
 }
 
@@ -28,13 +28,14 @@ const navItems: NavItem[] = [
 
   {
     label: "Organismo",
+    href: "/institucional",
     megaMenu: [
       {
         heading: "Conhecer a Junta",
         links: [
           { label: "Presidência", href: "/institucional/presidente" },
           { label: "Executivo", href: "/institucional/orgaos" },
-          { label: "Assembleia", href: "/institucional/orgaos" },
+          { label: "Assembleia", href: "/institucional/assembleia" },
         ],
       },
 
@@ -43,15 +44,15 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Reuniões de Executivo",
-            href: "/institucional/orgaos",
+            href: "/institucional/executivo",
           },
           {
             label: "Reuniões de Assembleia",
-            href: "/institucional/orgaos",
+            href: "/institucional/reunioAssembleia",
           },
           {
             label: "Editais",
-            href: "/institucional/documentacao",
+            href: "/institucional/editais",
           },
         ],
       },
@@ -69,7 +70,7 @@ const navItems: NavItem[] = [
           },
           {
             label: "Normas e Planeamento",
-            href: "/institucional/documentacao",
+            href: "/institucional/normas",
           },
         ],
       },
@@ -79,11 +80,9 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Inscrição em passeios",
-            href: "/servicos",
           },
           {
             label: "Pedir licença de obra",
-            href: "/servicos",
           },
           {
             label: "Marcar atendimento",
@@ -96,17 +95,18 @@ const navItems: NavItem[] = [
 
   {
     label: "Freguesia",
+    href: "/freguesia",
     megaMenu: [
       {
         heading: "Conhecer a Freguesia",
         links: [
           {
             label: "História",
-            href: "/freguesia",
+            href: "/freguesia/historia",
           },
           {
             label: "Heráldica",
-            href: "/freguesia",
+            href: "/freguesia/heraldica",
           },
           {
             label: "A visitar",
@@ -130,11 +130,9 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Inscrição em passeios",
-            href: "/servicos",
           },
           {
             label: "Pedir licença de obra",
-            href: "/servicos",
           },
           {
             label: "Marcar atendimento",
@@ -203,17 +201,25 @@ const Header = () => {
   };
 
   const isActive = (item: NavItem): boolean => {
-    if (item.href) return pathname === item.href;
+    if (
+      item.megaMenu?.some((section) =>
+        section.links.some((link) => link.href && pathname.startsWith(link.href)),
+      )
+    ) {
+      return true;
+    }
+
+    if (item.href) return pathname === item.href || pathname.startsWith(`${item.href}/`);
 
     return (
       item.megaMenu?.some((section) =>
-        section.links.some((link) => pathname.startsWith(link.href)),
+        section.links.some((link) => link.href && pathname.startsWith(link.href)),
       ) ?? false
     );
   };
 
   return (
-    <header className="absolute top-0 left-0 w-full z-50 bg-transparent px-4 lg:px-12 py-6">
+    <header className="relative z-50 bg-transparent px-4 lg:px-12 py-6">
       <nav
         ref={dropdownRef}
         className="relative bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto"
@@ -245,21 +251,39 @@ const Header = () => {
                   onMouseEnter={() => handleMouseEnter(item.label)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <button
-                    className={`flex items-center gap-1 text-[18px] text-[#1C2E56] transition ${
-                      isActive(item) || openDropdown === item.label
-                        ? "font-bold"
-                        : "font-medium hover:underline hover:underline-offset-4"
-                    }`}
-                  >
-                    {item.label}
-
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform ${
-                        openDropdown === item.label ? "rotate-180" : ""
+                  {/* Se tiver href (ex: Organismo), renderiza um Link no desktop */}
+                  {item.href ? (
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-1 text-[18px] text-[#1C2E56] transition ${
+                        isActive(item) || openDropdown === item.label
+                          ? "font-bold"
+                          : "font-medium hover:underline hover:underline-offset-4"
                       }`}
-                    />
-                  </button>
+                    >
+                      {item.label}
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          openDropdown === item.label ? "rotate-180" : ""
+                        }`}
+                      />
+                    </Link>
+                  ) : (
+                    <button
+                      className={`flex items-center gap-1 text-[18px] text-[#1C2E56] transition ${
+                        isActive(item) || openDropdown === item.label
+                          ? "font-bold"
+                          : "font-medium hover:underline hover:underline-offset-4"
+                      }`}
+                    >
+                      {item.label}
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          openDropdown === item.label ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                  )}
 
                   {openDropdown === item.label && (
                     <div className="absolute left-1/2 -translate-x-1/2 top-[calc(50%+16px)] pt-4 w-[1100px] max-w-[calc(100vw-96px)] z-50">
@@ -272,23 +296,33 @@ const Header = () => {
                               </h3>
 
                               <div className="flex flex-col gap-3">
-                                {section.links.map((link) => (
-                                  <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={`group flex items-center gap-2 transition ${
-                                      pathname === link.href
-                                        ? "text-[#DE092D] font-semibold"
-                                        : "text-[#1C2E56] hover:text-[#DE092D]"
-                                    }`}
-                                  >
-                                    <span className="font-bold transition-transform group-hover:translate-x-1">
-                                      &gt;
+                                {section.links.map((link) =>
+                                  link.href ? (
+                                    <Link
+                                      key={`${section.heading}-${link.label}`}
+                                      href={link.href}
+                                      className={`group flex items-center gap-2 transition ${
+                                        pathname === link.href
+                                          ? "font-bold text-[#DE092D]" // Estilo quando ativo
+                                          : "text-[#1C2E56] hover:font-bold" // Removido hover:underline
+                                      }`}
+                                    >
+                                      <span className="font-bold transition-transform group-hover:translate-x-1">
+                                        &gt;
+                                      </span>
+                                      <span>{link.label}</span>
+                                    </Link>
+                                  ) : (
+                                    <span
+                                      key={`${section.heading}-${link.label}`}
+                                      className="flex items-center gap-2 text-[#1C2E56]/35 cursor-default font-medium"
+                                      aria-disabled="true"
+                                    >
+                                      <span className="font-bold">&gt;</span>
+                                      <span>{link.label}</span>
                                     </span>
-
-                                    <span>{link.label}</span>
-                                  </Link>
-                                ))}
+                                  ),
+                                )}
                               </div>
                             </div>
                           ))}
@@ -341,24 +375,45 @@ const Header = () => {
             {navItems.map((item) =>
               item.megaMenu ? (
                 <div key={item.label}>
-                  <button
-                    onClick={() =>
-                      setMobileExpanded(mobileExpanded === item.label ? null : item.label)
-                    }
-                    className={`flex items-center justify-between w-full py-3 text-[#1C2E56] transition ${
-                      isActive(item) || mobileExpanded === item.label
-                        ? "font-bold"
-                        : "font-medium hover:underline hover:underline-offset-4"
-                    }`}
-                  >
-                    {item.label}
+                  <div className="flex items-center justify-between w-full text-[#1C2E56]">
+                    {/* Texto navega para o link se existir href, caso contrário é apenas texto */}
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        className={`flex-grow py-3 transition ${
+                          isActive(item) || mobileExpanded === item.label
+                            ? "font-bold"
+                            : "font-medium hover:underline hover:underline-offset-4"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <span
+                        className={`flex-grow py-3 transition ${
+                          isActive(item) || mobileExpanded === item.label
+                            ? "font-bold"
+                            : "font-medium"
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    )}
 
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform ${
-                        mobileExpanded === item.label ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+                    {/* Seta/Chevron usada apenas para expandir a gaveta */}
+                    <button
+                      onClick={() =>
+                        setMobileExpanded(mobileExpanded === item.label ? null : item.label)
+                      }
+                      className="p-3"
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          mobileExpanded === item.label ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                  </div>
 
                   {mobileExpanded === item.label && (
                     <div className="ml-4 border-l pl-4 space-y-4 pb-3">
@@ -367,16 +422,31 @@ const Header = () => {
                           <h4 className="font-bold text-[#1C2E56] mb-2">{section.heading}</h4>
 
                           <div className="space-y-2">
-                            {section.links.map((link) => (
-                              <Link
-                                key={link.href}
-                                href={link.href}
-                                className="flex items-center gap-2 text-[#1C2E56]"
-                              >
-                                <span>&gt;</span>
-                                {link.label}
-                              </Link>
-                            ))}
+                            {section.links.map((link) =>
+                              link.href ? (
+                                <Link
+                                  key={`${section.heading}-${link.label}`}
+                                  href={link.href}
+                                  className={`flex items-center gap-2 text-[#1C2E56] transition ${
+                                    pathname === link.href
+                                      ? "font-bold"
+                                      : "font-medium hover:underline hover:underline-offset-4"
+                                  }`}
+                                >
+                                  <span className="font-bold">&gt;</span>
+                                  <span>{link.label}</span>
+                                </Link>
+                              ) : (
+                                <span
+                                  key={`${section.heading}-${link.label}`}
+                                  className="flex items-center gap-2 text-[#1C2E56]/35 cursor-default font-medium"
+                                  aria-disabled="true"
+                                >
+                                  <span className="font-bold">&gt;</span>
+                                  <span>{link.label}</span>
+                                </span>
+                              ),
+                            )}
                           </div>
                         </div>
                       ))}
@@ -405,7 +475,10 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            <Link href="/ajuda" className="block py-3 text-[#1C2E56] font-medium">
+            <Link
+              href="/ajuda"
+              className="block py-3 text-[#1C2E56] font-medium hover:underline hover:underline-offset-4"
+            >
               Ajuda
             </Link>
           </div>

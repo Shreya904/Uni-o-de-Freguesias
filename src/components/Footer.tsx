@@ -1,163 +1,166 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, MapPin, Facebook } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Mail,
+  Phone,
+  ChevronRight,
+  Linkedin,
+  Facebook,
+  Instagram,
+} from "lucide-react";
+
 const Footer = () => (
-  <footer className="bg-primary text-primary-foreground">
-    <div className="container max-w-7xl mx-auto px-4 py-12 md:py-14">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 xl:gap-6 items-start">
-        <div className="md:col-span-2 lg:col-span-4">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden border border-primary-foreground/25 bg-primary-foreground/10 shrink-0">
-              <Image
-                src="/ufgvc logo.png"
-                alt="Logo da União das Freguesias"
-                fill
-                sizes="(max-width: 768px) 56px, 64px"
-                className="object-cover"
-              />
-            </div>
-            <div className="min-w-0 md:min-w-[260px]">
-              <p className="font-display font-bold text-lg md:text-xl leading-tight">
-                <span className="block whitespace-nowrap">União das Freguesias de</span>
-                <span className="block">Glória e Vera-Cruz</span>
-              </p>
-              <p className="text-primary-foreground/75 text-sm md:text-base">Aveiro</p>
-            </div>
-          </div>
-          <ul className="space-y-3 text-sm text-white/80">
-            <li>
-              Segunda a Sexta
-              <br />
-              <span className="text-white/60 text-xs">09h00-12h30 | 14H00-17H30</span>
-            </li>
-            <li>
-              Avenida Dr. Lourenço Peixinho,
-              <br />
-              Edifício 15 - 1º B, 3800-164 Aveiro
-            </li>
-            <li>Rua das Pombas Nº9/11, 3810-150 Aveiro</li>
-            <li>geral.fgloriavcruz@gmail.com</li>
-            <li className="font-bold text-white">234 427 832</li>
-          </ul>
-        </div>
-
+  <footer className="bg-[#C41230] text-white">
+    <div className="max-w-[1400px] mx-auto px-6 py-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12">
+        {/* COLUMN 1 - LOGO & INFO */}
         <div className="lg:col-span-2">
-          <h4 className="font-display font-semibold mb-4">Freguesia</h4>
-          <ul className="space-y-2 text-sm text-primary-foreground/70">
-            <li>
-              <Link href="/freguesia" className="hover:text-primary-foreground transition-colors">
-                Sobre a Freguesia
-              </Link>
-            </li>
-            <li>
-              <Link href="/noticias" className="hover:text-primary-foreground transition-colors">
-                Notícias
-              </Link>
-            </li>
-            <li>
-              <Link href="/eventos" className="hover:text-primary-foreground transition-colors">
-                Eventos
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/freguesia/galeria"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Galeria
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className="lg:col-span-3">
-          <h4 className="font-display font-semibold mb-4">Institucional</h4>
-          <ul className="space-y-2 text-sm text-primary-foreground/70">
-            <li>
-              <Link
-                href="/institucional/presidente"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Presidente
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/institucional/orgaos"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Órgãos
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/institucional/documentacao"
-                className="hover:text-primary-foreground transition-colors"
-              >
-                Documentação
-              </Link>
-            </li>
-            <li>
-              <Link href="/instituicao" className="hover:text-primary-foreground transition-colors">
-                Instituição
-              </Link>
-            </li>
-            <li>
-              <Link href="/servicos" className="hover:text-primary-foreground transition-colors">
-                Serviços Online
-              </Link>
-            </li>
-            <li>
-              <span className="text-primary-foreground/30 cursor-not-allowed">
-                Reportar Ocorrência
-              </span>
-            </li>
-            <li>
-              <Link href="/faq" className="hover:text-primary-foreground transition-colors">
-                Centro de Ajuda
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className="lg:col-span-3">
-          <h4 className="font-display font-semibold mb-4">Contactos</h4>
-          <ul className="space-y-3 text-sm text-primary-foreground/70">
-            <li className="flex items-start gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-foreground/15 flex items-center justify-center shrink-0">
-                <Mail className="w-3.5 h-3.5" />
-              </span>
-              <span className="leading-6 break-words">secretaria.fgloriavcruz@gmail.com</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-foreground/15 flex items-center justify-center shrink-0">
-                <MapPin className="w-3.5 h-3.5" />
-              </span>
-              <span className="leading-6">Aveiro, Portugal</span>
-            </li>
-            <li className="pl-9">
-              <Link href="/contactos" className="hover:text-primary-foreground transition-colors">
-                Contacto
-              </Link>
-            </li>
-          </ul>
-          <div className="flex gap-3 mt-4 pl-9">
-            <a
-              href="https://www.facebook.com/ufgloriaveracruz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
-              aria-label="Facebook"
-            >
-              <Facebook className="w-4 h-4" />
-            </a>
+          <div className="mb-6">
+            <Image
+              src="/footer logo1.png"
+              alt="Logo"
+              width={180}
+              height={180}
+              className="object-contain"
+            />
           </div>
+          <h4 className="font-bold mb-4">Informação</h4>
+          <ul className="space-y-4 text-sm text-white/90">
+            <li className="flex items-start gap-3">
+              <Calendar className="w-5 h-5 shrink-0" />
+              <span>
+                Segunda a Sexta
+                <br />
+                09h00-12h30 | 14H00-17H30
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 shrink-0" />
+              <span>Avenida Dr. Lourenço Peixinho, Edifício 15 - 1º B, 3800-164 Aveiro</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 shrink-0" />
+              <span>Rua das Pombas Nº9 /11, 3810 - 150 Aveiro / (Apartado 84 ECAveiro)</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <Mail className="w-5 h-5 shrink-0" />
+              <span>geral.fgloriavcruz@gmail.com</span>
+            </li>
+            <li className="flex items-center gap-3 font-bold text-lg">
+              <Phone className="w-5 h-5 shrink-0" />
+              <span>234 427 832</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* COLUMN 2 - PRINCIPAIS */}
+        <div>
+          <h4 className="font-bold mb-5">Principais</h4>
+          <ul className="space-y-3 text-sm">
+            {[
+              { label: "Começar", href: "/" },
+              { label: "Notícias", href: "/noticias" },
+              { label: "Balcão digital", href: "/servicos" },
+              { label: "Ajuda", href: "/ajuda" },
+              { label: "Contacto", href: "/contactos" },
+            ].map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="flex items-center hover:underline">
+                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* COLUMN 3 - JUNTA */}
+        <div>
+          <h4 className="font-bold mb-5">Junta</h4>
+          <ul className="space-y-3 text-sm">
+            {[
+              { label: "Presidência", href: "/institucional/presidente" },
+              { label: "Executivo", href: "/institucional/orgaos" },
+              { label: "Assembleia", href: "/institucional/assembleia" },
+              { label: "Reuniões", href: "/institucional/executivo" },
+              { label: "Editais", href: "/institucional/editais" },
+              { label: "Financeiro", href: "/institucional/financeira" },
+              { label: "Documentação", href: "/institucional/documentacao" },
+            ].map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="flex items-center hover:underline">
+                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* COLUMN 4 - FREGUESIA */}
+        <div>
+          <h4 className="font-bold mb-5">Freguesia</h4>
+          <ul className="space-y-3 text-sm">
+            {[
+              { label: "História", href: "/freguesia/historia" },
+              { label: "Heráldica", href: "/freguesia/heraldica" },
+              { label: "A visitar", href: "/freguesia/espacos" },
+              { label: "Agenda", href: "/eventos" },
+              { label: "Lista pública", href: "/freguesia/estatisticas" },
+            ].map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="flex items-center hover:underline">
+                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* COLUMN 5 - SOBRE ESTE SITE */}
+        <div>
+          <h4 className="font-bold mb-5">Sobre este site</h4>
+          <ul className="space-y-3 text-sm">
+            {[
+              { label: "Acessibilidade", href: "/legal" },
+              { label: "Proteção de dados", href: "/legal" },
+              { label: "Regulamento", href: "/legal" },
+              { label: "Política de privacidade", href: "/legal" },
+            ].map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="flex items-center hover:underline">
+                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      <div className="border-t border-primary-foreground/10 mt-12 pt-6 text-center text-xs text-primary-foreground/50">
-        © {new Date().getFullYear()} União das Freguesias de Glória e Vera-Cruz - Aveiro. Todos os
-        direitos reservados.
+      {/* BOTTOM BAR */}
+      <div className="border-t border-white/20 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
+        <p className="order-2 md:order-1">
+          Usamos cookies para garantir que lhe proporcionamos a melhor experiência no nosso site.
+          Ver{" "}
+          <Link href="/cookies" className="underline font-bold">
+            definições de cookies
+          </Link>
+        </p>
+
+        <div className="flex items-center gap-6 order-1 md:order-2">
+          <div className="flex gap-4">
+            <Link href="#">
+              <Linkedin className="w-5 h-5" />
+            </Link>
+            <Link href="#">
+              <Facebook className="w-5 h-5" />
+            </Link>
+            <Link href="#">
+              <Instagram className="w-5 h-5" />
+            </Link>
+          </div>
+          <p>© 2026. Todos os direitos reservados.</p>
+        </div>
       </div>
     </div>
   </footer>

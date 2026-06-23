@@ -1,198 +1,114 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+import { ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Briefcase, Mail, Phone, Users2 } from "lucide-react";
 
-type AssociateProfile = {
-  id: string;
-  name: string;
-  role: string;
-  department: string;
-  email: string;
-  phone?: string;
-  photoUrl?: string;
-  bio: string;
-  tags: string[];
-  featured?: boolean;
-};
-
-// Template data. This shape is CMS-ready and can be hydrated from API fields.
-const associates: AssociateProfile[] = [
+// Dados do executivo estruturados num array para facilitar a manutenção
+const executivoData = [
   {
-    id: "executivo-ana-pereira",
-    name: "Ana Pereira",
-    role: "Coordenadora Executiva",
-    department: "Executivo da Junta",
-    email: "executivo@uniaofreguesias.pt",
-    phone: "+351 210 000 101",
-    photoUrl: "/presidente.jpg",
-    bio: "Coordena a atividade executiva e o acompanhamento das prioridades anuais da freguesia.",
-    tags: ["Governacao", "Planeamento"],
-    featured: true,
+    name: "Bruno José das Neves Ferreira",
+    role: "Presidente",
+    responsibilities:
+      "Coordenação Geral, Finanças, Urbanismo, Infraestruturas e Ambiente, Serviços Urbanos e Cemitérios",
+    image: "/presidente.jpg", // Substitua pelo caminho real da imagem na pasta public
   },
   {
-    id: "assembleia-joao-carvalho",
-    name: "Joao Carvalho",
-    role: "Secretariado da Assembleia",
-    department: "Assembleia de Freguesia",
-    email: "assembleia@uniaofreguesias.pt",
-    phone: "+351 210 000 102",
-    bio: "Assegura suporte tecnico-administrativo as reunioes e aos processos deliberativos.",
-    tags: ["Deliberacoes", "Apoio Juridico"],
+    name: "Marília Fernanda Correia Martins",
+    role: "Secretário",
+    responsibilities: "Serviços Administrativos, Secretariado de Reuniões, Recursos Humanos",
   },
   {
-    id: "apoio-sofia-martins",
-    name: "Sofia Martins",
-    role: "Tecnica de Atendimento",
-    department: "Gabinete de Apoio ao Cidadao",
-    email: "atendimento@uniaofreguesias.pt",
-    phone: "+351 210 000 103",
-    bio: "Presta informacao de proximidade e encaminha pedidos para os servicos competentes.",
-    tags: ["Atendimento", "Servicos Online"],
+    name: "João Eduardo Alves Teixeira Calisto",
+    role: "Tesoureiro",
+    responsibilities:
+      "Contabilidade, Tesouraria, Aquisição de Bens e Serviços, Manutenção do Site e Redes Sociais",
   },
   {
-    id: "obras-ricardo-lopes",
-    name: "Ricardo Lopes",
-    role: "Responsavel de Obras e Manutencao",
-    department: "Gabinete Tecnico",
-    email: "obras@uniaofreguesias.pt",
-    bio: "Acompanha intervencoes no espaco publico e articulacao com equipas operacionais.",
-    tags: ["Infraestruturas", "Manutencao"],
+    name: "Rosa Nunes da Fonseca",
+    role: "1º Vogal",
+    responsibilities: "Educação, Ação Social, Património, Cultura",
   },
   {
-    id: "social-carla-santos",
-    name: "Carla Santos",
-    role: "Tecnica de Acao Social",
-    department: "Gabinete de Acao Social",
-    email: "social@uniaofreguesias.pt",
-    phone: "+351 210 000 104",
-    bio: "Dinamiza respostas locais de apoio social e acompanhamento de situacoes prioritarias.",
-    tags: ["Apoio Social", "Proximidade"],
+    name: "Adelino António Bastos Camões Sobral",
+    role: "2º Vogal",
+    responsibilities: "Associativismo, Desportos, Tempos Livres",
   },
 ];
 
-const getInitials = (fullName: string) =>
-  fullName
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((namePart) => namePart[0]?.toUpperCase())
-    .join("");
-
-export default function OrgaosPage() {
+export default function ExecutivoPage() {
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        <section className="relative bg-primary py-20 md:py-28">
-          <div className="container max-w-6xl mx-auto px-4">
+    <div className="min-h-screen bg-white font-sans flex flex-col">
+      {/* HEADER & SUB-HEADER WRAPPER 
+          Agrupa o Header e a barra de navegação sob o mesmo fundo azul escuro
+      */}
+      <div className="relative w-full bg-[#243558]">
+        {/* Header Layer */}
+        <div className="relative z-50">
+          <Header />
+        </div>
+
+        {/* Breadcrumb Layer */}
+        <div className="relative z-10 py-6 px-6 lg:px-16">
+          <div className="max-w-[1000px] mx-auto flex items-center">
             <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground text-sm mb-5"
+              href="/institucional"
+              className="flex items-center gap-2 text-[16px] font-bold text-white hover:text-gray-300 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Voltar ao início
+              <ChevronLeft className="w-5 h-5" />
+              Organismo
             </Link>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
-              Orgaos Autarquicos
-            </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-3xl">
-              Conheca os principais elementos em funcoes institucionais e tecnicas por departamento.
-            </p>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <section className="section-padding bg-section-alt">
-          <div className="container max-w-6xl mx-auto px-4">
-            <div className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-              <div>
-                <Badge variant="secondary" className="mb-3">
-                  Equipa Institucional
-                </Badge>
-                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                  Perfis de dirigentes e tecnicos
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground max-w-xl">
-                Esta listagem e um template para integracao com CMS, incluindo nome, cargo,
-                departamento, contactos e nota biografica.
-              </p>
-            </div>
+      <main className="flex-grow">
+        {/* CONTENT SECTION */}
+        <section className="px-6 lg:px-16 py-12">
+          <div className="max-w-[1000px] mx-auto">
+            <h1 className="text-[#1C2E56] text-[36px] md:text-[42px] font-extrabold tracking-wide mb-10">
+              Executivo
+            </h1>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {associates.map((person) => (
-                <Card
-                  key={person.id}
-                  className="h-full border-border/80 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg"
+            <div className="flex flex-col gap-6">
+              {executivoData.map((member, index) => (
+                <div
+                  key={index}
+                  className="border-2 border-[#1C2E56] rounded-[4px] p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 bg-white"
                 >
-                  <CardHeader className="space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Avatar className="h-14 w-14 border border-border/70">
-                          <AvatarImage src={person.photoUrl} alt={person.name} />
-                          <AvatarFallback className="text-sm font-semibold bg-muted text-foreground">
-                            {getInitials(person.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0">
-                          <CardTitle className="font-display text-xl leading-tight truncate">
-                            {person.name}
-                          </CardTitle>
-                          <p className="text-sm text-muted-foreground truncate">{person.role}</p>
-                        </div>
-                      </div>
-                      {person.featured ? <Badge>Destaque</Badge> : null}
+                  {/* Renderiza a imagem apenas se ela existir nos dados */}
+                  {member.image && (
+                    <div className="relative w-full md:w-[220px] h-[260px] md:h-[220px] rounded-[4px] overflow-hidden shrink-0">
+                      <Image
+                        src={member.image}
+                        alt={`Fotografia de ${member.name}`}
+                        fill
+                        className="object-cover object-top"
+                      />
                     </div>
+                  )}
 
-                    <div className="inline-flex items-center gap-2 text-sm text-foreground">
-                      <Briefcase className="w-4 h-4 text-accent" />
-                      <span>{person.department}</span>
-                    </div>
-                  </CardHeader>
+                  {/* Informações do Membro */}
+                  <div className="flex flex-col justify-center text-[#1C2E56]">
+                    <h2 className="text-[20px] md:text-[22px] font-extrabold mb-2">
+                      {member.name}
+                    </h2>
 
-                  <CardContent className="space-y-4 mt-auto">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{person.bio}</p>
+                    <p className="text-[14px] font-extrabold mb-6">{member.role}</p>
 
-                    <div className="flex flex-wrap gap-2">
-                      {person.tags.map((tag) => (
-                        <Badge key={tag} variant="outline">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="space-y-2 text-sm">
-                      <a
-                        href={`mailto:${person.email}`}
-                        className="inline-flex items-center gap-2 text-primary hover:underline"
-                      >
-                        <Mail className="w-4 h-4" />
-                        {person.email}
-                      </a>
-                      {person.phone ? (
-                        <a
-                          href={`tel:${person.phone.replaceAll(" ", "")}`}
-                          className="inline-flex items-center gap-2 text-primary hover:underline"
-                        >
-                          <Phone className="w-4 h-4" />
-                          {person.phone}
-                        </a>
-                      ) : null}
-                    </div>
-
-                    <div className="pt-1 flex items-center gap-2 text-sm font-medium text-foreground">
-                      <Users2 className="w-4 h-4 text-accent" />
-                      Perfil publico
-                    </div>
-                  </CardContent>
-                </Card>
+                    <p className="text-[14px] md:text-[15px] leading-relaxed opacity-90">
+                      {member.responsibilities}
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );
