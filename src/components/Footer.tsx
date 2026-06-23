@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-
+import { Mail, MapPin, Facebook } from "lucide-react";
 const Footer = () => (
   <footer className="bg-primary text-primary-foreground">
     <div className="container max-w-7xl mx-auto px-4 py-12 md:py-14">

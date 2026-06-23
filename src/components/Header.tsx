@@ -32,9 +32,9 @@ const navItems: NavItem[] = [
       {
         heading: "Conhecer a Junta",
         links: [
-          { label: "Presidência", href: "/organismo/presidencia" },
-          { label: "Executivo", href: "/organismo/executivo" },
-          { label: "Assembleia", href: "/organismo/assembleia" },
+          { label: "Presidência", href: "/institucional/presidente" },
+          { label: "Executivo", href: "/institucional/orgaos" },
+          { label: "Assembleia", href: "/institucional/orgaos" },
         ],
       },
 
@@ -43,15 +43,15 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Reuniões de Executivo",
-            href: "/organismo/reunioes-executivo",
+            href: "/institucional/orgaos",
           },
           {
             label: "Reuniões de Assembleia",
-            href: "/organismo/reunioes-assembleia",
+            href: "/institucional/orgaos",
           },
           {
             label: "Editais",
-            href: "/organismo/editais",
+            href: "/institucional/documentacao",
           },
         ],
       },
@@ -61,15 +61,15 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Financeiro",
-            href: "/organismo/financeiro",
+            href: "/institucional/financeira",
           },
           {
             label: "Documentação",
-            href: "/organismo/documentacao",
+            href: "/institucional/documentacao",
           },
           {
             label: "Normas e Planeamento",
-            href: "/organismo/normas-planeamento",
+            href: "/institucional/documentacao",
           },
         ],
       },
@@ -79,15 +79,15 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Inscrição em passeios",
-            href: "/balcao-digital/inscricao-passeios",
+            href: "/servicos",
           },
           {
             label: "Pedir licença de obra",
-            href: "/balcao-digital/licenca-obra",
+            href: "/servicos",
           },
           {
             label: "Marcar atendimento",
-            href: "/balcao-digital/marcar-atendimento",
+            href: "/agendar",
           },
         ],
       },
@@ -102,15 +102,15 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "História",
-            href: "/freguesia/historia",
+            href: "/freguesia",
           },
           {
             label: "Heráldica",
-            href: "/freguesia/heraldica",
+            href: "/freguesia",
           },
           {
             label: "A visitar",
-            href: "/freguesia/a-visitar",
+            href: "/freguesia/espacos",
           },
         ],
       },
@@ -130,15 +130,15 @@ const navItems: NavItem[] = [
         links: [
           {
             label: "Inscrição em passeios",
-            href: "/balcao-digital/inscricao-passeios",
+            href: "/servicos",
           },
           {
             label: "Pedir licença de obra",
-            href: "/balcao-digital/licenca-obra",
+            href: "/servicos",
           },
           {
             label: "Marcar atendimento",
-            href: "/balcao-digital/marcar-atendimento",
+            href: "/agendar",
           },
         ],
       },
@@ -315,15 +315,18 @@ const Header = () => {
             <div className="h-8 w-px bg-gray-300" />
 
             <Link
-              href="/balcao-digital"
+              href="/servicos"
               className="h-[50px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-extrabold text-[18px] flex items-center justify-center hover:bg-[#DE092D]/5 transition"
             >
               Balcão Digital
             </Link>
 
-            <button className="text-[#1C2E56] text-[18px] font-medium hover:underline hover:underline-offset-4 transition">
+            <Link
+              href="/ajuda"
+              className="text-[#1C2E56] text-[18px] font-medium hover:underline hover:underline-offset-4 transition"
+            >
               Ajuda
-            </button>
+            </Link>
           </div>
 
           {/* MOBILE BUTTON */}
@@ -396,10 +399,14 @@ const Header = () => {
             )}
 
             <Link
-              href="/balcao-digital"
+              href="/servicos"
               className="mt-3 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold"
             >
               Balcão Digital
+            </Link>
+
+            <Link href="/ajuda" className="block py-3 text-[#1C2E56] font-medium">
+              Ajuda
             </Link>
           </div>
         )}
