@@ -5,29 +5,29 @@ import { ChevronRight } from "lucide-react";
 const heroBg = "/hero-bg1.jpg";
 
 const HeroSection = () => (
-  <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+  <section className="relative min-h-[60vh] flex items-end overflow-hidden">
     {/* BACKGROUND */}
     <div className="absolute inset-0">
       <img
         src={heroBg}
         alt="Vista panorâmica da freguesia"
-        className="w-full h-full object-cover grayscale"
+        className="w-full h-full object-cover"
         width={1920}
         height={960}
       />
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/50" />
     </div>
 
-    {/* CONTENT */}
-    <div className="relative container max-w-7xl mx-auto px-4 py-20 flex justify-center">
+    {/* CONTENT - bottom left */}
+    <div className="relative container max-w-7xl mx-auto px-8 py-12 flex justify-start">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="max-w-3xl text-center"
+        className="max-w-2xl text-left"
       >
-        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
-          Bem-vindo à terra de cagaréus e ceboleiros
+        <h1 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
+          Bem-vindo<br />à terra de cagaréus e ceboleiros
         </h1>
         <Link
           href="/institucional/presidente"

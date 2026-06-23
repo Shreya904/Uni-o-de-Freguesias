@@ -26,8 +26,8 @@ const Footer = () => (
           <ul className="space-y-3 text-sm text-white/80">
             <li><Link href="/" className="hover:text-white transition">› Começar</Link></li>
             <li><Link href="/noticias" className="hover:text-white transition">› Notícias</Link></li>
-            <li><Link href="/balcao-digital" className="hover:text-white transition">› Balcão digital</Link></li>
-            <li><Link href="/ajuda" className="hover:text-white transition">› Ajuda</Link></li>
+            <li><Link href="/servicos" className="hover:text-white transition">› Balcão digital</Link></li>
+            <li><Link href="/faq" className="hover:text-white transition">› Ajuda</Link></li>
             <li><Link href="/contactos" className="hover:text-white transition">› Contacto</Link></li>
           </ul>
         </div>
@@ -36,12 +36,12 @@ const Footer = () => (
         <div>
           <h4 className="text-white font-bold text-base mb-5">Junta</h4>
           <ul className="space-y-3 text-sm text-white/80">
-            <li><Link href="/institucional/presidencia" className="hover:text-white transition">› Presidência</Link></li>
-            <li><Link href="/institucional/executivo" className="hover:text-white transition">› Executivo</Link></li>
-            <li><Link href="/institucional/assembleia" className="hover:text-white transition">› Assembleia</Link></li>
-            <li><Link href="/institucional/reunioes" className="hover:text-white transition">› Reuniões</Link></li>
-            <li><Link href="/institucional/editais" className="hover:text-white transition">› Editais</Link></li>
-            <li><Link href="/institucional/financeiro" className="hover:text-white transition">› Financeiro</Link></li>
+            <li><Link href="/institucional/presidente" className="hover:text-white transition">› Presidência</Link></li>
+            <li><Link href="/institucional/orgaos" className="hover:text-white transition">› Executivo</Link></li>
+            <li><Link href="/institucional/orgaos" className="hover:text-white transition">› Assembleia</Link></li>
+            <li><Link href="/institucional/orgaos" className="hover:text-white transition">› Reuniões</Link></li>
+            <li><Link href="/institucional/orgaos" className="hover:text-white transition">› Editais</Link></li>
+            <li><Link href="/institucional/financeira" className="hover:text-white transition">› Financeiro</Link></li>
             <li><Link href="/institucional/documentacao" className="hover:text-white transition">› Documentação</Link></li>
           </ul>
         </div>
@@ -50,11 +50,11 @@ const Footer = () => (
         <div>
           <h4 className="text-white font-bold text-base mb-5">Freguesia</h4>
           <ul className="space-y-3 text-sm text-white/80">
-            <li><Link href="/freguesia/historia" className="hover:text-white transition">› História</Link></li>
-            <li><Link href="/freguesia/heraldica" className="hover:text-white transition">› Heráldica</Link></li>
-            <li><Link href="/freguesia/a-visitar" className="hover:text-white transition">› A visitar</Link></li>
+            <li><Link href="/freguesia" className="hover:text-white transition">› História</Link></li>
+            <li><Link href="/freguesia" className="hover:text-white transition">› Heráldica</Link></li>
+            <li><Link href="/freguesia/espacos" className="hover:text-white transition">› A visitar</Link></li>
             <li><Link href="/eventos" className="hover:text-white transition">› Agenda</Link></li>
-            <li><Link href="/freguesia/lista-publica" className="hover:text-white transition">› Lista pública</Link></li>
+            <li><Link href="/freguesia/estatisticas" className="hover:text-white transition">› Lista pública</Link></li>
           </ul>
         </div>
 
@@ -62,10 +62,10 @@ const Footer = () => (
         <div>
           <h4 className="text-white font-bold text-base mb-5">Sobre este site</h4>
           <ul className="space-y-3 text-sm text-white/80">
-            <li><Link href="/acessibilidade" className="hover:text-white transition">› Acessibilidade</Link></li>
-            <li><Link href="/protecao-dados" className="hover:text-white transition">› Proteção de dados</Link></li>
-            <li><Link href="/regulamento" className="hover:text-white transition">› Regulamento</Link></li>
-            <li><Link href="/politica-privacidade" className="hover:text-white transition">› Política de privacidade</Link></li>
+            <li><Link href="/participacao" className="hover:text-white transition">› Acessibilidade</Link></li>
+            <li><Link href="/participacao" className="hover:text-white transition">› Proteção de dados</Link></li>
+            <li><Link href="/participacao" className="hover:text-white transition">› Regulamento</Link></li>
+            <li><Link href="/participacao" className="hover:text-white transition">› Política de privacidade</Link></li>
           </ul>
         </div>
 
