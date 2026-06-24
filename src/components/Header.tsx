@@ -182,7 +182,6 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -251,7 +250,6 @@ const Header = () => {
                   onMouseEnter={() => handleMouseEnter(item.label)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {/* Se tiver href (ex: Organismo), renderiza um Link no desktop */}
                   {item.href ? (
                     <Link
                       href={item.href}
@@ -303,8 +301,8 @@ const Header = () => {
                                       href={link.href}
                                       className={`group flex items-center gap-2 transition ${
                                         pathname === link.href
-                                          ? "font-bold text-[#DE092D]" // Estilo quando ativo
-                                          : "text-[#1C2E56] hover:font-bold" // Removido hover:underline
+                                          ? "font-bold text-[#DE092D]"
+                                          : "text-[#1C2E56] hover:font-bold"
                                       }`}
                                     >
                                       <span className="font-bold transition-transform group-hover:translate-x-1">
@@ -348,8 +346,9 @@ const Header = () => {
 
             <div className="h-8 w-px bg-gray-300" />
 
+            {/* FIXED: was /servicos, now /balcao-digital */}
             <Link
-              href="/servicos"
+              href="/balcao-digital"
               className="h-[50px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-extrabold text-[18px] flex items-center justify-center hover:bg-[#DE092D]/5 transition"
             >
               Balcão Digital
@@ -376,7 +375,6 @@ const Header = () => {
               item.megaMenu ? (
                 <div key={item.label}>
                   <div className="flex items-center justify-between w-full text-[#1C2E56]">
-                    {/* Texto navega para o link se existir href, caso contrário é apenas texto */}
                     {item.href ? (
                       <Link
                         href={item.href}
@@ -400,7 +398,6 @@ const Header = () => {
                       </span>
                     )}
 
-                    {/* Seta/Chevron usada apenas para expandir a gaveta */}
                     <button
                       onClick={() =>
                         setMobileExpanded(mobileExpanded === item.label ? null : item.label)
@@ -468,8 +465,9 @@ const Header = () => {
               ),
             )}
 
+            {/* FIXED: was /servicos, now /balcao-digital */}
             <Link
-              href="/servicos"
+              href="/balcao-digital"
               className="mt-3 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold"
             >
               Balcão Digital
