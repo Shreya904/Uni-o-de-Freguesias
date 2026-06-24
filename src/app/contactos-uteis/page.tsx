@@ -1,128 +1,435 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, Mail, Clock, MapPin, ArrowRight } from "lucide-react";
+import HelpDeskBanner from "@/components/home/helpDeskbanner";
+import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
 
-type UsefulContact = {
+// --- TYPES FOR CMS ARCHITECTURE ---
+interface ContactItem {
   id: string;
+  categoryTop: string;
+  categorySub: string;
   title: string;
-  category: string;
-  image: string;
-  phone: string;
-  email: string;
-  address: string;
-  scheduleLines: string[];
-};
+  address?: string;
+  phone?: string;
+  schedule?: string;
+  websiteUrl?: string;
+  email?: string;
+}
 
-const usefulContacts: UsefulContact[] = [
+// --- FALLBACK DATA (Based on your image) ---
+const fallbackContacts: ContactItem[] = [
   {
-    id: "casa-comunidade-sustentavel",
-    title: "Casa da Comunidade Sustentável",
-    category: "Contactos",
-    image: "/Casa da Comunidade Sustentável.jpg",
-    phone: "+351 234 427 065",
-    email: "servicos.fgloriavcruz@gmail.com",
-    address: "Rua das Pombas Nº9/11, 3810-150 Aveiro (Apartado 84 ECAveiro)",
-    scheduleLines: ["Seg–Sex: 09h00–12h30 | 14h00–17h30 (secretaria e cemitérios)."],
+    id: "1",
+    categoryTop: "Saúde",
+    categorySub: "Hospitais",
+    title: "Linha Emergência Médica (INEM)",
+    phone: "112",
+    websiteUrl: "#",
   },
   {
-    id: "sede-instalacoes-provisorias",
-    title: "Sede - Instalações Provisórias",
-    category: "Contactos",
-    image: "/Sede - Mudança Provisória de Instalações.webp",
-    phone: "+351 234 427 832",
-    email: "geral.fgloriavcruz@gmail.com",
-    address: "Avenida Dr. Lourenço Peixinho, Edifício 15 - 1º B, 3800-164 Aveiro",
-    scheduleLines: ["Seg–Sex: 09h00–12h30 | 14h00–17h30 (secretaria e cemitérios)."],
+    id: "2",
+    categoryTop: "Saúde",
+    categorySub: "Hospitais",
+    title: "Linha Intoxicações (INEM)",
+    phone: "808 250 143",
+    websiteUrl: "#",
+  },
+  {
+    id: "3",
+    categoryTop: "Ensino",
+    categorySub: "Escolas",
+    title: "Agrupamento de Escolas de Aveiro",
+    address: "R. Belém do Pará, 3810-066 Aveiro",
+    phone: "234 379 920",
+    websiteUrl: "#",
+  },
+  {
+    id: "4",
+    categoryTop: "Ensino",
+    categorySub: "Escolas",
+    title: "Escola Básica 2º e 3º Ciclos João Afonso de Aveiro",
+    address: "Rua das Pombas, 3810-150 Aveiro",
+    phone: "234 379 920",
+    websiteUrl: "#",
+  },
+  {
+    id: "5",
+    categoryTop: "Associações",
+    categorySub: "Cultura",
+    title: "Academia de Saberes",
+    address: "Casa Municipal da Cultura, 1º, Praça da República, 3810-156 Aveiro",
+    phone: "963 420 530",
+    email: "acadsabaveiro@gmail.com",
+    websiteUrl: "#",
+  },
+  {
+    id: "6",
+    categoryTop: "Associações",
+    categorySub: "Cultura",
+    title: "Ação Católica Rural",
+    address: "Cave do Vilar",
+    phone: "938 605 588",
+    websiteUrl: "#",
+  },
+  {
+    id: "7",
+    categoryTop: "Segurança",
+    categorySub: "Polícia",
+    title: "Polícia de Segurança Pública (PSP)",
+    address: "Rua do Carmo, Aveiro",
+    phone: "234 400 400",
   },
 ];
 
-export default function ContactosUteisPage() {
-  return (
-    <div className="min-h-screen">
-      <Header />
+// --- CMS FETCH FUNCTION WITH GRACEFUL FALLBACK ---
+const fetchContactsFromCMS = async (): Promise<ContactItem[]> => {
+  try {
+    const res = await fetch("/api/cms/contacts");
 
+    if (!res.ok) {
+      console.warn("CMS endpoint not ready. Using fallback data.");
+      return fallbackContacts;
+    }
+
+    const data = await res.json();
+
+    if (data && data.length > 0) {
+      return data;
+    }
+
+    return fallbackContacts;
+  } catch (error) {
+    console.warn("Fetch aborted or network error. Using fallback data.");
+    return fallbackContacts;
+  }
+};
+
+export default function ContactosUteisPage() {
+  // State definitions
+  const [contacts, setContacts] = useState<ContactItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [sortAsc, setSortAsc] = useState(true);
+  const [faqOpen, setFaqOpen] = useState(false);
+
+  // Filter Category Definitions
+  const filterCategories = [
+    {
+      title: "Saúde",
+      options: ["Centros de saúde", "Hospitais", "Clínicas", "Farmácias", "Dentistas"],
+    },
+    {
+      title: "Segurança",
+      options: ["Bombeiros", "Polícia", "Proteção Civil"],
+    },
+    {
+      title: "Ensino",
+      options: ["Escolas", "Jardins de infância", "Ensino superior", "Formação"],
+    },
+    {
+      title: "Associações",
+      options: ["Cultura", "Desporto", "Comercial"],
+    },
+  ];
+
+  // Fetch CMS Data
+  useEffect(() => {
+    let isMounted = true;
+    const loadContacts = async () => {
+      const data = await fetchContactsFromCMS();
+      if (isMounted) setContacts(data);
+    };
+    loadContacts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Filter Toggle Handler
+  const toggleFilter = (filter: string) => {
+    setSelectedFilters((prev) =>
+      prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
+    );
+  };
+
+  // Derived filtered & sorted data
+  const filteredAndSortedContacts = useMemo(() => {
+    let result = [...contacts];
+
+    // 1. Search Query
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((c) => c.title.toLowerCase().includes(query));
+    }
+
+    // 2. Sidebar Filters (Checkboxes)
+    if (selectedFilters.length > 0) {
+      result = result.filter(
+        (c) => selectedFilters.includes(c.categorySub) || selectedFilters.includes(c.categoryTop),
+      );
+    }
+
+    // 3. Sorting (A-Z or Z-A)
+    result.sort((a, b) => {
+      if (sortAsc) return a.title.localeCompare(b.title);
+      return b.title.localeCompare(a.title);
+    });
+
+    return result;
+  }, [contacts, searchQuery, selectedFilters, sortAsc]);
+
+  return (
+    <div className="min-h-screen bg-white">
       <main>
-        {/* TITLE (centered + reduced whitespace) */}
-        <div className="mt-8 mb-6 text-center">
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-            Contactos Úteis
-          </h1>
-          <div className="h-[2px] w-20 bg-primary mx-auto mt-3" />
+        {/* HERO SECTION WITH WRAPPED HEADER */}
+        <div className="relative">
+          <div className="absolute top-0 left-0 right-0 z-50">
+            <Header />
+          </div>
+
+          <section className="relative w-full h-[350px] md:h-[450px] overflow-hidden flex items-end pb-12">
+            <div className="absolute inset-0">
+              <img
+                src="/visitar-hero.jpg"
+                alt="Contactos úteis - Todos os links úteis"
+                className="w-full h-full object-cover grayscale"
+              />
+              {/* Blue tinted overlay */}
+              <div className="absolute inset-0 bg-[#1c2841]/70 mix-blend-multiply" />
+              <div className="absolute inset-0 bg-[#1c2841]/40" />
+            </div>
+
+            <div className="container relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="text-white">
+                <h1 className="font-extrabold text-4xl md:text-5xl lg:text-6xl mb-2">
+                  Contactos úteis
+                </h1>
+                <p className="text-xl md:text-2xl font-medium text-white/90">
+                  Todos os links úteis
+                </p>
+              </div>
+
+              <div className="w-full md:max-w-xl">
+                <div className="flex w-full mb-3 shadow-lg">
+                  <input
+                    type="text"
+                    placeholder="O que procuro"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-5 py-3.5 text-black rounded-l-md outline-none"
+                  />
+                  <button className="bg-white px-6 font-semibold text-[#1c2841] border-l border-gray-200 rounded-r-md hover:bg-gray-50 transition-colors">
+                    Pesquisar
+                  </button>
+                </div>
+                <p className="text-xs text-white/80 font-medium">
+                  Termos Populares:{" "}
+                  <span className="underline cursor-pointer hover:text-white ml-1">
+                    Feira de Março
+                  </span>
+                  , <span className="underline cursor-pointer hover:text-white ml-1">Passeios</span>
+                  ,{" "}
+                  <span className="underline cursor-pointer hover:text-white ml-1">
+                    Feira de antiguidades
+                  </span>
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
 
-        <section className="section-padding pt-6">
-          <div className="container max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {usefulContacts.map((contact) => (
-                <Card key={contact.id} className="h-full border-border/80">
-                  <div className="relative h-48 overflow-hidden rounded-t-xl border-b border-border/60">
-                    <img
-                      src={contact.image}
-                      alt={contact.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+        {/* MAIN LAYOUT: SIDEBAR + CONTENT */}
+        <section className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
+          {/* LEFT SIDEBAR */}
+          <aside className="w-full lg:w-[300px] shrink-0">
+            {/* Em Destaque */}
+            <div className="mb-10">
+              <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
+                Em destaque
+              </h3>
+              <div className="flex flex-col gap-3">
+                <button className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
+                  Hospital de Aveiro
+                </button>
+                <button className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
+                  Universidade de Aveiro
+                </button>
+              </div>
+            </div>
 
-                  <CardHeader>
-                    <CardTitle className="font-display text-xl">{contact.title}</CardTitle>
-                  </CardHeader>
+            {/* Dynamic Filters from Array */}
+            {filterCategories.map((category, index) => (
+              <div key={category.title} className="mb-8">
+                <div className="flex items-center justify-between mb-4 cursor-pointer text-[#1c2841]">
+                  <h3 className="font-extrabold text-sm uppercase tracking-wide">
+                    {category.title}
+                  </h3>
+                  <ChevronUp className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col gap-3.5 text-sm text-[#1c2841]/80 font-semibold">
+                  {category.options.map((opt) => (
+                    <label key={opt} className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={selectedFilters.includes(opt)}
+                        onChange={() => toggleFilter(opt)}
+                        className="w-4 h-4 rounded border-gray-300 text-[#1c2841] focus:ring-[#1c2841] cursor-pointer"
+                      />
+                      <span className="group-hover:text-[#1c2841]">{opt}</span>
+                    </label>
+                  ))}
+                </div>
+                {/* Render divider unless it's the last category */}
+                {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
+              </div>
+            ))}
 
-                  <CardContent className="space-y-4 text-sm text-muted-foreground">
-                    <p className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 mt-0.5 text-accent" />
-                      {contact.address}
-                    </p>
+            <hr className="border-gray-200 my-8" />
 
-                    <p className="flex items-start gap-2">
-                      <Phone className="w-4 h-4 mt-0.5 text-accent" />
-                      {contact.phone}
-                    </p>
+            {/* Perguntas Frequentes Accordion */}
+            <div className="mb-8">
+              <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
+                Perguntas frequentes
+              </h3>
+              <div className="bg-[#fef4d8] border border-[#f5e0a6] rounded-md overflow-hidden transition-all">
+                <button
+                  onClick={() => setFaqOpen(!faqOpen)}
+                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] transition-colors text-left"
+                >
+                  <p className="text-sm font-bold text-[#1c2841] pr-4 leading-snug">
+                    O que fazer se um ficheiro não abrir corretamente?
+                  </p>
+                  {faqOpen ? (
+                    <ChevronUp className="w-5 h-5 text-[#1c2841] shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-[#1c2841] shrink-0" />
+                  )}
+                </button>
+                <div
+                  className={`px-4 text-sm text-[#1c2841]/80 font-medium transition-all duration-300 ease-in-out ${
+                    faqOpen ? "max-h-40 pb-4 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+                  }`}
+                >
+                  <p>
+                    Certifique-se de que tem um leitor de PDF instalado ou tente abrir o ficheiro
+                    noutro navegador web.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                    <p className="flex items-start gap-2">
-                      <Mail className="w-4 h-4 mt-0.5 text-accent" />
-                      {contact.email}
-                    </p>
+            {/* Notícias Snippet */}
+            <div className="bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6">
+              <h3 className="font-extrabold text-[#1c2841] mb-3 text-sm uppercase tracking-wide">
+                Notícias
+              </h3>
+              <p className="text-xs text-gray-500 mb-2 font-medium">24 Abril, 2024</p>
+              <Link
+                href="#"
+                className="text-sm font-bold text-[#1c2841] hover:text-blue-800 transition-colors leading-snug block"
+              >
+                <span className="underline underline-offset-2 decoration-[#1c2841]/30">
+                  Novo acordo de parceria entre o Município de Aveiro e Instituições locais para
+                  reforçar a vitalidade, as artes e a cultura no concelho.
+                </span>
+              </Link>
+            </div>
+          </aside>
 
-                    <div className="rounded-lg border border-border/70 bg-muted/30 p-3">
-                      <p className="flex items-center gap-2 font-medium text-foreground mb-2">
-                        <Clock className="w-4 h-4 text-accent" />
-                        Horários de Atendimento
-                      </p>
+          {/* RIGHT MAIN CONTENT */}
+          <div className="flex-1">
+            {/* Header & Sorting */}
+            <div className="flex items-center mb-6 text-sm text-gray-500 font-semibold">
+              <span className="mr-3">Ordenar</span>
+              <button
+                onClick={() => setSortAsc(!sortAsc)}
+                className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 text-[#1c2841] transition-colors"
+              >
+                Nome
+                <ArrowDownUp className="w-4 h-4 text-gray-400" />
+              </button>
+            </div>
 
-                      <div className="space-y-1.5">
-                        {contact.scheduleLines.map((line) => (
-                          <p key={line}>{line}</p>
-                        ))}
-                        <p>Contabilidade por marcação.</p>
+            {/* Grid Map from CMS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 auto-rows-max">
+              {filteredAndSortedContacts.map((contact, index) => {
+                return (
+                  <div key={contact.id} className="contents">
+                    {/* ACCURATE CARD DESIGN */}
+                    <div className="bg-white border-2 border-[#1c2841] rounded-xl p-6 flex flex-col justify-between h-full hover:shadow-lg transition-shadow">
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-sm font-bold text-[#1c2841]">
+                            {contact.categoryTop}{" "}
+                            <span className="opacity-80">
+                              {" "}
+                              {contact.categoryTop && contact.categorySub ? "/" : ""}{" "}
+                              {contact.categorySub}
+                            </span>
+                          </span>
+                          {contact.websiteUrl && (
+                            <a
+                              href={contact.websiteUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-[#1c2841] hover:text-[#1c2841]/70 text-sm flex items-center gap-1.5 font-medium transition-colors"
+                            >
+                              Website <ExternalLink className="w-4 h-4" />
+                            </a>
+                          )}
+                        </div>
+                        <h2 className="text-[#1c2841] text-[22px] md:text-2xl font-extrabold leading-tight mt-3 mb-4">
+                          {contact.title}
+                        </h2>
+
+                        <div className="text-[#1c2841] text-base font-medium flex flex-col gap-1.5">
+                          {contact.address && <p>{contact.address}</p>}
+                          {contact.phone && <p>Tel. {contact.phone}</p>}
+                          {contact.email && <p>{contact.email}</p>}
+                          {contact.schedule && <p>{contact.schedule}</p>}
+                        </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+
+                    {/* NEW MIDDLE BANNER (Inserted after the 6th item to break the grid nicely) */}
+                    {index === 5 && (
+                      <div className="col-span-1 md:col-span-2 relative my-2 rounded-xl overflow-hidden h-[260px] shadow-sm">
+                        <img
+                          src="/visitar-banner.jpg"
+                          alt="Precisa de ajuda"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30" />
+
+                        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 bg-[#fef4d8] rounded-lg p-6 md:p-8 max-w-[320px] shadow-lg border border-[#f5e0a6]">
+                          <h3 className="text-[#1c2841] font-extrabold text-xl leading-snug mb-3">
+                            Precisa de ajuda na utilização deste site?
+                          </h3>
+                          <p className="text-sm text-[#1c2841] font-medium">
+                            Visite o{" "}
+                            <Link
+                              href="#"
+                              className="underline decoration-2 underline-offset-4 font-bold text-[#1c2841] hover:text-[#1c2841]/70 transition-colors"
+                            >
+                              Centro de Ajuda
+                            </Link>
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* BOTTOM BANNER */}
+              <div className="col-span-1 md:col-span-2 mt-4 rounded-xl overflow-hidden">
+                <HelpDeskBanner />
+              </div>
             </div>
-          </div>
-        </section>
-
-        {/* CTA UPDATED */}
-        <section className="section-padding bg-section-alt">
-          <div className="container max-w-3xl mx-auto px-4 text-center">
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Não encontrou o contacto certo?
-            </h2>
-
-            <p className="text-muted-foreground mb-6">
-              Use o formulário de contacto e encaminharemos o seu pedido para o serviço competente.
-            </p>
-
-            <Button size="lg" asChild className="bg-foreground text-white hover:bg-foreground/90">
-              <Link href="/contactos">
-                Ir para o formulário de contacto
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
           </div>
         </section>
       </main>
