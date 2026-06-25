@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+type ActionProps = {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+};
+
 type EmptyStateProps = {
   title?: string;
   description?: string;
-  primaryAction?: {
-    label: string;
-    href: string;
-  };
-  secondaryAction?: {
-    label: string;
-    href: string;
-  };
+  primaryAction?: ActionProps;
+  secondaryAction?: ActionProps;
 };
 
 export default function EmptyState({
@@ -63,20 +63,38 @@ export default function EmptyState({
       {/* ACTIONS */}
       {(primaryAction || secondaryAction) && (
         <div className="flex flex-col sm:flex-row gap-2">
-          {primaryAction && (
-            <Button asChild className="bg-foreground text-white hover:bg-foreground/90">
-              <Link href={primaryAction.href}>{primaryAction.label}</Link>
-            </Button>
-          )}
+          {/* Primary Action Logic */}
+          {primaryAction &&
+            (primaryAction.href ? (
+              <Button asChild className="bg-foreground text-white hover:bg-foreground/90">
+                <Link href={primaryAction.href}>{primaryAction.label}</Link>
+              </Button>
+            ) : (
+              <Button
+                onClick={primaryAction.onClick}
+                className="bg-foreground text-white hover:bg-foreground/90"
+              >
+                {primaryAction.label}
+              </Button>
+            ))}
 
-          {secondaryAction && (
-            <Button
-              asChild
-              className="bg-[hsl(var(--sidebar-ring))] text-white hover:bg-[hsl(var(--sidebar-ring))/90]"
-            >
-              <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
-            </Button>
-          )}
+          {/* Secondary Action Logic */}
+          {secondaryAction &&
+            (secondaryAction.href ? (
+              <Button
+                asChild
+                className="bg-[hsl(var(--sidebar-ring))] text-white hover:bg-[hsl(var(--sidebar-ring))/90]"
+              >
+                <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
+              </Button>
+            ) : (
+              <Button
+                onClick={secondaryAction.onClick}
+                className="bg-[hsl(var(--sidebar-ring))] text-white hover:bg-[hsl(var(--sidebar-ring))/90]"
+              >
+                {secondaryAction.label}
+              </Button>
+            ))}
         </div>
       )}
     </div>

@@ -129,28 +129,40 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white font-sans">
       <main>
-        <Header />
-        {/* HERO */}
-        <section className="relative h-[400px] overflow-hidden">
-          <img
-            src="/contact-hero.jpg"
-            alt="Contacto"
-            className="absolute grayscale inset-0 h-full w-full object-cover"
-          />
+        {/* WRAPPED HEADER & HERO */}
+        <div className="relative">
+          {/* Top Blue Utility Bar */}
+          <div className="bg-[#253e6b] h-8 w-full relative z-50" />
 
-          <div className="absolute inset-0 bg-[#162545]/70" />
-
-          <div className="relative z-10 flex h-full items-end px-8 lg:px-16 pb-10 max-w-[1600px] mx-auto">
-            <div>
-              <h1 className="text-white text-[56px] leading-[52px] font-extrabold tracking-[1.12px]">
-                Contacto
-              </h1>
-              <p className="text-white text-[28px] font-extrabold tracking-[0.56px] mt-2">
-                Fale connosco
-              </p>
-            </div>
+          {/* Header overlaying the section */}
+          <div className="absolute top-8 left-0 right-0 z-50">
+            <Header />
           </div>
-        </section>
+
+          {/* HERO */}
+          <section className="relative h-[400px] overflow-hidden">
+            <img
+              src="/contact-hero.jpg"
+              alt="Contacto"
+              className="absolute inset-0 h-full w-full object-cover grayscale"
+            />
+
+            {/* Blue tinted overlay to blend with header */}
+            <div className="absolute inset-0 bg-[#253e6b]/70 mix-blend-multiply" />
+            <div className="absolute inset-0 bg-[#253e6b]/40" />
+
+            <div className="relative z-10 flex h-full items-end px-8 lg:px-16 pb-10 max-w-[1600px] mx-auto">
+              <div>
+                <h1 className="text-white text-[56px] leading-[52px] font-extrabold tracking-[1.12px]">
+                  Contacto
+                </h1>
+                <p className="text-white text-[28px] font-extrabold tracking-[0.56px] mt-2">
+                  Fale connosco
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
 
         {/* CONTENT */}
         <section className="max-w-[1600px] mx-auto border-x border-[#E5E5E5]">

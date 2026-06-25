@@ -29,7 +29,7 @@ export default function ReunioesExecutivoPage() {
         <div className="relative z-10 py-6 px-6 lg:px-16">
           <div className="max-w-[1000px] mx-auto flex items-center">
             <Link
-              href="/organismo"
+              href="/institucional"
               className="flex items-center gap-2 text-[16px] font-bold text-white hover:text-gray-300 transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
