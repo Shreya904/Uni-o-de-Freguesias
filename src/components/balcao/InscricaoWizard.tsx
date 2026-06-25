@@ -26,9 +26,9 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
   const next = () => setStep((s) => Math.min(s + 1, 3));
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
+    <div className="balcao-shell">
       {/* SIDEBAR */}
-      <aside className="hidden md:block w-64 shrink-0 text-sm">
+      <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3">Em que atividades se quer inscrever?</p>
         <ul className="space-y-3 text-muted-foreground mb-8">
           {(["passeios", "almosos", "hidroginastica"] as InscricaoType[]).map((t) => (
@@ -62,11 +62,11 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
       </aside>
 
       {/* MAIN */}
-      <div className="flex-1">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+      <div className="balcao-main">
+        <h1>
           {titles[active]}
         </h1>
-        <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-2xl">
+        <p className="mb-8 max-w-2xl">
           {descriptions[active]}
         </p>
 
@@ -91,7 +91,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
         {step === 2 && <StepPagamento onContinue={next} />}
         {step === 3 && <StepConfirmacao />}
 
-        <p className="font-bold text-foreground mb-3 mt-12">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
         <div className="space-y-3">
           <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
             <summary className="font-medium text-foreground">Quero casar, o que devo fazer?</summary>

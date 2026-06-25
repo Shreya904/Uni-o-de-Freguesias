@@ -11,9 +11,9 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
   const next = () => setStep((s) => Math.min(s + 1, 4));
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
+    <div className="balcao-shell">
       {/* SIDEBAR */}
-      <aside className="hidden md:block w-64 shrink-0 text-sm">
+      <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3">Que declaração precisa?</p>
         <ul className="space-y-3 text-muted-foreground mb-8">
           <li className="flex items-center gap-2">
@@ -36,15 +36,15 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
       </aside>
 
       {/* MAIN */}
-      <div className="flex-1">
+      <div className="balcao-main">
         {active === "comunhao" ? (
           <ComunhaoContent />
         ) : (
           <>
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+            <h1>
               União de facto
             </h1>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-2xl">
+            <p className="mb-8 max-w-2xl">
               Indique os dados necessários para a emissão da declaração de união de facto, identificando os requerentes, para que os serviços da junta possam analisar e dar seguimento ao processo.
             </p>
 
@@ -72,7 +72,7 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
           </>
         )}
 
-        <p className="font-bold text-foreground mb-3 mt-12">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
         <div className="space-y-3">
           <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
             <summary className="font-medium text-foreground">Quero casar, o que devo fazer?</summary>
@@ -89,10 +89,10 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
 function ComunhaoContent() {
   return (
     <div>
-      <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6">
+      <h1>
         Comunhão de mesa e habitação
       </h1>
-      <div className="space-y-4 text-muted-foreground text-sm leading-relaxed mb-10 max-w-2xl">
+      <div className="mb-10 max-w-2xl space-y-4">
         <p>Para solicitar uma declaração de Comunhão de mesa e habitação, deverá dirigir-se presencialmente aos serviços da junta de freguesia.</p>
         <p>Este procedimento permite confirmar que a pessoa se encontra viva e pode ser necessário para efeitos de pensão, processos administrativos, entidades bancárias, seguradoras ou outros organismos públicos e privados.</p>
         <p>O requerente terá de trazer fotocópia dos seus documentos (B.I./Passaporte/Cartão de Cidadão e Cartão de Contribuinte).</p>

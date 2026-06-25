@@ -166,6 +166,7 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
+  const isBalcaoDigital = pathname.startsWith("/balcao-digital");
 
   useEffect(() => {
     setOpenDropdown(null);
@@ -218,7 +219,11 @@ const Header = () => {
   };
 
   return (
-    <header className="relative z-50 bg-transparent px-4 lg:px-12 py-6">
+    <header
+      className={`relative z-50 px-4 py-6 lg:px-12 ${
+        isBalcaoDigital ? "bg-[#C41230]" : "bg-transparent"
+      }`}
+    >
       <nav
         ref={dropdownRef}
         className="relative bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto"

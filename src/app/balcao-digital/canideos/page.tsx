@@ -8,8 +8,8 @@ export default function CanideosPage() {
       <Header />
       <BalcaoHeader />
 
-      <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
-        <aside className="hidden md:block w-64 shrink-0 text-sm">
+      <div className="balcao-shell">
+        <aside className="balcao-sidebar">
           <p className="font-bold text-foreground mb-3">O que precisa?</p>
 
           <ul className="space-y-3">
@@ -34,28 +34,28 @@ export default function CanideosPage() {
           </details>
         </aside>
 
-        <main className="flex-1">
-          <h1 className="text-4xl font-bold mb-6">
+        <main className="balcao-main">
+          <h1>
             Licenças para canídeos
           </h1>
 
-          <p className="mb-4">
+          <p className="mb-4 max-w-2xl">
             Para tratar do licenciamento do seu cão, deverá dirigir-se
             presencialmente aos serviços da junta de freguesia.
           </p>
 
-          <p className="mb-4">
+          <p className="mb-4 max-w-2xl">
             Este procedimento exige a apresentação de documentação
             obrigatória, nomeadamente a identificação do animal e do
             respetivo detentor.
           </p>
 
-          <p className="mb-4">
+          <p className="mb-4 max-w-2xl">
             Antes de se deslocar, recomendamos que confirme junto da
             junta quais os documentos necessários.
           </p>
 
-          <h3 className="font-bold mt-10 mb-4">
+          <h3 className="balcao-section-title mt-10 mb-4">
             Outros assuntos populares
           </h3>
 

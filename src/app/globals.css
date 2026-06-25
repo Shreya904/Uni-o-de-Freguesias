@@ -110,3 +110,82 @@
     @apply max-w-5xl mx-auto;
   }
 }
+
+@layer components {
+  .balcao-shell {
+    @apply mx-auto flex max-w-6xl gap-10 px-4 py-10;
+  }
+
+  .balcao-sidebar {
+    @apply hidden w-64 shrink-0 text-[#1C2E56] md:block;
+    font-size: 1rem;
+  }
+
+  .balcao-sidebar > p,
+  .balcao-section-title {
+    @apply font-bold text-[#1C2E56];
+    font-size: 1.125rem;
+  }
+
+  .balcao-main {
+    @apply flex-1 text-[#1C2E56];
+  }
+
+  .balcao-main h1 {
+    @apply mb-4 font-bold leading-tight text-[#1C2E56];
+    font-size: 2.25rem;
+  }
+
+  .balcao-main p {
+    @apply leading-relaxed text-[#1C2E56];
+    font-size: 1rem;
+  }
+
+  .balcao-main label {
+    @apply font-semibold text-[#1C2E56];
+    font-size: 1rem;
+  }
+
+  .balcao-main input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+  .balcao-main select,
+  .balcao-main textarea {
+    @apply mt-1 w-full rounded-md border-2 border-[#1C2E56] bg-white px-3 text-[#1C2E56] focus:outline-none focus:ring-0;
+    font-size: 1rem;
+  }
+
+  .balcao-main input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+  .balcao-main select {
+    @apply h-11 py-2;
+  }
+
+  .balcao-main textarea {
+    @apply min-h-24 py-2;
+  }
+
+  .balcao-main button {
+    border-width: 2px;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .balcao-main span,
+  .balcao-main li,
+  .balcao-sidebar span,
+  .balcao-sidebar li,
+  .balcao-sidebar a,
+  .balcao-sidebar button {
+    font-size: 1rem;
+  }
+
+  .balcao-main details,
+  .balcao-sidebar details {
+    @apply rounded-lg border-2 p-4 text-[#1C2E56];
+    font-size: 1rem;
+  }
+
+  .balcao-main summary,
+  .balcao-sidebar summary {
+    @apply cursor-pointer font-bold text-[#1C2E56];
+    font-size: 1rem;
+  }
+}

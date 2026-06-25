@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ChevronRight, ChevronLeft, ChevronRight as ChevRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 const steps = ["Requerente(s)", "Falecido", "Documentos", "Confirmação"];
 
@@ -454,9 +454,9 @@ export default function CemiterioWizard() {
   const next = () => setStep((s) => Math.min(s + 1, 4));
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
+    <div className="balcao-shell">
       {/* SIDEBAR */}
-      <aside className="hidden md:block w-64 shrink-0 text-sm">
+      <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3">O que precisa?</p>
         <ul className="space-y-2 text-muted-foreground mb-8">
           {[
@@ -482,11 +482,11 @@ export default function CemiterioWizard() {
       </aside>
 
       {/* MAIN */}
-      <div className="flex-1">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+      <div className="balcao-main">
+        <h1>
           Requerimento para Inumação, Cremação, Trasladação e Exumação
         </h1>
-        <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-2xl">
+        <p className="mb-8 max-w-2xl">
           Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.
         </p>
 
@@ -512,7 +512,7 @@ export default function CemiterioWizard() {
         {step === 3 && <StepDocumentos onContinue={next} />}
         {step === 4 && <StepConfirmacao />}
 
-        <p className="font-bold text-foreground mb-3 mt-12">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
         <div className="space-y-3">
           <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
             <summary className="font-medium text-foreground">Quero casar, o que devo fazer?</summary>

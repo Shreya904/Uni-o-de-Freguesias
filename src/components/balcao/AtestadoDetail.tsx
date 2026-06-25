@@ -16,8 +16,8 @@ export default function AtestadoDetail({
   paragraphs: string[];
 }) {
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
-      <aside className="hidden md:block w-64 shrink-0 text-sm">
+    <div className="balcao-shell">
+      <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3">Qual é o atestado que precisa?</p>
         <ul className="space-y-3 text-muted-foreground mb-8">
           {sidebarItems.map((item) => (
@@ -39,15 +39,15 @@ export default function AtestadoDetail({
         </details>
       </aside>
 
-      <div className="flex-1">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6">
+      <div className="balcao-main">
+        <h1>
           {title}
         </h1>
-        <div className="space-y-4 text-muted-foreground leading-relaxed mb-10 text-sm">
+        <div className="mb-10 space-y-4">
           {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
         </div>
 
-        <p className="font-bold text-foreground mb-3">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3">Outros assuntos populares</p>
         <div className="space-y-3">
           <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
             <summary className="font-medium text-foreground">Quero casar, o que devo fazer?</summary>
