@@ -52,7 +52,7 @@ export default function OrganismoPage() {
                 </h3>
                 <nav className="flex flex-col gap-3">
                   <Link
-                    href="/institucional/presidencia"
+                    href="/institucional/presidente"
                     className="flex items-center gap-2 text-[#1C2E56] hover:text-[#B4142F] font-semibold text-[15px] transition-colors"
                   >
                     <ChevronRight className="w-4 h-4 text-[#1C2E56]" />

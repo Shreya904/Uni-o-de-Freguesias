@@ -1,29 +1,32 @@
 "use client";
 
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { fetchPublishedNews } from "@/lib/cms";
-import EmptyState from "@/components/ui/emptystate"; // adjust path if needed
+import EmptyState from "@/components/ui/emptystate";
 
-type News = {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt?: string;
-  date: string;
-  mainImage?: string;
+// Exact blue hex used across your site
+const BRAND_NAVY = "#253e6b";
+
+// Helper to format date exactly like "26 Janeiro 2026"
+const formatNewsDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString("pt-PT", { month: "long" });
+  const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+  const year = date.getFullYear();
+  return `${day} ${capitalizedMonth} ${year}`;
 };
 
 export default function NoticiasPage() {
-  const [newsItems, setNewsItems] = useState<News[]>([]);
+  const [newsItems, setNewsItems] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     let isMounted = true;
-
     const loadNews = async () => {
       try {
         const items = await fetchPublishedNews();
@@ -32,45 +35,83 @@ export default function NoticiasPage() {
         if (isMounted) setNewsItems([]);
       }
     };
-
     void loadNews();
-
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const isEmpty = newsItems.length === 0;
+  const filteredNews = useMemo(() => {
+    if (!searchQuery.trim()) return newsItems;
+    const query = searchQuery.toLowerCase();
+    return newsItems.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        (item.excerpt && item.excerpt.toLowerCase().includes(query)),
+    );
+  }, [newsItems, searchQuery]);
+
+  const isEmpty = filteredNews.length === 0;
 
   return (
-    <div className="min-h-screen">
-      <Header />
-
+    <div className="min-h-screen bg-white">
       <main>
-        <section className="section-padding">
-          <div className="container max-w-6xl mx-auto px-4">
-            {/* TITLE */}
-            <div className="mb-12">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-                Notícias
-              </h1>
-              <div className="h-[2px] w-24 bg-primary mt-4" />
+        {/* HERO SECTION WITH WRAPPED HEADER */}
+        <div className="relative">
+          <div className="absolute top-0 left-0 right-0 z-50">
+            <Header />
+          </div>
+
+          {/* Hero with Lighter Blue Tint */}
+          <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden flex items-end pb-12">
+            <div className="absolute inset-0">
+              <img
+                src="/hero-bg.jpg"
+                alt="Notícias - Toda a atualidade"
+                className="w-full h-full object-cover grayscale"
+              />
+              {/* Lighter blue overlay for a more open, modern look */}
+              <div className="absolute inset-0 bg-[#253e6b]/70 mix-blend-multiply" />
             </div>
 
-            {/* ✅ EMPTY STATE */}
+            <div className="container relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="text-white">
+                <h1 className="font-extrabold text-4xl md:text-5xl lg:text-6xl mb-2">Notícias</h1>
+                <p className="text-xl md:text-2xl font-medium text-white/90">Toda a atualidade</p>
+              </div>
+
+              <div className="w-full md:max-w-xl">
+                <div className="flex w-full mb-3 shadow-lg">
+                  <input
+                    type="text"
+                    placeholder="O que procura"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-5 py-3.5 text-black rounded-l-md outline-none"
+                  />
+                  <button className="bg-white px-6 font-semibold text-[#253e6b] border-l border-gray-200 rounded-r-md hover:bg-gray-50 transition-colors">
+                    Pesquisar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* MAIN CONTENT: MASONRY GRID */}
+        <section className="py-12 md:py-16">
+          <div className="container max-w-[1400px] mx-auto px-6 md:px-12">
             {isEmpty ? (
-              <EmptyState
-                title="Sem notícias publicadas"
-                description="Ainda não existem notícias disponíveis. Volte mais tarde para atualizações."
-                primaryAction={{
-                  label: "Voltar à página inicial",
-                  href: "/",
-                }}
-              />
+              <div className="py-12">
+                <EmptyState
+                  title="Sem notícias encontradas"
+                  description="Tente usar outros termos."
+                  primaryAction={{ label: "Limpar pesquisa", onClick: () => setSearchQuery("") }}
+                />
+              </div>
             ) : (
-              /* MASONRY GRID */
-              <div className="columns-1 sm:columns-2 lg:columns-3 gap-10 [column-gap:2.5rem] space-y-10">
-                {newsItems.map((item) => {
+              <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 md:gap-14 [column-gap:3.5rem]">
+                {filteredNews.map((item) => {
                   const image =
                     typeof item.mainImage === "string" && item.mainImage.trim()
                       ? item.mainImage.trim()
@@ -80,37 +121,30 @@ export default function NoticiasPage() {
                     <Link
                       key={item.id}
                       href={`/noticias/${item.slug}`}
-                      className="block break-inside-avoid mb-12 group"
+                      className="block break-inside-avoid mb-12 md:mb-16 group"
                     >
-                      <article className="flex flex-col gap-4">
-                        {/* IMAGE */}
+                      <article className="flex flex-col">
                         {image && (
-                          <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg bg-muted">
+                          <div className="relative w-full aspect-[4/3] md:aspect-[3/2] overflow-hidden bg-gray-100 mb-5">
                             <Image
                               src={image}
                               alt={item.title}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                           </div>
                         )}
-
-                        {/* TEXT */}
-                        <div className="flex flex-col gap-2">
-                          <div className="text-xs text-muted-foreground">
-                            {new Date(item.date).toLocaleDateString("pt-PT")}
-                          </div>
-
-                          <h2 className="font-display text-xl md:text-2xl font-semibold leading-snug underline decoration-primary/40 underline-offset-4 group-hover:text-primary transition-colors">
-                            {item.title}
-                          </h2>
-
-                          {item.excerpt && (
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {item.excerpt}
-                            </p>
-                          )}
+                        <h2 className="text-[#253e6b] text-2xl md:text-[28px] font-extrabold leading-[1.25] mb-4 underline decoration-[2px] underline-offset-[6px] group-hover:text-[#1c2841] transition-colors">
+                          {item.title}
+                        </h2>
+                        <div className="text-[15px] font-medium text-[#253e6b]/80 mb-3">
+                          {formatNewsDate(item.date)}
                         </div>
+                        {item.excerpt && (
+                          <p className="text-base md:text-[17px] text-[#4a5568] font-medium leading-relaxed">
+                            {item.excerpt}
+                          </p>
+                        )}
                       </article>
                     </Link>
                   );
@@ -120,7 +154,6 @@ export default function NoticiasPage() {
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   );
