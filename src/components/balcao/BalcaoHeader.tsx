@@ -11,8 +11,17 @@ const tabs = [
   { label: "Cemitérios", href: "/balcao-digital/cemiterios" },
 ];
 
+const comunidadeTabs = [
+  { label: "Quem somos", href: "/balcao-digital/comunidade/quem-somos" },
+  { label: "Propostas", href: "/balcao-digital/comunidade/propostas" },
+  { label: "Reclamações e Sugestões", href: "/balcao-digital/comunidade/reclamacoes" },
+  { label: "Associativismo", href: "/balcao-digital/comunidade/associativismo" },
+];
+
 export default function BalcaoHeader() {
   const pathname = usePathname();
+  const isComunidade = pathname?.startsWith("/balcao-digital/comunidade");
+  const activeTabs = isComunidade ? comunidadeTabs : tabs;
 
   return (
     <div className="bg-white">
