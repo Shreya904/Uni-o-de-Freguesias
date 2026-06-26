@@ -4,7 +4,8 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ChevronUp, ChevronDown, ArrowDownUp, ExternalLink, FileEdit } from "lucide-react";
+import NewsHighlightBox from "@/components/NewsHighlightBox";
+import { ChevronUp, ChevronDown, ArrowDownUp, FileEdit } from "lucide-react";
 // import EmptyState from "@/components/ui/emptystate";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
@@ -357,22 +358,7 @@ export default function EventsPage() {
               </div>
             </div>
 
-            {/* Notícias Snippet */}
-            <div className="bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6">
-              <h3 className="font-extrabold text-[#253e6b] mb-3 text-sm uppercase tracking-wide">
-                Notícias
-              </h3>
-              <p className="text-xs text-gray-500 mb-2 font-medium">24 Abril, 2024</p>
-              <Link
-                href="#"
-                className="text-sm font-bold text-[#253e6b] hover:text-[#1c2841] transition-colors leading-snug block"
-              >
-                <span className="underline underline-offset-2 decoration-[#253e6b]/30">
-                  Novo acordo de parceria entre o Município de Aveiro e Instituições locais para
-                  reforçar a vitalidade, as artes e a cultura no concelho.
-                </span>
-              </Link>
-            </div>
+            <NewsHighlightBox />
           </aside>
 
           {/* RIGHT MAIN CONTENT */}
@@ -452,9 +438,7 @@ export default function EventsPage() {
 
                       {/* Footer (Price & CTA) */}
                       <div className="mt-auto pt-4 border-t border-gray-200 flex items-center text-[15px]">
-                        <span className="font-extrabold text-[#253e6b]">
-                          {event.priceType}
-                        </span>
+                        <span className="font-extrabold text-[#253e6b]">{event.priceType}</span>
 
                         {/* Vertical Divider */}
                         <div className="w-px h-4 bg-gray-300 mx-3"></div>
@@ -464,7 +448,7 @@ export default function EventsPage() {
                           href={event.registrationLink || "/inscricoes"}
                           className="flex items-center gap-1.5 text-[#253e6b]/80 font-medium hover:text-[#1c2841] transition-colors cursor-pointer group"
                         >
-                          <span className="group-hover:text-[#1c2841]">Inscrição</span> 
+                          <span className="group-hover:text-[#1c2841]">Inscrição</span>
                           <FileEdit className="w-4 h-4 group-hover:text-[#1c2841]" />
                         </Link>
                       </div>

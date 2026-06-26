@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import NewsHighlightBox from "@/components/NewsHighlightBox";
 import Link from "next/link";
 import { Search, ChevronDown } from "lucide-react";
 
@@ -91,18 +92,7 @@ export default function LegalPage() {
                 </button>
               </div>
 
-              {/* News Box */}
-              <div className="bg-[#EAF4FD] p-6 rounded-[4px]">
-                <h3 className="font-extrabold text-[#1C2E56] text-[16px] mb-4">Notícias</h3>
-                <p className="text-[12px] text-[#1C2E56]/70 mb-2 font-medium">24 Abril, 2026</p>
-                <Link
-                  href="#"
-                  className="text-[#1C2E56] text-[14px] leading-relaxed underline underline-offset-2 hover:text-[#B4142F] transition-colors block"
-                >
-                  Novo acordo de parceria entre o Município de Aveiro e instituições locais para
-                  reforçar a vitalidade, as artes e a cultura no concelho.
-                </Link>
-              </div>
+              <NewsHighlightBox variant="standard" />
             </aside>
 
             {/* MAIN CONTENT */}

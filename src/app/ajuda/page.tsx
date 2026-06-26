@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown, Search, ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import NewsHighlightBox from "@/components/NewsHighlightBox";
 
 const sidebarSections = [
   {
@@ -113,17 +114,7 @@ export default function CentroAjudaPage() {
                 </div>
               ))}
 
-              {/* News Card */}
-              <div className="bg-[#DDE9F7] p-4 rounded-lg">
-                <h4 className="font-bold text-[#1C2E56] mb-3">Notícias</h4>
-
-                <p className="text-sm text-[#1C2E56]">
-                  Nova secção de parceria entre o Município de Aveiro e instituições locais para
-                  reforçar a atividade.
-                </p>
-
-                <button className="mt-3 text-sm font-semibold text-[#1C2E56]">Saber mais →</button>
-              </div>
+              <NewsHighlightBox variant="help" />
             </div>
           </aside>
 

@@ -22,7 +22,7 @@ const HelpDeskBanner = () => {
           <p className="text-white/90 text-sm md:text-base">
             Visite o{" "}
             <Link
-              href="#"
+              href="/balcao-digital"
               className="underline underline-offset-4 decoration-white/70 hover:decoration-white font-medium transition-all"
             >
               Balcão Digital

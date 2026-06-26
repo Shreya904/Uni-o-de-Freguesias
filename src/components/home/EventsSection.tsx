@@ -93,7 +93,7 @@ const EventsSection = () => {
             <h3 className="text-[22px] font-bold text-[#1e3050] mb-6">
               Visite a{" "}
               <Link
-                href="/agenda"
+                href="/eventos"
                 className="underline decoration-[3px] underline-offset-4 hover:text-primary transition-colors"
               >
                 Agenda
@@ -166,7 +166,7 @@ const EventsSection = () => {
 
                   {/* Footer Elements (Link) */}
                   <Link
-                    href="/inscricoes"
+                    href="/balcao-digital/inscricoes"
                     className="inline-flex items-center gap-4 text-[#1e3050] hover:opacity-75 transition-opacity"
                   >
                     <span className="font-bold text-[16px]">{displayEvent.price}</span>

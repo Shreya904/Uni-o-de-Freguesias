@@ -114,7 +114,7 @@ export default function InfoCardsSection() {
 
         {/* CARD 4: DIGITAL DESK */}
         <Link
-          href="#"
+          href="/balcao-digital"
           className="flex flex-col items-center justify-center bg-[#b81d34] rounded-lg p-6 min-h-[300px] hover:brightness-110 transition-all group"
         >
           <div className="text-center mb-8">

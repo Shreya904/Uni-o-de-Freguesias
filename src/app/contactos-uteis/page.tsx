@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
+import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
@@ -322,22 +323,7 @@ export default function ContactosUteisPage() {
               </div>
             </div>
 
-            {/* Notícias Snippet */}
-            <div className="bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6">
-              <h3 className="font-extrabold text-[#1c2841] mb-3 text-sm uppercase tracking-wide">
-                Notícias
-              </h3>
-              <p className="text-xs text-gray-500 mb-2 font-medium">24 Abril, 2024</p>
-              <Link
-                href="#"
-                className="text-sm font-bold text-[#1c2841] hover:text-blue-800 transition-colors leading-snug block"
-              >
-                <span className="underline underline-offset-2 decoration-[#1c2841]/30">
-                  Novo acordo de parceria entre o Município de Aveiro e Instituições locais para
-                  reforçar a vitalidade, as artes e a cultura no concelho.
-                </span>
-              </Link>
-            </div>
+            <NewsHighlightBox />
           </aside>
 
           {/* RIGHT MAIN CONTENT */}

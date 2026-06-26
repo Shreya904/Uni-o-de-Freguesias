@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
+import NewsHighlightBox from "@/components/NewsHighlightBox";
 import {
   Search,
   ChevronUp,
@@ -22,23 +23,64 @@ import {
 } from "lucide-react";
 
 // --- FRONTEND ARCHITECTURE TYPES ---
-// Updated interface to accommodate the new fields and varying formats (PDF, Audio, Video)
 export interface DocItem {
   id: string;
   format: "Documento" | "Audio" | "Video";
-  type: string; // e.g., "Regulamento", "Administração", "Podcast", "Entrevista"
-  topic: string; // e.g., "Administrativo", "Memória", "Comunidade"
+  type: string;
+  topic: string;
   date: string;
-  readTime: string; // e.g., "6min", "42min"
+  readTime: string;
   tags: string[];
   title: string;
   description?: string;
-  fileTypeLabel: string; // e.g., "Formato PDF", "Formato Video"
+  fileTypeLabel: string;
   fileUrl: string;
-  thumbnailUrl?: string; // Used for Video formats
+  thumbnailUrl?: string;
 }
 
-// --- FALLBACK DATA (Matching the provided image exactly) ---
+// --- UTILITY FUNCTIONS ---
+
+// Helper to force download cross-origin files
+const handleDownload = async (url: string, filename: string) => {
+  if (!url || url === "#") return;
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename || "documento.pdf";
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("Download failed:", error);
+    // Fallback: just open in new tab if fetch fails due to CORS
+    window.open(url, "_blank");
+  }
+};
+
+// Helper to silently print a PDF
+const handlePrint = (url: string) => {
+  if (!url || url === "#") return;
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = url;
+
+  document.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+    }, 500); // Slight delay to ensure PDF is fully rendered
+  };
+};
+
+// --- FALLBACK DATA ---
 const fallbackDocs: DocItem[] = [
   {
     id: "1",
@@ -107,15 +149,15 @@ const fallbackDocs: DocItem[] = [
       "Testemunho de antigos moradores sobre tradições locais, evolução urbana e vivências marcantes da comunidade.",
     fileTypeLabel: "Formato Video",
     fileUrl: "#",
-    thumbnailUrl: "/video-thumb-beiramar.jpg", // Needs an actual image in public folder
+    thumbnailUrl: "/video-thumb-beiramar.jpg",
   },
 ];
 
-// --- CMS FETCH FUNCTION WITH GRACEFUL FALLBACK ---
+// --- CMS FETCH FUNCTION ---
 const fetchDocsFromCMS = async (): Promise<DocItem[]> => {
   try {
-    // Replace with your actual CMS endpoint once the backend is updated
-    const res = await fetch("/api/cms/documents");
+    // UPDATED: Using depth=1 to fetch relationship details (like file URLs) from Payload
+    const res = await fetch("/api/documents?depth=1");
 
     if (!res.ok) {
       console.warn("CMS endpoint not ready. Using fallback data.");
@@ -124,8 +166,33 @@ const fetchDocsFromCMS = async (): Promise<DocItem[]> => {
 
     const data = await res.json();
 
-    if (data && data.length > 0) {
-      return data;
+    // UPDATED: Mapping the Payload structure to the frontend format
+    if (data && data.docs && data.docs.length > 0) {
+      return data.docs.map((doc: any): DocItem => {
+        // Format ISO date into Portuguese localized date
+        const formattedDate = new Date(doc.date).toLocaleDateString("pt-PT", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        return {
+          id: doc.id,
+          format: doc.format,
+          type: doc.type,
+          topic: doc.topic,
+          date: formattedDate,
+          readTime: doc.readTime || "5min",
+          // Map tags from Payload array of objects to array of strings
+          tags: doc.tags ? doc.tags.map((t: any) => t.tag) : [],
+          title: doc.title,
+          description: doc.description,
+          fileTypeLabel: doc.fileTypeLabel,
+          // Safely access nested file url, fallback to sourceUrl if provided
+          fileUrl: doc.file?.url || doc.sourceUrl || "#",
+          thumbnailUrl: doc.thumbnail?.url || undefined,
+        };
+      });
     }
 
     return fallbackDocs;
@@ -136,15 +203,13 @@ const fetchDocsFromCMS = async (): Promise<DocItem[]> => {
 };
 
 export default function DocumentacaoPage() {
-  // State definitions
   const [documents, setDocuments] = useState<DocItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list"); // Added for the list/grid toggle in UI
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
-  // Filter Category Definitions
   const filterCategories = [
     {
       title: "Formato (todos)",
@@ -160,7 +225,6 @@ export default function DocumentacaoPage() {
     },
   ];
 
-  // Fetch CMS Data
   useEffect(() => {
     let isMounted = true;
     const loadDocs = async () => {
@@ -173,18 +237,15 @@ export default function DocumentacaoPage() {
     };
   }, []);
 
-  // Filter Toggle Handler
   const toggleFilter = (filter: string) => {
     setSelectedFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
     );
   };
 
-  // Derived filtered & sorted data
   const filteredAndSortedDocs = useMemo(() => {
     let result = [...documents];
 
-    // 1. Search Query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -194,7 +255,6 @@ export default function DocumentacaoPage() {
       );
     }
 
-    // 2. Sidebar Filters (Checkboxes)
     if (selectedFilters.length > 0) {
       result = result.filter(
         (d) =>
@@ -204,7 +264,6 @@ export default function DocumentacaoPage() {
       );
     }
 
-    // 3. Sorting (A-Z or Z-A based on date or title, defaulting to title for consistency)
     result.sort((a, b) => {
       if (sortAsc) return a.title.localeCompare(b.title);
       return b.title.localeCompare(a.title);
@@ -224,13 +283,11 @@ export default function DocumentacaoPage() {
 
           <section className="relative w-full h-[350px] md:h-[450px] overflow-hidden flex items-end pb-12">
             <div className="absolute inset-0">
-              {/* Needs a document-themed hero image in public folder */}
               <img
                 src="/documents-hero.jpg"
                 alt="Documentação - Todos os documentos"
                 className="w-full h-full object-cover grayscale"
               />
-              {/* Blue tinted overlay */}
               <div className="absolute inset-0 bg-[#1c2841]/80 mix-blend-multiply" />
               <div className="absolute inset-0 bg-[#1c2841]/50" />
             </div>
@@ -313,7 +370,6 @@ export default function DocumentacaoPage() {
                     </label>
                   ))}
                 </div>
-                {/* Render divider unless it's the last category */}
                 {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
               </div>
             ))}
@@ -352,22 +408,7 @@ export default function DocumentacaoPage() {
               </div>
             </div>
 
-            {/* Notícias Snippet */}
-            <div className="bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6">
-              <h3 className="font-extrabold text-[#1c2841] mb-3 text-sm uppercase tracking-wide">
-                Notícias
-              </h3>
-              <p className="text-xs text-gray-500 mb-2 font-medium">24 Abril, 2024</p>
-              <Link
-                href="#"
-                className="text-sm font-bold text-[#1c2841] hover:text-blue-800 transition-colors leading-snug block"
-              >
-                <span className="underline underline-offset-2 decoration-[#1c2841]/30">
-                  Novo acordo de parceria entre o Município de Aveiro e Instituições locais para
-                  reforçar a vitalidade, as artes e a cultura no concelho.
-                </span>
-              </Link>
-            </div>
+            <NewsHighlightBox />
           </aside>
 
           {/* RIGHT MAIN CONTENT */}
@@ -401,16 +442,14 @@ export default function DocumentacaoPage() {
             </div>
 
             {/* Content List/Grid */}
-            {/* Using flex-col for the list look shown in the image */}
             <div
               className={`flex ${viewMode === "list" ? "flex-col" : "flex-wrap grid grid-cols-1 md:grid-cols-2"} gap-5`}
             >
               {filteredAndSortedDocs.map((doc, index) => {
                 return (
                   <div key={doc.id} className="contents">
-                    {/* DYNAMIC CARD RENDERING BASED ON FORMAT */}
                     <div className="bg-white border-[1.5px] border-[#1c2841] rounded-xl p-6 flex flex-col hover:shadow-lg transition-shadow">
-                      {/* CARD HEADER (Common across all formats) */}
+                      {/* CARD HEADER */}
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                         <div className="flex flex-wrap items-center gap-3 text-sm font-bold text-[#1c2841]">
                           <span>{doc.type}</span>
@@ -453,7 +492,6 @@ export default function DocumentacaoPage() {
                             <span className="text-xs font-bold text-[#1c2841]">Ouvir episódio</span>
                           </button>
                           <div className="flex-1 w-full">
-                            {/* Fake Audio Waveform */}
                             <div className="flex items-center gap-1 h-12 mb-4 w-full opacity-60">
                               {[...Array(30)].map((_, i) => (
                                 <div
@@ -509,19 +547,31 @@ export default function DocumentacaoPage() {
                         <div className="flex items-center gap-4 text-sm font-bold text-gray-500">
                           {doc.format === "Documento" && (
                             <>
-                              <button className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors">
-                                Visualizar <Eye className="w-4 h-4" />
-                              </button>
-                              <span className="text-gray-300">|</span>
+                              {/* UPDATED: VIEW LOGIC */}
                               <a
                                 href={doc.fileUrl}
-                                download
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors cursor-pointer"
+                              >
+                                Visualizar <Eye className="w-4 h-4" />
+                              </a>
+                              <span className="text-gray-300">|</span>
+
+                              {/* UPDATED: DOWNLOAD LOGIC */}
+                              <button
+                                onClick={() => handleDownload(doc.fileUrl, `${doc.title}.pdf`)}
                                 className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
                               >
                                 Descarregar <Download className="w-4 h-4" />
-                              </a>
+                              </button>
                               <span className="text-gray-300">|</span>
-                              <button className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors">
+
+                              {/* UPDATED: PRINT LOGIC */}
+                              <button
+                                onClick={() => handlePrint(doc.fileUrl)}
+                                className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
+                              >
                                 Imprimir <Printer className="w-4 h-4" />
                               </button>
                             </>
@@ -537,7 +587,7 @@ export default function DocumentacaoPage() {
                       </div>
                     </div>
 
-                    {/* NEW MIDDLE BANNER (Inserted after the 3rd item just like in the provided image) */}
+                    {/* MIDDLE BANNER */}
                     {index === 2 && (
                       <div className="relative my-4 rounded-xl overflow-hidden h-[220px] md:h-[260px] shadow-sm">
                         <img
