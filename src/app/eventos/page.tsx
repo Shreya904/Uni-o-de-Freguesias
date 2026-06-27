@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ChevronUp, ChevronDown, ArrowDownUp, FileEdit } from "lucide-react";
-import { fetchPublishedEvents } from "@/lib/cms"; // Import added
+import { fetchPublishedEvents } from "@/lib/cms";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 export interface EventItem {
@@ -21,7 +21,7 @@ export interface EventItem {
   timeStr: string;
   location: string;
   mainImage: string;
-  registrationLink?: string;
+  registrationLink: string;
 }
 
 // Helper to determine time-based categories (Hoje, Esta semana, Este mês) dynamically
@@ -163,8 +163,7 @@ export default function EventsPage() {
   };
 
   const filteredAndSortedEvents = useMemo(() => {
-    let sourceData = events.length > 0 ? events : fallbackEvents;
-    let result = [...sourceData];
+    let result = [...events]; // Always start with the current state
 
     // Search Query
     if (searchQuery.trim() !== "") {

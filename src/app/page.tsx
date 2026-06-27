@@ -5,13 +5,10 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/home/HeroSection";
 import EventsSection from "@/components/home/EventsSection";
 import PresidentSection from "@/components/home/PresidentSection";
-// import CalendarSection from "@/components/home/CalendarSection";
 import NewsSection from "@/components/home/NewsSection";
 import DocumentsSection from "@/components/home/DocumentsSection";
-import FAQSection from "@/components/home/FAQSection";
 import InfoCardsSection from "@/components/home/linkCards";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
-// import MapSection from "@/components/home/MapSection";
 
 export default function Home() {
   return (

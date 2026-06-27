@@ -158,7 +158,6 @@ const EventsSection = () => {
               >
                 {/* Image */}
                 <div className="w-full h-[220px] mb-5 overflow-hidden border border-slate-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={displayEvent.imageUrl}
                     alt={displayEvent.title.replace("\n", " ")}

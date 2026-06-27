@@ -4,9 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import HelpDeskBanner from "@/components/home/helpDeskbanner";
 import {
-  Search,
   ChevronUp,
   ChevronDown,
   ArrowDownUp,
@@ -20,23 +18,7 @@ import {
   List as ListIcon,
   LayoutGrid,
 } from "lucide-react";
-import { fetchPublishedDocuments } from "@/lib/cms"; // Added import from your CMS lib
-
-// --- FRONTEND ARCHITECTURE TYPES ---
-export interface DocItem {
-  id: string;
-  format: "Documento" | "Audio" | "Video";
-  type: string;
-  topic: string;
-  date: string;
-  readTime: string;
-  tags: string[];
-  title: string;
-  description?: string;
-  fileTypeLabel: string;
-  fileUrl: string;
-  thumbnailUrl?: string;
-}
+import { fetchPublishedDocuments, type CmsDocumentItem as DocItem } from "@/lib/cms";
 
 // --- UTILITY FUNCTIONS ---
 
@@ -210,8 +192,8 @@ export default function DocumentacaoPage() {
       try {
         const cmsData = await fetchPublishedDocuments(100);
         if (isMounted) {
-          // Type casting is safe here as CmsDocumentItem matches DocItem structurally
-          setDocuments(cmsData && cmsData.length > 0 ? (cmsData as DocItem[]) : fallbackDocs);
+          // Use CMS data if available, otherwise use fallback
+          setDocuments(cmsData && cmsData.length > 0 ? cmsData : fallbackDocs);
         }
       } catch (error) {
         console.error("Error fetching documents from CMS:", error);

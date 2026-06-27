@@ -5,11 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { fetchPublishedNews } from "@/lib/cms";
+import { fetchPublishedNews, type CmsNewsItem } from "@/lib/cms";
 import EmptyState from "@/components/ui/emptystate";
-
-// Exact blue hex used across your site
-const BRAND_NAVY = "#253e6b";
 
 // Helper to format date exactly like "26 Janeiro 2026"
 const formatNewsDate = (dateString: string) => {
@@ -22,7 +19,7 @@ const formatNewsDate = (dateString: string) => {
 };
 
 export default function NoticiasPage() {
-  const [newsItems, setNewsItems] = useState<any[]>([]);
+  const [newsItems, setNewsItems] = useState<CmsNewsItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {

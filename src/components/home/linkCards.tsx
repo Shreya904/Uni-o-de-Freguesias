@@ -21,12 +21,13 @@ export default function InfoCardsSection() {
         if (data.daily) {
           setWeather({
             today: {
-              min: Math.round(data.daily.temperature_2m_min[0]),
-              max: Math.round(data.daily.temperature_2m_max[0]),
+              // Converted to string to match the initial state type
+              min: Math.round(data.daily.temperature_2m_min[0]).toString(),
+              max: Math.round(data.daily.temperature_2m_max[0]).toString(),
             },
             tomorrow: {
-              min: Math.round(data.daily.temperature_2m_min[1]),
-              max: Math.round(data.daily.temperature_2m_max[1]),
+              min: Math.round(data.daily.temperature_2m_min[1]).toString(),
+              max: Math.round(data.daily.temperature_2m_max[1]).toString(),
             },
           });
         }

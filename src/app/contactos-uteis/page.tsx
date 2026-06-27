@@ -151,9 +151,7 @@ export default function ContactosUteisPage() {
     }
 
     if (selectedFilters.length > 0) {
-      result = result.filter(
-        (c) => selectedFilters.includes(c.categorySub) || selectedFilters.includes(c.categoryTop),
-      );
+      result = result.filter((c) => selectedFilters.includes(c.categorySub));
     }
 
     result.sort((a, b) => {
@@ -324,7 +322,7 @@ export default function ContactosUteisPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 auto-rows-max">
               {filteredAndSortedContacts.map((contact, index) => {
                 return (
-                  <div key={contact.id} className="contents">
+                  <div key={contact.id || index} className="contents">
                     {/* ACCURATE CARD DESIGN */}
                     <div className="bg-white border-2 border-[#1c2841] rounded-xl p-6 flex flex-col justify-between h-full hover:shadow-lg transition-shadow">
                       <div>

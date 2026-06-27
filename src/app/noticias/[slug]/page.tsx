@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -16,49 +15,27 @@ const formatNewsDate = (dateString: string) => {
   return `${day} ${capitalizedMonth} ${year}`;
 };
 
-// Helper function retained from previous context
-function renderDescription(input: any): string[] {
-  if (!input) return [];
-  if (typeof input === "string") {
-    return input
-      .split(/(?:\n|\r|\u2022)/g)
-      .map((s) => s.trim())
-      .filter(Boolean);
-  }
-  if (typeof input === "object" && input.root?.children) {
-    const result: string[] = [];
-    const walk = (nodes: any[]) => {
-      let buffer = "";
-      for (const node of nodes) {
-        if (typeof node?.text === "string") buffer += node.text + " ";
-        const isBreak =
-          node?.type === "linebreak" ||
-          node?.type === "paragraph" ||
-          node?.type === "list" ||
-          node?.type === "list-item";
-        if (isBreak && buffer.trim()) {
-          result.push(buffer.trim());
-          buffer = "";
-        }
-        if (Array.isArray(node?.children)) walk(node.children);
-      }
-      if (buffer.trim()) result.push(buffer.trim());
-    };
-    walk(input.root.children);
-    return result.map((t) => t.replace(/\s+/g, " ").replace(/•\s*/g, "").trim()).filter(Boolean);
-  }
-  return [];
+export async function generateStaticParams() {
+  // Fetch all news to generate static paths
+  const newsItems = await fetchPublishedNews();
+
+  return newsItems.map((news) => ({
+    slug: news.slug,
+  }));
 }
 
+// 1. UPDATED: Wrap the params type in a Promise
 export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  // 2. UPDATED: Await the params object before destructuring
   const { slug } = await params;
+
   const newsItem = await fetchNewsBySlug(slug);
   const allLatestNews = await fetchPublishedNews(4);
 
   if (!newsItem) notFound();
 
   const latestNews = allLatestNews.filter((n) => n.id !== newsItem.id).slice(0, 3);
-  const descriptionBlocks = renderDescription(newsItem.description);
+  const descriptionBlocks = newsItem.description ? newsItem.description.split("\n") : [];
 
   return (
     <div className="min-h-screen bg-white">
@@ -127,7 +104,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                       <p className="text-white/90 text-sm font-medium">
                         Visite a{" "}
                         <Link
-                          href="/contact-uteis"
+                          href="/contactos-uteis"
                           className="underline decoration-1 underline-offset-4 hover:text-white transition-colors"
                         >
                           Lista pública
