@@ -73,7 +73,7 @@ const fallbackPlaces: PlaceItem[] = [
   {
     id: "7",
     categoryTop: "Natureza",
-    categorySub: "Observatório",
+    categorySub: "Observatórios",
     title: "Observatório de Aves",
     address: "R. da Pega 69, 3810-64 Aveiro",
   },
@@ -99,32 +99,42 @@ const fallbackPlaces: PlaceItem[] = [
 // --- CMS FETCH FUNCTION WITH FALLBACK ---
 const fetchPlacesFromCMS = async (): Promise<PlaceItem[]> => {
   try {
-    // Replace with your actual CMS endpoint once ready
-    const res = await fetch("/api/cms/places");
+    // UPDATED: Using the correct Payload endpoint
+    const res = await fetch("/api/places?limit=100");
     if (!res.ok) throw new Error("CMS fetch failed");
 
     const data = await res.json();
 
-    if (data && data.length > 0) {
-      return data;
+    // UPDATED: Mapping the Payload 'docs' array to the frontend format
+    if (data && data.docs && data.docs.length > 0) {
+      return data.docs.map(
+        (doc: any): PlaceItem => ({
+          id: doc.id,
+          categoryTop: doc.categoryTop,
+          categorySub: doc.categorySub,
+          title: doc.title,
+          address: doc.address || "",
+          phone: doc.phone || undefined,
+          schedule: doc.schedule || undefined,
+          websiteUrl: doc.websiteUrl || undefined,
+        }),
+      );
     }
 
     return fallbackPlaces;
   } catch (error) {
     console.error("Failed to fetch from CMS, using fallback data.", error);
-    return fallbackPlaces; // Returns the manual data if CMS fails/is empty
+    return fallbackPlaces;
   }
 };
 
 export default function EspacosPublicosPage() {
-  // State definitions
   const [places, setPlaces] = useState<PlaceItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortAsc, setSortAsc] = useState(true);
-  const [faqOpen, setFaqOpen] = useState(false); // Controls the Accordion
+  const [faqOpen, setFaqOpen] = useState(false);
 
-  // Fetch CMS Data
   useEffect(() => {
     let isMounted = true;
     const loadPlaces = async () => {
@@ -137,31 +147,26 @@ export default function EspacosPublicosPage() {
     };
   }, []);
 
-  // Filter Toggle Handler
   const toggleFilter = (filter: string) => {
     setSelectedFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
     );
   };
 
-  // Derived filtered & sorted data
   const filteredAndSortedPlaces = useMemo(() => {
     let result = [...places];
 
-    // 1. Search Query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter((p) => p.title.toLowerCase().includes(query));
     }
 
-    // 2. Sidebar Filters (Checkboxes)
     if (selectedFilters.length > 0) {
       result = result.filter(
         (p) => selectedFilters.includes(p.categorySub) || selectedFilters.includes(p.categoryTop),
       );
     }
 
-    // 3. Sorting (A-Z or Z-A)
     result.sort((a, b) => {
       if (sortAsc) return a.title.localeCompare(b.title);
       return b.title.localeCompare(a.title);
@@ -175,7 +180,6 @@ export default function EspacosPublicosPage() {
       <main>
         {/* HERO SECTION WITH WRAPPED HEADER */}
         <div className="relative">
-          {/* Header properly wrapped to overlay the Hero */}
           <div className="absolute top-0 left-0 right-0 z-50">
             <Header />
           </div>
@@ -187,7 +191,6 @@ export default function EspacosPublicosPage() {
                 alt="A visitar - Links úteis"
                 className="w-full h-full object-cover grayscale"
               />
-              {/* Blue tinted overlay */}
               <div className="absolute inset-0 bg-[#1c2841]/70 mix-blend-multiply" />
               <div className="absolute inset-0 bg-[#1c2841]/40" />
             </div>
@@ -313,7 +316,6 @@ export default function EspacosPublicosPage() {
                     <ChevronDown className="w-5 h-5 text-[#1c2841] shrink-0" />
                   )}
                 </button>
-                {/* Accordion Content */}
                 <div
                   className={`px-4 text-sm text-[#1c2841]/80 font-medium transition-all duration-300 ease-in-out ${
                     faqOpen ? "max-h-40 pb-4 opacity-100" : "max-h-0 opacity-0 overflow-hidden"

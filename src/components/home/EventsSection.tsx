@@ -3,9 +3,22 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FileEdit } from "lucide-react";
-import { CmsEventItem, fetchPublishedEvents } from "@/lib/cms";
 import EmptyState from "@/components/ui/emptystate";
 import { motion } from "framer-motion";
+
+// --- TYPES & INTERFACES ---
+interface LatestEvent {
+  id: string;
+  title: string;
+  description: string;
+  dateStr: string;
+  time: string;
+  location: string;
+  imageUrl: string;
+  price: string;
+  hasRegistration: boolean;
+  registrationLink: string;
+}
 
 // Helper to format real CMS dates to match the "18 abril (domingo)" format
 const formatFullDate = (value: string) => {
@@ -20,21 +33,60 @@ const formatFullDate = (value: string) => {
   }
 };
 
-const fallbackEvent = {
+const fallbackEvent: LatestEvent = {
   id: "fallback-1",
-  title: "Campeonato Junior\nOs Cagaretos",
+  title: "Campeonato Junior\nOs Cagaretes",
   description:
-    "O Campeonato Júnior “Os Cagaretos” reuniu jovens atletas da região numa jornada dedicada ao desporto, convívio e participação comunitária, promovendo o espírito de equipa e a formação desportiva local.",
+    "O Campeonato Júnior “Os Cagaretes” reuniu jovens atletas da região numa jornada dedicada ao desporto, convívio e participação comunitária, promovendo o espírito de equipa e a formação desportiva local.",
   dateStr: "18 abril (domingo)",
   time: "11:00",
   location: "Estádio Municipal",
   imageUrl: "/agenda-ex.png",
   price: "Gratuito",
   hasRegistration: true,
+  registrationLink: "/balcao-digital/inscricoes",
+};
+
+// --- MOCK CMS FETCH FUNCTION ---
+const fetchLatestEventFromCMS = async (): Promise<LatestEvent | null> => {
+  try {
+    // Fetch only the latest event (limit=1) and ensure images are populated (depth=1)
+    const res = await fetch("/api/events?limit=1&depth=1&sort=-date");
+
+    if (!res.ok) throw new Error("CMS fetch failed");
+
+    const data = await res.json();
+
+    if (data && data.docs && data.docs.length > 0) {
+      const doc = data.docs[0];
+
+      return {
+        id: doc.id,
+        title: doc.title,
+        // Map the short excerpt for the card description
+        description: doc.excerpt || "",
+        // Use the displayDate if available, otherwise format the exact date
+        dateStr: doc.displayDate || (doc.date ? formatFullDate(doc.date) : ""),
+        time: doc.time || "",
+        location: doc.location || "",
+        imageUrl: doc.mainImage?.url || fallbackEvent.imageUrl,
+        price: doc.priceType || "Gratuito",
+        // Defaulting to true as per your UI requirement, or you could drive this via CMS later
+        hasRegistration: true,
+        // Keep standard link unless overridden in CMS
+        registrationLink: doc.registrationLink || "/balcao-digital/inscricoes",
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.warn("Failed to fetch latest event from CMS.");
+    return null;
+  }
 };
 
 const EventsSection = () => {
-  const [events, setEvents] = useState<any[]>([]);
+  const [latestEvent, setLatestEvent] = useState<LatestEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Toggle this to false once CMS is updated to handle errors via EmptyState
@@ -42,40 +94,27 @@ const EventsSection = () => {
 
   useEffect(() => {
     let isMounted = true;
-    const loadEvents = async () => {
-      try {
-        const items = await fetchPublishedEvents(1); // Only need 1 for this featured layout
-        if (isMounted) {
-          setEvents(items);
-          setIsLoading(false);
-        }
-      } catch {
-        if (isMounted) {
-          setEvents([]);
-          setIsLoading(false);
-        }
+
+    const loadEvent = async () => {
+      const eventData = await fetchLatestEventFromCMS();
+      if (isMounted) {
+        setLatestEvent(eventData);
+        setIsLoading(false);
       }
     };
-    void loadEvents();
+
+    void loadEvent();
+
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const isEmpty = events.length === 0;
+  const isEmpty = !latestEvent;
   const showEmptyState = isEmpty && !ENABLE_FALLBACK;
 
   // Render CMS data if available, otherwise use fallback (if enabled)
-  const displayEvent = !isEmpty
-    ? {
-        ...events[0],
-        dateStr: events[0].date ? formatFullDate(events[0].date) : fallbackEvent.dateStr,
-        imageUrl: events[0].image || fallbackEvent.imageUrl,
-        description: events[0].description || fallbackEvent.description,
-        price: events[0].price || fallbackEvent.price,
-        hasRegistration: events[0].hasRegistration ?? fallbackEvent.hasRegistration,
-      }
-    : fallbackEvent;
+  const displayEvent = !isEmpty ? latestEvent : fallbackEvent;
 
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -166,7 +205,7 @@ const EventsSection = () => {
 
                   {/* Footer Elements (Link) */}
                   <Link
-                    href="/balcao-digital/inscricoes"
+                    href={displayEvent.registrationLink}
                     className="inline-flex items-center gap-4 text-[#1e3050] hover:opacity-75 transition-opacity"
                   >
                     <span className="font-bold text-[16px]">{displayEvent.price}</span>

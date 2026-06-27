@@ -6,25 +6,44 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ChevronUp, ChevronDown, ArrowDownUp, FileEdit } from "lucide-react";
-// import EmptyState from "@/components/ui/emptystate";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 export interface EventItem {
   id: string;
   slug: string;
-  categoryTop: string; // e.g., "Exposições", "Mercados"
-  categorySub: string; // e.g., "Hoje", "Esta semana" (derived dynamically or set in CMS)
-  priceType: string; // e.g., "Gratuito", "A pagar"
+  categoryTop: string;
+  categorySub: string;
+  priceType: string;
   title: string;
   description: string;
-  dateStr: string; // Formatted date string for display (e.g., "1 setembro 2026")
-  timeStr: string; // Formatted time string (e.g., "10:00 - 17:00")
+  dateStr: string;
+  timeStr: string;
   location: string;
   mainImage: string;
-  registrationLink?: string; // Link to /inscricoes or external
+  registrationLink?: string;
 }
 
-// --- FALLBACK DATA (Matches image exactly) ---
+// Helper to determine time-based categories (Hoje, Esta semana, Este mês) dynamically
+const getCategorySub = (eventDateStr: string): string => {
+  const eventDate = new Date(eventDateStr);
+  const today = new Date();
+
+  // Reset times for accurate day comparison
+  today.setHours(0, 0, 0, 0);
+  const compareDate = new Date(eventDate);
+  compareDate.setHours(0, 0, 0, 0);
+
+  const diffTime = compareDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Hoje";
+  if (diffDays > 0 && diffDays <= 7) return "Esta semana";
+  if (diffDays > 7 && diffDays <= 31) return "Este mês";
+
+  return "Futuro"; // For events beyond this month
+};
+
+// --- FALLBACK DATA ---
 const fallbackEvents: EventItem[] = [
   {
     id: "1",
@@ -48,71 +67,11 @@ const fallbackEvents: EventItem[] = [
     priceType: "Gratuito",
     title: "Musiria — Projeto de Música Gratuito",
     description:
-      "MUSIRIA: um Projeto da União das Freguesias de Glória e Vera Cruz. Aulas e Ensaios de Música GRATUITOS — para todas as idades! Quer aprender música, tocar num grupo ou desenvolver a sua voz em conjunto com outras pessoas? Na Musiria temos vagas abertas! Acompanhamento por professores de música dedicados. Experiência musical coletiva, divertida e inclusiva.",
+      "MUSIRIA: um Projeto da União das Freguesias de Glória e Vera Cruz. Aulas e Ensaios de Música GRATUITOS — para todas as idades!",
     dateStr: "Segundas e Quintas-feiras",
     timeStr: "18:30-19:30",
     location: "Polo Vera Cruz",
     mainImage: "/evento-musiria.jpg",
-    registrationLink: "/inscricoes",
-  },
-  {
-    id: "3",
-    slug: "feira-de-marco",
-    categoryTop: "Mercados",
-    categorySub: "Este mês",
-    priceType: "A pagar",
-    title: "Abriu a Feira de Março Edição 2027",
-    description:
-      "A edição de 2026 da Feira de Março abriu oficialmente ao público, trazendo concertos, gastronomia, animação, tradições populares e diversas atividades para todas as idades ao longo das próximas semanas.",
-    dateStr: "24 março a 25 de abril 2027",
-    timeStr: "10:00 - 01:00",
-    location: "Parque de Exposições",
-    mainImage: "/evento-feira-marco.jpg",
-    registrationLink: "/inscricoes",
-  },
-  {
-    id: "4",
-    slug: "caminhada-comunitaria",
-    categoryTop: "Atividades ao ar livre",
-    categorySub: "Este mês",
-    priceType: "Gratuito",
-    title: "Caminhada Comunitária — Percursos da Ria e Património Local",
-    description:
-      "Percurso guiado ao longo da ria com momentos de interpretação ambiental e descoberta do património local.",
-    dateStr: "12 Abril",
-    timeStr: "09:00",
-    location: "Marginal da Ria",
-    mainImage: "/evento-caminhada.jpg",
-    registrationLink: "/inscricoes",
-  },
-  {
-    id: "5",
-    slug: "torneio-sueca",
-    categoryTop: "Atividades ao ar livre",
-    categorySub: "Este mês",
-    priceType: "Gratuito",
-    title: "Torneio de Sueca",
-    description:
-      "Iniciativa comunitária dedicada ao tradicional jogo de cartas, promovendo o convívio, a participação intergeracional e os momentos de encontro entre residentes da freguesia.",
-    dateStr: "26 abril (domingo)",
-    timeStr: "15:00",
-    location: "Centro de Convívio da Glória",
-    mainImage: "", // No image provided for this one in the mockup
-    registrationLink: "/inscricoes",
-  },
-  {
-    id: "6",
-    slug: "campeonato-junior",
-    categoryTop: "Atividades ao ar livre",
-    categorySub: "Este mês",
-    priceType: "Gratuito",
-    title: "Campeonato Junior Os Cagaretes",
-    description:
-      'O Campeonato Junior "Os Cagaretes" reúne jovens atletas da região numa jornada dedicada ao desporto, convívio e participação comunitária, promovendo o espírito de equipa e a formação desportiva local.',
-    dateStr: "18 abril (domingo)",
-    timeStr: "11:00",
-    location: "Estádio Municipal",
-    mainImage: "/evento-cagaretes.jpg",
     registrationLink: "/inscricoes",
   },
 ];
@@ -120,10 +79,39 @@ const fallbackEvents: EventItem[] = [
 // --- MOCK CMS FETCH FUNCTION ---
 const fetchEventsFromCMS = async (): Promise<EventItem[]> => {
   try {
-    const res = await fetch("/api/cms/events");
+    // UPDATED: Added depth=1 to fetch image URLs from relationships
+    const res = await fetch("/api/events?depth=1");
     if (!res.ok) throw new Error("CMS fetch failed");
+
     const data = await res.json();
-    if (data && data.length > 0) return data;
+
+    // Check Payload's standard 'docs' array structure
+    if (data && data.docs && data.docs.length > 0) {
+      return data.docs.map((doc: any): EventItem => {
+        // Format the exact date fallback if displayDate isn't provided
+        const fallbackFormattedDate = new Date(doc.date).toLocaleDateString("pt-PT", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        return {
+          id: doc.id,
+          slug: doc.slug,
+          categoryTop: doc.categoryTop || "Outros",
+          categorySub: getCategorySub(doc.date),
+          priceType: doc.priceType || "Gratuito",
+          title: doc.title,
+          description: doc.excerpt || "", // Map 'excerpt' to the card description
+          dateStr: doc.displayDate || fallbackFormattedDate,
+          timeStr: doc.time || "",
+          location: doc.location || "",
+          mainImage: doc.mainImage?.url || "", // Map populated media URL
+          registrationLink: doc.registrationLink || "/inscricoes",
+        };
+      });
+    }
+
     return fallbackEvents;
   } catch (error) {
     console.warn("Failed to fetch from CMS, using fallback data.");
@@ -171,7 +159,6 @@ export default function EventsPage() {
   };
 
   const filteredAndSortedEvents = useMemo(() => {
-    // If events array is empty (e.g. initial load before fallback resolves), use fallback
     let sourceData = events.length > 0 ? events : fallbackEvents;
     let result = [...sourceData];
 
@@ -202,9 +189,6 @@ export default function EventsPage() {
     return result;
   }, [events, searchQuery, selectedFilters, sortAsc]);
 
-  // Commented out Empty State for now
-  // const isEmpty = filteredAndSortedEvents.length === 0;
-
   return (
     <div className="min-h-screen bg-white">
       <main>
@@ -217,7 +201,7 @@ export default function EventsPage() {
           <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden flex items-end pb-12">
             <div className="absolute inset-0">
               <img
-                src="/hero-bg.jpg" // Add your agenda background image here
+                src="/hero-bg.jpg"
                 alt="Agenda - Todos os eventos"
                 className="w-full h-full object-cover grayscale"
               />
@@ -266,20 +250,23 @@ export default function EventsPage() {
           <aside className="w-full lg:w-[300px] shrink-0">
             {/* Quick Date Filters Container */}
             <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-hide">
-              <button className="border border-gray-300 rounded-md py-2 px-4 text-xs font-bold text-[#253e6b] text-center min-w-[80px] hover:border-[#253e6b] transition-colors">
+              <button
+                onClick={() => toggleFilter("Hoje")}
+                className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Hoje") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
+              >
                 Hoje
-                <br />
-                <span className="font-semibold text-gray-500">25/05</span>
               </button>
-              <button className="border border-gray-300 rounded-md py-2 px-4 text-xs font-bold text-[#253e6b] text-center min-w-[80px] hover:border-[#253e6b] transition-colors">
-                Amanhã
-                <br />
-                <span className="font-semibold text-gray-500">26/05</span>
+              <button
+                onClick={() => toggleFilter("Esta semana")}
+                className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Esta semana") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
+              >
+                Esta <br /> Semana
               </button>
-              <button className="border-2 border-[#253e6b] rounded-md py-2 px-4 text-xs font-bold text-[#253e6b] text-center min-w-[80px]">
-                Esta
-                <br />
-                Semana
+              <button
+                onClick={() => toggleFilter("Este mês")}
+                className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Este mês") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
+              >
+                Este <br /> Mês
               </button>
             </div>
 

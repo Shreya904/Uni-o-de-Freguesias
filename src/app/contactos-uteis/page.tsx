@@ -21,7 +21,7 @@ interface ContactItem {
   email?: string;
 }
 
-// --- FALLBACK DATA (Based on your image) ---
+// --- FALLBACK DATA ---
 const fallbackContacts: ContactItem[] = [
   {
     id: "1",
@@ -89,7 +89,8 @@ const fallbackContacts: ContactItem[] = [
 // --- CMS FETCH FUNCTION WITH GRACEFUL FALLBACK ---
 const fetchContactsFromCMS = async (): Promise<ContactItem[]> => {
   try {
-    const res = await fetch("/api/cms/contacts");
+    // UPDATED: Using the correct Payload endpoint. Limit set high to get all contacts.
+    const res = await fetch("/api/useful-contacts?limit=100");
 
     if (!res.ok) {
       console.warn("CMS endpoint not ready. Using fallback data.");
@@ -98,8 +99,21 @@ const fetchContactsFromCMS = async (): Promise<ContactItem[]> => {
 
     const data = await res.json();
 
-    if (data && data.length > 0) {
-      return data;
+    // UPDATED: Mapping the Payload 'docs' array to the frontend format
+    if (data && data.docs && data.docs.length > 0) {
+      return data.docs.map(
+        (doc: any): ContactItem => ({
+          id: doc.id,
+          categoryTop: doc.categoryTop,
+          categorySub: doc.categorySub,
+          title: doc.title,
+          address: doc.address || undefined,
+          phone: doc.phone || undefined,
+          schedule: doc.schedule || undefined,
+          websiteUrl: doc.websiteUrl || undefined,
+          email: doc.email || undefined,
+        }),
+      );
     }
 
     return fallbackContacts;
@@ -110,14 +124,12 @@ const fetchContactsFromCMS = async (): Promise<ContactItem[]> => {
 };
 
 export default function ContactosUteisPage() {
-  // State definitions
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
 
-  // Filter Category Definitions
   const filterCategories = [
     {
       title: "Saúde",
@@ -137,7 +149,6 @@ export default function ContactosUteisPage() {
     },
   ];
 
-  // Fetch CMS Data
   useEffect(() => {
     let isMounted = true;
     const loadContacts = async () => {
@@ -150,31 +161,26 @@ export default function ContactosUteisPage() {
     };
   }, []);
 
-  // Filter Toggle Handler
   const toggleFilter = (filter: string) => {
     setSelectedFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
     );
   };
 
-  // Derived filtered & sorted data
   const filteredAndSortedContacts = useMemo(() => {
     let result = [...contacts];
 
-    // 1. Search Query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter((c) => c.title.toLowerCase().includes(query));
     }
 
-    // 2. Sidebar Filters (Checkboxes)
     if (selectedFilters.length > 0) {
       result = result.filter(
         (c) => selectedFilters.includes(c.categorySub) || selectedFilters.includes(c.categoryTop),
       );
     }
 
-    // 3. Sorting (A-Z or Z-A)
     result.sort((a, b) => {
       if (sortAsc) return a.title.localeCompare(b.title);
       return b.title.localeCompare(a.title);
@@ -199,7 +205,6 @@ export default function ContactosUteisPage() {
                 alt="Contactos úteis - Todos os links úteis"
                 className="w-full h-full object-cover grayscale"
               />
-              {/* Blue tinted overlay */}
               <div className="absolute inset-0 bg-[#1c2841]/70 mix-blend-multiply" />
               <div className="absolute inset-0 bg-[#1c2841]/40" />
             </div>
@@ -284,7 +289,6 @@ export default function ContactosUteisPage() {
                     </label>
                   ))}
                 </div>
-                {/* Render divider unless it's the last category */}
                 {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
               </div>
             ))}

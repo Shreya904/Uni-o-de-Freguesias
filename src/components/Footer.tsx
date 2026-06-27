@@ -57,19 +57,29 @@ const Footer = () => (
 
         {/* COLUMN 2 - PRINCIPAIS */}
         <div>
-          <h4 className="font-bold mb-5">Principais</h4>
-          <ul className="space-y-3 text-sm">
+          <h4 className="font-bold mb-6 text-[17px]">Principais</h4>
+          <ul className="space-y-4 text-[15px]">
             {[
               { label: "Começar", href: "/" },
               { label: "Notícias", href: "/noticias" },
-              { label: "Balcão digital", href: "/servicos" },
+              { label: "Balcão digital", href: "/balcao-digital" },
               { label: "Ajuda", href: "/ajuda" },
               { label: "Contacto", href: "/contactos" },
             ].map((link) => (
               <li key={link.label}>
-                <Link href={link.href} className="flex items-center hover:underline">
-                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
-                </Link>
+                {link.href ? (
+                  <Link href={link.href} className="group flex items-center w-fit">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5] transition-transform group-hover:translate-x-1" />
+                    <span className="underline underline-offset-4 decoration-white/70 hover:decoration-white transition-colors">
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center text-white/50 w-fit cursor-default">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5]" />
+                    <span>{link.label}</span>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -77,21 +87,31 @@ const Footer = () => (
 
         {/* COLUMN 3 - JUNTA */}
         <div>
-          <h4 className="font-bold mb-5">Junta</h4>
-          <ul className="space-y-3 text-sm">
+          <h4 className="font-bold mb-6 text-[17px]">Junta</h4>
+          <ul className="space-y-4 text-[15px]">
             {[
               { label: "Presidência", href: "/institucional/presidente" },
               { label: "Executivo", href: "/institucional/orgaos" },
               { label: "Assembleia", href: "/institucional/assembleia" },
               { label: "Reuniões", href: "/institucional/executivo" },
               { label: "Editais", href: "/institucional/editais" },
-              { label: "Financeiro", href: "/institucional/financeira" },
+              { label: "Financeiro" },
               { label: "Documentação", href: "/institucional/documentacao" },
             ].map((link) => (
               <li key={link.label}>
-                <Link href={link.href} className="flex items-center hover:underline">
-                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
-                </Link>
+                {link.href ? (
+                  <Link href={link.href} className="group flex items-center w-fit">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5] transition-transform group-hover:translate-x-1" />
+                    <span className="underline underline-offset-4 decoration-white/70 hover:decoration-white transition-colors">
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center text-white/50 w-fit cursor-default">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5]" />
+                    <span>{link.label}</span>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -99,19 +119,29 @@ const Footer = () => (
 
         {/* COLUMN 4 - FREGUESIA */}
         <div>
-          <h4 className="font-bold mb-5">Freguesia</h4>
-          <ul className="space-y-3 text-sm">
+          <h4 className="font-bold mb-6 text-[17px]">Freguesia</h4>
+          <ul className="space-y-4 text-[15px]">
             {[
               { label: "História", href: "/freguesia/historia" },
               { label: "Heráldica", href: "/freguesia/heraldica" },
               { label: "A visitar", href: "/freguesia/espacos" },
               { label: "Agenda", href: "/eventos" },
-              { label: "Lista pública", href: "/freguesia/estatisticas" },
+              { label: "Lista pública", href: "/contactos-uteis" },
             ].map((link) => (
               <li key={link.label}>
-                <Link href={link.href} className="flex items-center hover:underline">
-                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
-                </Link>
+                {link.href ? (
+                  <Link href={link.href} className="group flex items-center w-fit">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5] transition-transform group-hover:translate-x-1" />
+                    <span className="underline underline-offset-4 decoration-white/70 hover:decoration-white transition-colors">
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center text-white/50 w-fit cursor-default">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5]" />
+                    <span>{link.label}</span>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -119,8 +149,8 @@ const Footer = () => (
 
         {/* COLUMN 5 - SOBRE ESTE SITE */}
         <div>
-          <h4 className="font-bold mb-5">Sobre este site</h4>
-          <ul className="space-y-3 text-sm">
+          <h4 className="font-bold mb-6 text-[17px]">Sobre este site</h4>
+          <ul className="space-y-4 text-[15px]">
             {[
               { label: "Acessibilidade", href: "/legal" },
               { label: "Proteção de dados", href: "/legal" },
@@ -128,9 +158,19 @@ const Footer = () => (
               { label: "Política de privacidade", href: "/legal" },
             ].map((link) => (
               <li key={link.label}>
-                <Link href={link.href} className="flex items-center hover:underline">
-                  <ChevronRight className="w-4 h-4 mr-1" /> {link.label}
-                </Link>
+                {link.href ? (
+                  <Link href={link.href} className="group flex items-center w-fit">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5] transition-transform group-hover:translate-x-1" />
+                    <span className="underline underline-offset-4 decoration-white/70 hover:decoration-white transition-colors">
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center text-white/50 w-fit cursor-default">
+                    <ChevronRight className="w-[18px] h-[18px] mr-2 stroke-[2.5]" />
+                    <span>{link.label}</span>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -150,13 +190,13 @@ const Footer = () => (
         <div className="flex items-center gap-6 order-1 md:order-2">
           <div className="flex gap-4">
             <Link href="#">
-              <Linkedin className="w-5 h-5" />
+              <Linkedin className="w-5 h-5 hover:opacity-80 transition-opacity" />
             </Link>
             <Link href="#">
-              <Facebook className="w-5 h-5" />
+              <Facebook className="w-5 h-5 hover:opacity-80 transition-opacity" />
             </Link>
             <Link href="#">
-              <Instagram className="w-5 h-5" />
+              <Instagram className="w-5 h-5 hover:opacity-80 transition-opacity" />
             </Link>
           </div>
           <p>© 2026. Todos os direitos reservados.</p>

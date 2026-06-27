@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Search, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, ArrowDownUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
@@ -16,7 +16,7 @@ const sidebarSections = [
     items: ["Submissão", "Envio de documentos", "Pagamentos"],
   },
   {
-    title: "Problemas Técnicos",
+    title: "Problemas técnicos",
     items: ["Carregamentos", "Mensagens de erro", "Mau funcionamento"],
   },
   {
@@ -25,172 +25,306 @@ const sidebarSections = [
   },
 ];
 
+// Default answer stored in a variable for easy reuse
+const defaultAnswer = (
+  <div className="bg-white border-t border-gray-200 px-6 py-6 text-[#1C2E56] text-[15px] leading-relaxed">
+    <p className="mb-5">
+      A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma,
+      onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas,
+      formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O
+      sistema permite uma navegação simples e organizada para facilitar o acesso à informação.
+    </p>
+    <ul className="space-y-3 mb-5">
+      <li className="flex gap-3">
+        <span>🔎</span>
+        <span>
+          utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto
+        </span>
+      </li>
+      <li className="flex gap-3">
+        <span>🗂️</span>
+        <span>filtre os conteúdos por categoria, data, tipo de documento ou área temática</span>
+      </li>
+      <li className="flex gap-3">
+        <span>📄</span>
+        <span>
+          consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis
+          online
+        </span>
+      </li>
+      <li className="flex gap-3">
+        <span>🏛️</span>
+        <span>
+          explore documentos relacionados com iniciativas, projetos e processos participativos da
+          freguesia
+        </span>
+      </li>
+      <li className="flex gap-3">
+        <span>⬇️</span>
+        <span>descarregue documentos em diferentes formatos sempre que disponíveis</span>
+      </li>
+      <li className="flex gap-3">
+        <span>⭐</span>
+        <span>
+          utilize os destaques e documentos recentes para acompanhar novas publicações e
+          atualizações.
+        </span>
+      </li>
+    </ul>
+    <p>
+      Caso não encontre o documento pretendido, poderá entrar em contacto com os serviços da Junta
+      de Freguesia através dos canais de atendimento disponíveis na plataforma. Algumas informações
+      ou documentos específicos poderão requerer validação adicional ou pedido direto aos serviços
+      competentes.
+    </p>
+  </div>
+);
+
+// Array objects for FAQs, allowing easy content swapping
 const faqTop = [
-  "Como posso pesquisar documentos?",
-  "O portal guarda o meu histórico de consultas?",
-  "O que fazer se um ficheiro não abrir corretamente?",
+  {
+    id: "top-1",
+    question: "Como posso pesquisar documentos?",
+    answer: defaultAnswer,
+  },
+  {
+    id: "top-2",
+    question: "O portal guarda o meu histórico de consultas?",
+    answer: defaultAnswer,
+  },
+  {
+    id: "top-3",
+    question: "O que fazer se um ficheiro não abrir corretamente?",
+    answer: defaultAnswer,
+  },
 ];
 
 const faqBottom = [
-  "Quero casar, o que devo fazer?",
-  "Sou imigrante e agora?",
-  "Estou no processo de obter como fazer?",
+  {
+    id: "bottom-1",
+    question: "Quero casar, o que devo fazer?",
+    answer: defaultAnswer,
+  },
+  {
+    id: "bottom-2",
+    question: "Sinto-me só preciso de ajuda como fazer?",
+    answer: defaultAnswer,
+  },
+  {
+    id: "bottom-3",
+    question: "Sou imigrante e agora?",
+    answer: defaultAnswer,
+  },
 ];
 
 export default function CentroAjudaPage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAscending, setIsAscending] = useState(true);
 
+  // Filter FAQs based on search
   const filteredFaqTop = faqTop.filter((faq) =>
-    faq.toLowerCase().includes(searchTerm.toLowerCase()),
+    faq.question.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const filteredFaqBottom = faqBottom.filter((faq) =>
-    faq.toLowerCase().includes(searchTerm.toLowerCase()),
+    faq.question.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  // Sort FAQs based on the current order (A-Z or Z-A)
+  const sortedFaqTop = [...filteredFaqTop].sort((a, b) =>
+    isAscending ? a.question.localeCompare(b.question) : b.question.localeCompare(a.question),
+  );
+
+  const sortedFaqBottom = [...filteredFaqBottom].sort((a, b) =>
+    isAscending ? a.question.localeCompare(b.question) : b.question.localeCompare(a.question),
+  );
+
+  const toggleSort = () => setIsAscending(!isAscending);
+
   return (
-    <main className="min-h-screen bg-[#F6F7F9]">
-      <div className="bg-[#F0BE2A]">
+    <main className="min-h-screen bg-white font-sans flex flex-col">
+      <div className="bg-[#F8C127]">
         <Header />
-        {/* HERO */}
+
+        {/* HERO SECTION */}
         <section>
-        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8">
-          <div>
-            <h1 className="text-5xl font-black text-[#1C2E56] leading-none">
-              Centro de
-              <br />
-              Ajuda
-            </h1>
-          </div>
-
-          <div className="flex-1">
-            <div className="relative">
-              <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="O que preciso saber"
-                className="w-full h-14 rounded-md border-2 border-[#1C2E56] bg-white px-5 pr-12 outline-none text-lg font-semibold text-[#1C2E56] placeholder:text-[#1C2E56]/60"
-              />
-
-              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1C2E56]" />
+          <div className="max-w-[1300px] mx-auto px-6 py-10 lg:py-14 flex flex-col lg:flex-row gap-8 lg:gap-20 items-start">
+            <div className="lg:w-1/3">
+              <h1 className="text-4xl lg:text-[52px] font-extrabold text-[#111f3d] leading-[1.05] tracking-tight">
+                Centro de
+                <br />
+                Ajuda
+              </h1>
             </div>
 
-            <div className="flex flex-wrap gap-5 mt-3 text-sm text-[#1C2E56]">
-              <button>Termos Populares</button>
-              <button>Casar</button>
-              <button>Certidões</button>
-              <button>Licenças</button>
+            <div className="flex-1 w-full lg:mt-2">
+              <div className="relative">
+                <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="O que preciso saber"
+                  className="w-full h-[52px] rounded-lg border border-[#111f3d] bg-[#FDF9F0] px-5 pr-12 outline-none text-[16px] text-[#111f3d] placeholder:text-[#111f3d] focus:ring-2 focus:ring-[#111f3d]/20 transition-all"
+                />
+                <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-[#111f3d] stroke-[2]" />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-[13px] text-[#111f3d]">
+                <span className="font-bold text-[14px]">Termos Populares</span>
+                <button className="hover:underline hover:underline-offset-2 transition-all">
+                  Cookies
+                </button>
+                <button className="hover:underline hover:underline-offset-2 transition-all">
+                  Condições
+                </button>
+                <button className="hover:underline hover:underline-offset-2 transition-all">
+                  Legislação
+                </button>
+              </div>
             </div>
           </div>
-        </div>
         </section>
       </div>
 
-      {/* CONTENT */}
-      <section className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-[280px_1fr]">
+      {/* MAIN CONTENT */}
+      <section className="flex-1 w-full max-w-[1300px] mx-auto">
+        <div className="grid lg:grid-cols-[280px_1fr] gap-x-12">
           {/* SIDEBAR */}
-          <aside className="bg-[#F2F2F2] border-r border-gray-200 min-h-[800px] p-6">
-            <div className="space-y-8">
-              {sidebarSections.map((section) => (
-                <div key={section.title}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-[#1C2E56]">{section.title}</h3>
-
-                    <ChevronDown className="w-4 h-4 text-[#1C2E56]" />
+          <aside className="py-10 px-6 lg:px-0">
+            <div className="space-y-6">
+              {sidebarSections.map((section, idx) => (
+                <div
+                  key={section.title}
+                  className={idx !== 0 ? "pt-6 border-t border-gray-200" : ""}
+                >
+                  <div className="flex items-center justify-between mb-5 cursor-pointer">
+                    <h3 className="font-bold text-[#111f3d] text-[16px]">{section.title}</h3>
+                    <ChevronUp className="w-5 h-5 text-[#111f3d]" />
                   </div>
 
-                  <div className="space-y-3">
-                    {section.items.map((item) => (
-                      <button
-                        key={item}
-                        className="block text-left text-sm text-[#1C2E56] hover:text-[#DE092D]"
-                      >
-                        {item}
-                      </button>
-                    ))}
+                  <div className="space-y-4">
+                    {section.items.map((item) => {
+                      const isActive = item === "Pesquisa de documentos";
+                      return (
+                        <button
+                          key={item}
+                          className={`block text-left text-[15px] transition-colors ${
+                            isActive
+                              ? "text-[#C41230] font-semibold"
+                              : "text-[#111f3d] hover:text-[#C41230]"
+                          }`}
+                        >
+                          {item}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
 
-              <NewsHighlightBox variant="help" />
+              <div className="pt-6 border-t border-gray-200">
+                <NewsHighlightBox variant="help" />
+              </div>
             </div>
           </aside>
 
-          {/* MAIN */}
-          <div className="p-6 lg:p-10">
+          {/* MAIN COLUMN */}
+          <div className="py-10 px-6 lg:px-0 lg:pl-4">
             {/* FILTER BAR */}
-            <div className="flex justify-end gap-3 mb-8">
-              <button className="text-sm text-[#1C2E56]">Ordenar</button>
-
-              <button className="px-3 py-1 rounded-full border border-gray-300 text-sm">
+            <div className="flex items-center justify-end gap-3 mb-6">
+              <span className="text-[14px] text-[#111f3d]">Ordenar</span>
+              <button
+                onClick={toggleSort}
+                className="px-4 py-1.5 rounded-full border border-[#111f3d]/30 text-[13px] text-[#111f3d] font-medium bg-white hover:bg-gray-50 transition-colors"
+              >
                 Nome
+              </button>
+              <button
+                onClick={toggleSort}
+                className="text-[#111f3d] hover:opacity-70 transition-transform"
+              >
+                <ArrowDownUp
+                  className={`w-5 h-5 stroke-[1.5] transition-transform ${isAscending ? "" : "rotate-180"}`}
+                />
               </button>
             </div>
 
             {/* TOP FAQ */}
             <div className="space-y-4">
-              {filteredFaqTop.map((question) => (
-                <div key={question} className="rounded-lg overflow-hidden border border-[#BFA55A]">
+              {sortedFaqTop.map((faq) => (
+                <div
+                  key={faq.id}
+                  className="rounded-lg overflow-hidden border border-[#111f3d] shadow-sm"
+                >
                   <button
-                    onClick={() => setOpenFaq(openFaq === question ? null : question)}
-                    className="w-full bg-[#EFE2B5] px-5 py-4 flex justify-between items-center text-left"
+                    onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
+                    className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
+                      openFaq === faq.id ? "bg-white" : "bg-[#FCEFB4] hover:bg-[#fae899]"
+                    }`}
                   >
-                    <span className="font-bold text-lg text-[#1C2E56]">{question}</span>
-
-                    <ChevronDown className="w-5 h-5 text-[#1C2E56]" />
+                    <span className="font-bold text-[16px] text-[#111f3d] pr-4">
+                      {faq.question}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-[#111f3d] flex-shrink-0 transition-transform ${
+                        openFaq === faq.id ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
-
-                  {openFaq === question && (
-                    <div className="bg-[#EFE2B5] border-t border-[#BFA55A] px-5 py-4 text-[#1C2E56]">
-                      Resposta de exemplo para esta pergunta.
-                    </div>
-                  )}
+                  {openFaq === faq.id && faq.answer}
                 </div>
               ))}
             </div>
 
-            {/* FEATURE CARD */}
-            <div className="relative mt-8 rounded-xl overflow-hidden">
-              <img src="/help-banner.jpg" alt="" className="w-full h-[280px] object-cover" />
+            {/* FEATURE BANNER */}
+            <div className="relative mt-8 rounded-xl overflow-hidden shadow-sm h-[320px]">
+              <img
+                src="/help-banner.jpg"
+                alt="Procura um documento?"
+                className="w-full h-full object-cover"
+              />
 
-              <div className="absolute right-5 bottom-5 bg-[#1C2E56] text-white rounded-xl p-6 max-w-[280px]">
-                <h3 className="font-bold text-xl mb-2">Procura um documento?</h3>
-
-                <p className="text-sm opacity-90">Visite o Centro de Documentação</p>
-
-                <button className="flex items-center gap-2 mt-4 text-[#F0BE2A] font-semibold">
-                  Ver documentos
-                  <ChevronRight size={16} />
-                </button>
+              <div className="absolute right-6 bottom-6 bg-[#1C2E56] text-white rounded-xl p-6 lg:p-7 max-w-[340px] shadow-lg">
+                <h3 className="font-bold text-[22px] leading-tight mb-2">Procura um documento?</h3>
+                <p className="text-[15px]">
+                  Visite o{" "}
+                  <a
+                    href="#"
+                    className="font-bold underline underline-offset-4 decoration-2 hover:text-[#F8C127] transition-colors"
+                  >
+                    Centro de Documentação
+                  </a>
+                </p>
               </div>
             </div>
 
             {/* OTHER TOPICS */}
-            <div className="mt-10">
-              <h2 className="font-bold text-[#1C2E56] mb-5">Outros assuntos populares</h2>
-
+            <div className="mt-12 mb-20">
+              <h2 className="font-extrabold text-[22px] text-[#111f3d] mb-6">
+                Outros assuntos populares
+              </h2>
               <div className="space-y-4">
-                {filteredFaqBottom.map((question) => (
+                {sortedFaqBottom.map((faq) => (
                   <div
-                    key={question}
-                    className="rounded-lg overflow-hidden border border-[#BFA55A]"
+                    key={faq.id}
+                    className="rounded-lg overflow-hidden border border-[#111f3d] shadow-sm"
                   >
                     <button
-                      onClick={() => setOpenFaq(openFaq === question ? null : question)}
-                      className="w-full bg-[#EFE2B5] px-5 py-4 flex justify-between items-center text-left"
+                      onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
+                      className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
+                        openFaq === faq.id ? "bg-white" : "bg-[#FCEFB4] hover:bg-[#fae899]"
+                      }`}
                     >
-                      <span className="font-bold text-lg text-[#1C2E56]">{question}</span>
-
-                      <ChevronDown className="w-5 h-5 text-[#1C2E56]" />
+                      <span className="font-bold text-[16px] text-[#111f3d] pr-4">
+                        {faq.question}
+                      </span>
+                      <ChevronDown
+                        className={`w-5 h-5 text-[#111f3d] flex-shrink-0 transition-transform ${
+                          openFaq === faq.id ? "rotate-180" : ""
+                        }`}
+                      />
                     </button>
-
-                    {openFaq === question && (
-                      <div className="bg-[#EFE2B5] border-t border-[#BFA55A] px-5 py-4 text-[#1C2E56]">
-                        Resposta de exemplo para esta pergunta.
-                      </div>
-                    )}
+                    {openFaq === faq.id && faq.answer}
                   </div>
                 ))}
               </div>
@@ -198,6 +332,7 @@ export default function CentroAjudaPage() {
           </div>
         </div>
       </section>
+
       <Footer />
     </main>
   );

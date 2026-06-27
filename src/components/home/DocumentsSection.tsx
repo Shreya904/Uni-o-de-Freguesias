@@ -7,7 +7,7 @@ const DocumentsSection = () => {
         {/* LEFT: Image */}
         <div className="w-full lg:w-[60%] z-0">
           <img
-            src="/help-banner.jpg"
+            src="/help-bannerhome.jpg"
             alt="Pessoa idosa a ler documentos"
             className="w-full h-auto object-cover"
           />

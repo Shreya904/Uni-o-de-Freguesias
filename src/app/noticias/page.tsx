@@ -66,7 +66,7 @@ export default function NoticiasPage() {
           <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden flex items-end pb-12">
             <div className="absolute inset-0">
               <img
-                src="/hero-bg.jpg"
+                src="/noticia-hero.jpg"
                 alt="Notícias - Toda a atualidade"
                 className="w-full h-full object-cover grayscale"
               />

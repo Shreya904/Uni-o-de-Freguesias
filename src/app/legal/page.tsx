@@ -9,11 +9,12 @@ import { Search, ChevronDown } from "lucide-react";
 export default function LegalPage() {
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
-      <Header />
+      {/* HEADER & HERO WRAPPER */}
+      <div className="bg-[#222222]">
+        <Header />
 
-      <main className="flex-grow">
         {/* HERO SECTION */}
-        <section className="bg-[#222222] text-white py-16 px-8 lg:px-16">
+        <section className="text-white py-16 px-8 lg:px-16">
           <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-10">
             <div>
               <h1 className="text-[40px] lg:text-[48px] font-extrabold leading-tight mb-2 tracking-wide">
@@ -57,7 +58,9 @@ export default function LegalPage() {
             </div>
           </div>
         </section>
+      </div>
 
+      <main className="flex-grow">
         {/* CONTENT SECTION */}
         <section className="px-8 lg:px-16 py-16 max-w-[1200px] mx-auto">
           <div className="grid lg:grid-cols-[300px_1fr] gap-16">
@@ -96,7 +99,8 @@ export default function LegalPage() {
             </aside>
 
             {/* MAIN CONTENT */}
-            <div className="text-[#1C2E56] text-[14px] leading-relaxed space-y-6">
+            {/* Readability Improvements applied here: Increased text size, line-height, and paragraph spacing */}
+            <div className="text-[#1C2E56] text-[15px] md:text-[16px] leading-[1.8] space-y-8">
               <h2 className="text-[36px] font-extrabold mb-8 tracking-wide leading-tight">
                 Política de privacidade
               </h2>
@@ -105,69 +109,74 @@ export default function LegalPage() {
                 A Política de Privacidade descreve a forma como a Junta de Freguesia recolhe,
                 utiliza, armazena e protege os dados pessoais fornecidos através da plataforma
                 digital, balcão digital e restantes serviços online disponibilizados aos cidadãos.
+                <br />
                 <br />A utilização dos formulários, mecanismos de participação e serviços digitais
                 poderá implicar a recolha de dados pessoais necessários para análise, resposta e
                 acompanhamento dos diferentes pedidos, processos, inscrições, ocorrências,
                 reclamações ou iniciativas de participação pública.
               </p>
 
-              <div>
-                <p className="mb-2">Os dados pessoais recolhidos poderão incluir:</p>
-                <ul className="space-y-1.5 ml-4">
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">👤</span> nome completo
+              <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100">
+                <p className="mb-4 font-semibold text-[17px]">
+                  Os dados pessoais recolhidos poderão incluir:
+                </p>
+                <ul className="space-y-3 ml-2">
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">👤</span> nome completo
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📧</span> endereço de email
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📧</span> endereço de email
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📱</span> contacto telefónico
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📱</span> contacto telefónico
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📍</span> morada ou localização associada ao
-                    pedido
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📍</span> morada ou localização
+                    associada ao pedido
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📄</span> informações submetidas nos
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📄</span> informações submetidas nos
                     formulários
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📎</span> documentos ou ficheiros enviados
-                    pelos utilizadores
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📎</span> documentos ou ficheiros
+                    enviados pelos utilizadores
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">🌐</span> dados técnicos relacionados com a
-                    utilização da plataforma
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">🌐</span> dados técnicos relacionados
+                    com a utilização da plataforma
                   </li>
                 </ul>
               </div>
 
-              <div>
-                <p className="mb-2">Os dados recolhidos destinam-se exclusivamente a:</p>
-                <ul className="space-y-1.5 ml-4">
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">🏛️</span> gestão e resposta aos pedidos
-                    submetidos
+              <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100">
+                <p className="mb-4 font-semibold text-[17px]">
+                  Os dados recolhidos destinam-se exclusivamente a:
+                </p>
+                <ul className="space-y-3 ml-2">
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">🏛️</span> gestão e resposta aos
+                    pedidos submetidos
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">🗣️</span> comunicação entre os serviços da
-                    junta e os cidadãos
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">🗣️</span> comunicação entre os
+                    serviços da junta e os cidadãos
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📋</span> tratamento administrativo e
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📋</span> tratamento administrativo e
                     acompanhamento de processos
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">💧</span> gestão de iniciativas de
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">💧</span> gestão de iniciativas de
                     participação pública e orçamento participativo
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">⚠️</span> análise de ocorrências, reclamações
-                    e sugestões
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">⚠️</span> análise de ocorrências,
+                    reclamações e sugestões
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">🔒</span> garantia de segurança, integridade e
-                    correto funcionamento da plataforma
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">🔒</span> garantia de segurança,
+                    integridade e correto funcionamento da plataforma
                   </li>
                 </ul>
               </div>
@@ -184,28 +193,30 @@ export default function LegalPage() {
                 aplicáveis.
               </p>
 
-              <div>
-                <p className="mb-2">Os utilizadores poderão, nos termos da legislação aplicável:</p>
-                <ul className="space-y-1.5 ml-4">
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">👁️</span> solicitar acesso aos seus dados
-                    pessoais
+              <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100">
+                <p className="mb-4 font-semibold text-[17px]">
+                  Os utilizadores poderão, nos termos da legislação aplicável:
+                </p>
+                <ul className="space-y-3 ml-2">
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">👁️</span> solicitar acesso aos seus
+                    dados pessoais
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">✏️</span> pedir a retificação ou atualização
-                    de informações
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">✏️</span> pedir a retificação ou
+                    atualização de informações
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">🗑️</span> solicitar a eliminação dos dados,
-                    quando aplicável
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">🗑️</span> solicitar a eliminação dos
+                    dados, quando aplicável
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">🚫</span> retirar consentimentos previamente
-                    concedidos
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">🚫</span> retirar consentimentos
+                    previamente concedidos
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <span className="w-5 text-center">📩</span> apresentar questões relacionadas com
-                    a proteção de dados
+                  <li className="flex gap-3 items-center">
+                    <span className="w-6 text-center text-lg">📩</span> apresentar questões
+                    relacionadas com a proteção de dados
                   </li>
                 </ul>
               </div>
