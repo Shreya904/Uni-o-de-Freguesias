@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 interface MegaMenuSection {
   heading: string;
@@ -21,10 +21,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  {
-    label: "Começar",
-    href: "/",
-  },
+  { label: "Começar", href: "/" },
   {
     label: "Organismo",
     href: "/institucional",
@@ -48,7 +45,7 @@ const navItems: NavItem[] = [
       {
         heading: "Transparência da Junta",
         links: [
-          { label: "Financeiro" },
+          { label: "Financeiro", href: "/institucional/financeira" },
           { label: "Documentação", href: "/institucional/documentacao" },
           { label: "Normas e Planeamento", href: "/institucional/normas" },
         ],
@@ -56,9 +53,9 @@ const navItems: NavItem[] = [
       {
         heading: "Links rápidos",
         links: [
-          { label: "Inscrição em passeios", href: "/balcao-digital/inscricoes" },
-          { label: "Pedir licença de obra", href: "/balcao-digital/cemiterios/licenca" },
-          { label: "Marcar atendimento", href: "/balcao-digital/marcacoes" },
+          { label: "Inscrição em passeios" },
+          { label: "Pedir licença de obra" },
+          { label: "Marcar atendimento", href: "/agendar" },
         ],
       },
     ],
@@ -82,31 +79,23 @@ const navItems: NavItem[] = [
       {
         heading: "Links rápidos",
         links: [
-          { label: "Inscrição em passeios", href: "/balcao-digital/inscricoes" },
-          { label: "Pedir licença de obra", href: "/balcao-digital/cemiterios/licenca" },
-          { label: "Marcar atendimento", href: "/balcao-digital/marcacoes" },
+          { label: "Inscrição em passeios" },
+          { label: "Pedir licença de obra" },
+          { label: "Marcar atendimento", href: "/agendar" },
         ],
       },
     ],
   },
-  {
-    label: "Notícias",
-    href: "/noticias",
-  },
-  {
-    label: "Agenda",
-    href: "/eventos",
-  },
-  {
-    label: "Contactos",
-    href: "/contactos",
-  },
+  { label: "Notícias", href: "/noticias" },
+  { label: "Agenda", href: "/eventos" },
+  { label: "Contactos", href: "/contactos" },
 ];
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [ajudaOpen, setAjudaOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
@@ -115,12 +104,14 @@ const Header = () => {
   useEffect(() => {
     setOpenDropdown(null);
     setMobileOpen(false);
+    setAjudaOpen(false);
   }, [pathname]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setOpenDropdown(null);
+        setAjudaOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
@@ -145,125 +136,59 @@ const Header = () => {
   };
 
   const isActive = (item: NavItem): boolean => {
-    if (
-      item.megaMenu?.some((section) =>
-        section.links.some((link) => link.href && pathname.startsWith(link.href)),
-      )
-    ) {
-      return true;
-    }
+    if (item.megaMenu?.some((section) => section.links.some((link) => link.href && pathname.startsWith(link.href)))) return true;
     if (item.href) return pathname === item.href || pathname.startsWith(`${item.href}/`);
-    return (
-      item.megaMenu?.some((section) =>
-        section.links.some((link) => link.href && pathname.startsWith(link.href)),
-      ) ?? false
-    );
+    return item.megaMenu?.some((section) => section.links.some((link) => link.href && pathname.startsWith(link.href))) ?? false;
   };
 
   return (
-    <header
-      className={`relative z-50 px-4 py-6 lg:px-12 ${
-        isBalcaoDigital ? "bg-[#C41230]" : "bg-transparent"
-      }`}
-    >
-      <nav
-        ref={dropdownRef}
-        className={`relative bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto transition-all ${
-          openDropdown ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"
-        }`}
-      >
+    <header className={`relative z-50 px-4 py-6 lg:px-12 ${isBalcaoDigital ? "bg-[#C41230]" : "bg-transparent"}`}>
+      <nav ref={dropdownRef} className="relative bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto">
         <div className="h-[96px] px-8 flex items-center justify-between">
           {/* LEFT */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center">
-              <Image
-                src="/header logo1.png"
-                alt="Logo"
-                width={170}
-                height={70}
-                className="object-contain"
-                priority
-              />
+              <Image src="/header logo1.png" alt="Logo" width={170} height={70} className="object-contain" priority />
             </Link>
-
             <div className="hidden lg:block h-8 w-px bg-gray-300" />
           </div>
 
           {/* DESKTOP NAV */}
-          <div className="hidden lg:flex items-center gap-7 xl:gap-9 h-full">
+          <div className="hidden lg:flex items-center gap-8 h-full">
             {navItems.map((item) =>
               item.megaMenu ? (
-                <div
-                  key={item.label}
-                  className="relative flex items-center h-full cursor-pointer"
-                  onMouseEnter={() => handleMouseEnter(item.label)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <Link
-                    href={item.href || "#"}
-                    className={`text-[16px] text-[#1C2E56] transition-all ${
-                      isActive(item) || openDropdown === item.label
-                        ? "font-bold underline decoration-[#1C2E56] decoration-2 underline-offset-8"
-                        : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-
+                <div key={item.label} className="relative flex items-center h-full" onMouseEnter={() => handleMouseEnter(item.label)} onMouseLeave={handleMouseLeave}>
+                  {item.href ? (
+                    <Link href={item.href} className={`flex items-center gap-1 text-[18px] text-[#1C2E56] transition ${isActive(item) || openDropdown === item.label ? "font-bold" : "font-medium hover:underline hover:underline-offset-4"}`}>
+                      {item.label}
+                      <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`} />
+                    </Link>
+                  ) : (
+                    <button className={`flex items-center gap-1 text-[18px] text-[#1C2E56] transition ${isActive(item) || openDropdown === item.label ? "font-bold" : "font-medium hover:underline hover:underline-offset-4"}`}>
+                      {item.label}
+                      <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`} />
+                    </button>
+                  )}
                   {openDropdown === item.label && (
-                    <div className="absolute left-0 top-[96px] w-[1100px] max-w-[calc(100vw-96px)] z-50 -translate-x-[40%] xl:-translate-x-[30%]">
-                      <div className="bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden">
-                        <div className="flex p-10 gap-8 justify-between">
+                    <div className="absolute left-1/2 -translate-x-1/2 top-[calc(50%+16px)] pt-4 w-[1100px] max-w-[calc(100vw-96px)] z-50">
+                      <div className="bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+                        <div className="flex p-8 gap-10">
                           {item.megaMenu.map((section) => (
-                            <div
-                              key={section.heading}
-                              className={`flex-1 min-w-[200px] ${
-                                section.heading === "Links rápidos"
-                                  ? "pl-8 border-l border-gray-200"
-                                  : ""
-                              }`}
-                            >
-                              <h3 className="font-bold text-[#1C2E56] text-[17px] mb-6">
-                                {section.heading}
-                              </h3>
-
-                              <div className="flex flex-col gap-4">
+                            <div key={section.heading} className="flex-1 min-w-[220px]">
+                              <h3 className="font-extrabold text-[#1C2E56] text-lg mb-4">{section.heading}</h3>
+                              <div className="flex flex-col gap-3">
                                 {section.links.map((link) =>
                                   link.href ? (
-                                    <Link
-                                      key={`${section.heading}-${link.label}`}
-                                      href={link.href}
-                                      className="group flex items-center gap-3 transition"
-                                    >
-                                      <ChevronRight
-                                        className={`w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 ${
-                                          pathname === link.href
-                                            ? "text-[#1C2E56]"
-                                            : "text-[#1C2E56]"
-                                        }`}
-                                      />
-                                      <span
-                                        className={`text-[16px] transition-colors ${
-                                          pathname === link.href
-                                            ? "text-[#1C2E56] font-bold"
-                                            : "text-[#1C2E56] font-medium group-hover:opacity-75"
-                                        }`}
-                                      >
-                                        {link.label}
-                                      </span>
+                                    <Link key={`${section.heading}-${link.label}`} href={link.href} className={`group flex items-center gap-2 transition ${pathname === link.href ? "font-bold text-[#DE092D]" : "text-[#1C2E56] hover:font-bold"}`}>
+                                      <span className="font-bold transition-transform group-hover:translate-x-1">&gt;</span>
+                                      <span>{link.label}</span>
                                     </Link>
                                   ) : (
-                                    <span
-                                      key={`${section.heading}-${link.label}`}
-                                      className="flex items-center gap-3 cursor-default"
-                                      aria-disabled="true"
-                                    >
-                                      <ChevronRight className="w-5 h-5 stroke-[2.5] text-gray-400" />
-                                      <span className="text-[16px] font-medium text-gray-400">
-                                        {link.label}
-                                      </span>
+                                    <span key={`${section.heading}-${link.label}`} className="flex items-center gap-2 text-[#1C2E56]/35 cursor-default font-medium" aria-disabled="true">
+                                      <span className="font-bold">&gt;</span>
+                                      <span>{link.label}</span>
                                     </span>
-                                  ),
+                                  )
                                 )}
                               </div>
                             </div>
@@ -274,125 +199,109 @@ const Header = () => {
                   )}
                 </div>
               ) : (
-                <Link
-                  key={item.href}
-                  href={item.href!}
-                  className={`text-[16px] text-[#1C2E56] transition-all ${
-                    pathname === item.href
-                      ? "font-bold underline decoration-[#1C2E56] decoration-2 underline-offset-8"
-                      : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
-                  }`}
-                >
+                <Link key={item.href} href={item.href!} className={`text-[18px] text-[#1C2E56] transition ${pathname === item.href ? "font-bold" : "font-medium hover:underline hover:underline-offset-4"}`}>
                   {item.label}
                 </Link>
-              ),
+              )
             )}
 
-            <div className="h-8 w-px bg-gray-300 ml-2" />
+            <div className="h-8 w-px bg-gray-300" />
 
-            {/* BALCÃO DIGITAL - Updated hover states */}
-            <Link
-              href="/balcao-digital"
-              className="h-[44px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors"
-            >
+            <Link href="/balcao-digital" className="h-[50px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-extrabold text-[18px] flex items-center justify-center hover:bg-[#DE092D]/5 transition">
               Balcão Digital
             </Link>
 
-            <Link
-              href="/ajuda"
-              className="flex items-center gap-1 ml-2 text-[#1C2E56] text-[16px] font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition"
-            >
-              Ajuda
-              <ChevronLeft className="w-[18px] h-[18px] stroke-[2]" />
-            </Link>
+            {/* AJUDA DROPDOWN */}
+            <div className="relative">
+              <button
+                onClick={() => setAjudaOpen(!ajudaOpen)}
+                className="flex items-center gap-1 text-[#1C2E56] text-[18px] font-medium hover:underline hover:underline-offset-4 transition"
+              >
+                Ajuda <ChevronDown className={`w-4 h-4 transition-transform ${ajudaOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {ajudaOpen && (
+                <div className="absolute right-0 top-[calc(100%+16px)] w-72 bg-white rounded-xl shadow-xl border p-5 z-50 space-y-4">
+                  <div>
+                    <p className="font-bold text-[#1C2E56] mb-2">Acessibilidade</p>
+                    <div className="space-y-2">
+                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">🔊 Ouvir o site</button>
+                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">T↑ Letra grande</button>
+                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">☀️ Claro</button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#1C2E56] mb-2">Informação útil</p>
+                    <div className="text-sm text-[#1C2E56] space-y-2">
+                      <p>⏰ Segunda a Sexta<br />09h00-13h00 14h00-17h00</p>
+                      <p>📍 Avenida Dr. Lourenço Peixinho, Edifício 18 - 1º B, 3800-1em Aveiro</p>
+                      <p>✉️ geral.fgloriavcruz@gmail.com</p>
+                      <p className="font-bold text-lg">📞 234 427 832</p>
+                    </div>
+                  </div>
+                  <Link href="/ajuda" className="block bg-[#F0BE2A] text-[#1C2E56] font-bold text-center rounded-lg px-4 py-3 hover:bg-[#F0BE2A]/90 transition">
+                    Abrir o Centro de Ajuda →
+                  </Link>
+                  <div className="space-y-2">
+                    <details className="border rounded-lg p-3 text-sm cursor-pointer">
+                      <summary className="font-medium text-[#1C2E56]">Precisa de auto-avaliação para ouvir as suas dificuldades?</summary>
+                    </details>
+                    <details className="border rounded-lg p-3 text-sm cursor-pointer">
+                      <summary className="font-medium text-[#1C2E56]">Devo usar sempre desodorizante?</summary>
+                    </details>
+                    <details className="border rounded-lg p-3 text-sm cursor-pointer">
+                      <summary className="font-medium text-[#1C2E56]">Devo ter pré-titor à saúde no meu telemóvel?</summary>
+                    </details>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* MOBILE BUTTON */}
-          <button
-            className="lg:hidden p-2 text-[#1C2E56]"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
+          <button className="lg:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* MOBILE MENU */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-white px-4 py-4 space-y-2 rounded-b-2xl">
+          <div className="lg:hidden border-t bg-white px-4 py-4 space-y-2">
             {navItems.map((item) =>
               item.megaMenu ? (
                 <div key={item.label}>
                   <div className="flex items-center justify-between w-full text-[#1C2E56]">
                     {item.href ? (
-                      <Link
-                        href={item.href}
-                        className={`flex-grow py-3 transition ${
-                          isActive(item) || mobileExpanded === item.label
-                            ? "font-bold text-[#1C2E56]"
-                            : "font-medium text-[#1C2E56]"
-                        }`}
-                      >
+                      <Link href={item.href} className={`flex-grow py-3 transition ${isActive(item) || mobileExpanded === item.label ? "font-bold" : "font-medium hover:underline hover:underline-offset-4"}`}>
                         {item.label}
                       </Link>
                     ) : (
-                      <span
-                        className={`flex-grow py-3 transition ${
-                          isActive(item) || mobileExpanded === item.label
-                            ? "font-bold text-[#1C2E56]"
-                            : "font-medium text-[#1C2E56]"
-                        }`}
-                      >
+                      <span className={`flex-grow py-3 transition ${isActive(item) || mobileExpanded === item.label ? "font-bold" : "font-medium"}`}>
                         {item.label}
                       </span>
                     )}
-
-                    <button
-                      onClick={() =>
-                        setMobileExpanded(mobileExpanded === item.label ? null : item.label)
-                      }
-                      className="p-3"
-                    >
-                      <ChevronDown
-                        className={`w-5 h-5 transition-transform ${
-                          mobileExpanded === item.label ? "rotate-180" : ""
-                        }`}
-                      />
+                    <button onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)} className="p-3">
+                      <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === item.label ? "rotate-180" : ""}`} />
                     </button>
                   </div>
-
                   {mobileExpanded === item.label && (
-                    <div className="ml-2 border-l-2 border-gray-100 pl-4 space-y-5 pb-4 mt-2">
+                    <div className="ml-4 border-l pl-4 space-y-4 pb-3">
                       {item.megaMenu.map((section) => (
                         <div key={section.heading}>
-                          <h4 className="font-bold text-[#1C2E56] mb-3 text-[15px]">
-                            {section.heading}
-                          </h4>
-
-                          <div className="space-y-3">
+                          <h4 className="font-bold text-[#1C2E56] mb-2">{section.heading}</h4>
+                          <div className="space-y-2">
                             {section.links.map((link) =>
                               link.href ? (
-                                <Link
-                                  key={`${section.heading}-${link.label}`}
-                                  href={link.href}
-                                  className={`flex items-center gap-3 transition ${
-                                    pathname === link.href
-                                      ? "text-[#1C2E56] font-bold"
-                                      : "text-[#1C2E56] font-medium"
-                                  }`}
-                                >
-                                  <ChevronRight className="w-[18px] h-[18px] stroke-[2.5]" />
+                                <Link key={`${section.heading}-${link.label}`} href={link.href} className={`flex items-center gap-2 text-[#1C2E56] transition ${pathname === link.href ? "font-bold" : "font-medium hover:underline hover:underline-offset-4"}`}>
+                                  <span className="font-bold">&gt;</span>
                                   <span>{link.label}</span>
                                 </Link>
                               ) : (
-                                <span
-                                  key={`${section.heading}-${link.label}`}
-                                  className="flex items-center gap-3 cursor-default"
-                                  aria-disabled="true"
-                                >
-                                  <ChevronRight className="w-[18px] h-[18px] stroke-[2.5] text-gray-400" />
-                                  <span className="font-medium text-gray-400">{link.label}</span>
+                                <span key={`${section.heading}-${link.label}`} className="flex items-center gap-2 text-[#1C2E56]/35 cursor-default font-medium" aria-disabled="true">
+                                  <span className="font-bold">&gt;</span>
+                                  <span>{link.label}</span>
                                 </span>
-                              ),
+                              )
                             )}
                           </div>
                         </div>
@@ -401,35 +310,46 @@ const Header = () => {
                   )}
                 </div>
               ) : (
-                <Link
-                  key={item.href}
-                  href={item.href!}
-                  className={`block py-3 transition ${
-                    pathname === item.href
-                      ? "font-bold text-[#1C2E56]"
-                      : "font-medium text-[#1C2E56]"
-                  }`}
-                >
+                <Link key={item.href} href={item.href!} className={`block py-3 text-[#1C2E56] transition ${pathname === item.href ? "font-bold" : "font-medium hover:underline hover:underline-offset-4"}`}>
                   {item.label}
                 </Link>
-              ),
+              )
             )}
 
-            {/* MOBILE BALCÃO DIGITAL - Updated hover states */}
-            <Link
-              href="/balcao-digital"
-              className="mt-4 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold text-[16px] hover:bg-[#DE092D] hover:text-white transition-colors"
-            >
+            <Link href="/balcao-digital" className="mt-3 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold">
               Balcão Digital
             </Link>
 
-            <Link
-              href="/ajuda"
-              className="mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline"
-            >
-              Ajuda
-              <ChevronLeft className="w-5 h-5" />
-            </Link>
+            {/* MOBILE AJUDA */}
+            <div>
+              <button onClick={() => setAjudaOpen(!ajudaOpen)} className="flex items-center justify-between w-full py-3 text-[#1C2E56] font-medium">
+                Ajuda <ChevronDown className={`w-4 h-4 transition-transform ${ajudaOpen ? "rotate-180" : ""}`} />
+              </button>
+              {ajudaOpen && (
+                <div className="ml-4 border-l pl-4 space-y-4 pb-3">
+                  <div>
+                    <p className="font-bold text-[#1C2E56] mb-2">Acessibilidade</p>
+                    <div className="space-y-2">
+                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">🔊 Ouvir o site</button>
+                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">T↑ Letra grande</button>
+                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">☀️ Claro</button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#1C2E56] mb-2">Informação útil</p>
+                    <div className="text-sm text-[#1C2E56] space-y-2">
+                      <p>⏰ Segunda a Sexta 09h00-13h00 14h00-17h00</p>
+                      <p>📍 Avenida Dr. Lourenço Peixinho, Edifício 18 - 1º B, 3800-1em Aveiro</p>
+                      <p>✉️ geral.fgloriavcruz@gmail.com</p>
+                      <p className="font-bold">📞 234 427 832</p>
+                    </div>
+                  </div>
+                  <Link href="/ajuda" className="block bg-[#F0BE2A] text-[#1C2E56] font-bold text-center rounded-lg px-4 py-3">
+                    Abrir o Centro de Ajuda →
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </nav>
