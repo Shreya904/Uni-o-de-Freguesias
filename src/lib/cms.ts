@@ -2,14 +2,6 @@ type PayloadList<T> = {
   docs: T[];
 };
 
-export type CmsDocumentItem = {
-  id: string;
-  title: string;
-  date: string;
-  docName: string;
-  sourceUrl: string;
-};
-
 export type CmsNewsItem = {
   id: string;
   slug: string;
@@ -21,19 +13,62 @@ export type CmsNewsItem = {
   galleryImages: string[];
 };
 
+// --- UPDATED TYPES ---
+
+export type CmsDocumentItem = {
+  id: string;
+  format: "Documento" | "Audio" | "Video";
+  type: string;
+  topic: string;
+  date: string;
+  readTime: string;
+  tags: string[];
+  title: string;
+  description?: string;
+  fileTypeLabel: string;
+  fileUrl: string;
+  thumbnailUrl?: string;
+};
+
 export type CmsEventItem = {
   id: string;
   slug: string;
+  categoryTop: string;
+  priceType: string;
   title: string;
   excerpt: string;
   description: string;
   date: string;
+  displayDate: string;
   time: string;
   location: string;
-  category: string;
+  registrationLink: string;
   isPast: boolean;
   mainImage?: string;
   galleryImages: string[];
+};
+
+export type CmsUsefulContactItem = {
+  id: string;
+  categoryTop: string;
+  categorySub: string;
+  title: string;
+  address?: string;
+  phone?: string;
+  schedule?: string;
+  websiteUrl?: string;
+  email?: string;
+};
+
+export type CmsPlaceItem = {
+  id: string;
+  categoryTop: string;
+  categorySub: string;
+  title: string;
+  address: string;
+  phone?: string;
+  schedule?: string;
+  websiteUrl?: string;
 };
 
 const CMS_URL =
@@ -99,7 +134,7 @@ function media(v: any): string | undefined {
   return undefined;
 }
 
-/* ---------------- MAPPER (IMPORTANT FIX) ---------------- */
+/* ---------------- MAPPERS ---------------- */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapNews(n: any) {
@@ -114,38 +149,90 @@ function mapNews(n: any) {
     galleryImages: Array.isArray(n.galleryImages) ? n.galleryImages.map(media).filter(Boolean) : [],
   };
 }
-/* ---------------- EVENT MAPPER ---------------- */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapEvent(e: any) {
+function mapDocument(d: any): CmsDocumentItem {
+  const dateObj = new Date(d.date);
+  const formattedDate = isNaN(dateObj.getTime())
+    ? d.date
+    : dateObj.toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
+
+  return {
+    id: String(d.id),
+    format: d.format || "Documento",
+    type: d.type || "Avisos",
+    topic: d.topic || "Administrativo",
+    date: formattedDate,
+    readTime: asText(d.readTime) || "5min",
+    tags: Array.isArray(d.tags) ? d.tags.map((t: any) => asText(t.tag)) : [],
+    title: asText(d.title),
+    description: d.description ? asText(d.description) : undefined,
+    fileTypeLabel: asText(d.fileTypeLabel),
+    fileUrl: media(d.file) || asText(d.sourceUrl) || "#",
+    thumbnailUrl: media(d.thumbnail),
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapEvent(e: any): CmsEventItem {
   return {
     id: String(e.id),
     slug: asText(e.slug),
+    categoryTop: asText(e.categoryTop) || "Outros",
+    priceType: asText(e.priceType) || "Gratuito",
     title: asText(e.title),
     excerpt: asText(e.excerpt),
     description: typeof e.description === "string" ? e.description : lexicalToText(e.description),
     date: asText(e.date),
+    displayDate: asText(e.displayDate),
     time: asText(e.time),
     location: asText(e.location),
-    category: asText(e.category),
+    registrationLink: asText(e.registrationLink) || "/balcao-digital/inscricoes",
     isPast: Boolean(e.isPast),
-
     mainImage: media(e.mainImage),
     galleryImages: Array.isArray(e.galleryImages) ? e.galleryImages.map(media).filter(Boolean) : [],
   };
 }
 
-/* ---------------- API ---------------- */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapUsefulContact(c: any): CmsUsefulContactItem {
+  return {
+    id: String(c.id),
+    categoryTop: asText(c.categoryTop),
+    categorySub: asText(c.categorySub),
+    title: asText(c.title),
+    address: c.address ? asText(c.address) : undefined,
+    phone: c.phone ? asText(c.phone) : undefined,
+    schedule: c.schedule ? asText(c.schedule) : undefined,
+    websiteUrl: c.websiteUrl ? asText(c.websiteUrl) : undefined,
+    email: c.email ? asText(c.email) : undefined,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPlace(p: any): CmsPlaceItem {
+  return {
+    id: String(p.id),
+    categoryTop: asText(p.categoryTop),
+    categorySub: asText(p.categorySub),
+    title: asText(p.title),
+    address: asText(p.address),
+    phone: p.phone ? asText(p.phone) : undefined,
+    schedule: p.schedule ? asText(p.schedule) : undefined,
+    websiteUrl: p.websiteUrl ? asText(p.websiteUrl) : undefined,
+  };
+}
+
+/* ---------------- API FUNCTIONS ---------------- */
 
 export async function fetchPublishedNews(limit = 50): Promise<CmsNewsItem[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/news", {
     "where[isPublished][equals]": "true",
     sort: "-date",
-    depth: "2",
+    depth: "1",
     limit,
   });
-
   return (data.docs ?? []).map(mapNews);
 }
 
@@ -154,10 +241,9 @@ export async function fetchNewsBySlug(slug: string): Promise<CmsNewsItem | null>
   const data = await cmsFetch<any>("/api/news", {
     "where[isPublished][equals]": "true",
     "where[slug][equals]": decodeURIComponent(slug),
-    depth: "2",
+    depth: "1",
     limit: 1,
   });
-
   const item = data.docs?.[0];
   return item ? mapNews(item) : null;
 }
@@ -167,22 +253,20 @@ export async function fetchPublishedDocuments(limit = 50): Promise<CmsDocumentIt
   const data = await cmsFetch<any>("/api/documents", {
     "where[isPublished][equals]": "true",
     sort: "-date",
+    depth: "1", // Needed to resolve file media URLs
     limit,
   });
-
-  return data.docs ?? [];
+  return (data.docs ?? []).map(mapDocument);
 }
-/* ---------------- EVENTS API ---------------- */
 
 export async function fetchPublishedEvents(limit = 50): Promise<CmsEventItem[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await cmsFetch<any>("/api/events", {
     "where[isPublished][equals]": "true",
     sort: "date", // upcoming first
-    depth: "2",
+    depth: "1",
     limit,
   });
-
   return (data.docs ?? []).map(mapEvent);
 }
 
@@ -191,10 +275,27 @@ export async function fetchEventBySlug(slug: string): Promise<CmsEventItem | nul
   const data = await cmsFetch<any>("/api/events", {
     "where[isPublished][equals]": "true",
     "where[slug][equals]": decodeURIComponent(slug),
-    depth: "2",
+    depth: "1",
     limit: 1,
   });
-
   const item = data.docs?.[0];
   return item ? mapEvent(item) : null;
+}
+
+export async function fetchUsefulContacts(limit = 100): Promise<CmsUsefulContactItem[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data = await cmsFetch<any>("/api/useful-contacts", {
+    "where[isPublished][equals]": "true",
+    limit,
+  });
+  return (data.docs ?? []).map(mapUsefulContact);
+}
+
+export async function fetchPlaces(limit = 100): Promise<CmsPlaceItem[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data = await cmsFetch<any>("/api/places", {
+    "where[isPublished][equals]": "true",
+    limit,
+  });
+  return (data.docs ?? []).map(mapPlace);
 }

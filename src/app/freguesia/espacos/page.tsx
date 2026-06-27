@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
+import { fetchPlaces } from "@/lib/cms"; // Added import from your CMS lib
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 interface PlaceItem {
@@ -96,38 +97,6 @@ const fallbackPlaces: PlaceItem[] = [
   },
 ];
 
-// --- CMS FETCH FUNCTION WITH FALLBACK ---
-const fetchPlacesFromCMS = async (): Promise<PlaceItem[]> => {
-  try {
-    // UPDATED: Using the correct Payload endpoint
-    const res = await fetch("/api/places?limit=100");
-    if (!res.ok) throw new Error("CMS fetch failed");
-
-    const data = await res.json();
-
-    // UPDATED: Mapping the Payload 'docs' array to the frontend format
-    if (data && data.docs && data.docs.length > 0) {
-      return data.docs.map(
-        (doc: any): PlaceItem => ({
-          id: doc.id,
-          categoryTop: doc.categoryTop,
-          categorySub: doc.categorySub,
-          title: doc.title,
-          address: doc.address || "",
-          phone: doc.phone || undefined,
-          schedule: doc.schedule || undefined,
-          websiteUrl: doc.websiteUrl || undefined,
-        }),
-      );
-    }
-
-    return fallbackPlaces;
-  } catch (error) {
-    console.error("Failed to fetch from CMS, using fallback data.", error);
-    return fallbackPlaces;
-  }
-};
-
 export default function EspacosPublicosPage() {
   const [places, setPlaces] = useState<PlaceItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,13 +104,24 @@ export default function EspacosPublicosPage() {
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
 
+  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let isMounted = true;
+
     const loadPlaces = async () => {
-      const data = await fetchPlacesFromCMS();
-      if (isMounted) setPlaces(data);
+      try {
+        const data = await fetchPlaces(100);
+        if (isMounted) {
+          setPlaces(data && data.length > 0 ? data : fallbackPlaces);
+        }
+      } catch (error) {
+        console.error("Error fetching places from CMS:", error);
+        if (isMounted) setPlaces(fallbackPlaces);
+      }
     };
+
     loadPlaces();
+
     return () => {
       isMounted = false;
     };
@@ -381,7 +361,7 @@ export default function EspacosPublicosPage() {
                       </div>
                     </div>
 
-                    {/* NEW MIDDLE BANNER (Inserted after the 6th item to break the grid nicely) */}
+                    {/* NEW MIDDLE BANNER */}
                     {index === 5 && (
                       <div className="col-span-1 md:col-span-2 relative my-2 rounded-xl overflow-hidden h-[260px] shadow-sm">
                         <img
@@ -398,7 +378,7 @@ export default function EspacosPublicosPage() {
                           <p className="text-sm text-[#1c2841] font-medium">
                             Visite o{" "}
                             <Link
-                              href="#"
+                              href="/ajuda"
                               className="underline decoration-2 underline-offset-4 font-bold text-[#1c2841] hover:text-[#1c2841]/70 transition-colors"
                             >
                               Centro de Ajuda

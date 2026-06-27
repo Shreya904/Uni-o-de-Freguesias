@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ChevronUp, ChevronDown, ArrowDownUp, FileEdit } from "lucide-react";
+import { fetchPublishedEvents } from "@/lib/cms"; // Import added
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 export interface EventItem {
@@ -25,6 +26,8 @@ export interface EventItem {
 
 // Helper to determine time-based categories (Hoje, Esta semana, Este mês) dynamically
 const getCategorySub = (eventDateStr: string): string => {
+  if (!eventDateStr) return "Futuro";
+
   const eventDate = new Date(eventDateStr);
   const today = new Date();
 
@@ -76,49 +79,6 @@ const fallbackEvents: EventItem[] = [
   },
 ];
 
-// --- MOCK CMS FETCH FUNCTION ---
-const fetchEventsFromCMS = async (): Promise<EventItem[]> => {
-  try {
-    // UPDATED: Added depth=1 to fetch image URLs from relationships
-    const res = await fetch("/api/events?depth=1");
-    if (!res.ok) throw new Error("CMS fetch failed");
-
-    const data = await res.json();
-
-    // Check Payload's standard 'docs' array structure
-    if (data && data.docs && data.docs.length > 0) {
-      return data.docs.map((doc: any): EventItem => {
-        // Format the exact date fallback if displayDate isn't provided
-        const fallbackFormattedDate = new Date(doc.date).toLocaleDateString("pt-PT", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
-
-        return {
-          id: doc.id,
-          slug: doc.slug,
-          categoryTop: doc.categoryTop || "Outros",
-          categorySub: getCategorySub(doc.date),
-          priceType: doc.priceType || "Gratuito",
-          title: doc.title,
-          description: doc.excerpt || "", // Map 'excerpt' to the card description
-          dateStr: doc.displayDate || fallbackFormattedDate,
-          timeStr: doc.time || "",
-          location: doc.location || "",
-          mainImage: doc.mainImage?.url || "", // Map populated media URL
-          registrationLink: doc.registrationLink || "/inscricoes",
-        };
-      });
-    }
-
-    return fallbackEvents;
-  } catch (error) {
-    console.warn("Failed to fetch from CMS, using fallback data.");
-    return fallbackEvents;
-  }
-};
-
 export default function EventsPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -142,11 +102,55 @@ export default function EventsPage() {
     },
   ];
 
+  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let mounted = true;
-    fetchEventsFromCMS().then((data) => {
-      if (mounted) setEvents(data);
-    });
+
+    const loadEvents = async () => {
+      try {
+        const cmsData = await fetchPublishedEvents(100);
+
+        if (mounted) {
+          if (cmsData && cmsData.length > 0) {
+            // Map the CMS data into the local EventItem format
+            const mappedEvents: EventItem[] = cmsData.map((doc) => {
+              // Format the exact date fallback if displayDate isn't provided
+              const fallbackFormattedDate = doc.date
+                ? new Date(doc.date).toLocaleDateString("pt-PT", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : "";
+
+              return {
+                id: doc.id,
+                slug: doc.slug,
+                categoryTop: doc.categoryTop || "Outros",
+                categorySub: getCategorySub(doc.date),
+                priceType: doc.priceType || "Gratuito",
+                title: doc.title,
+                description: doc.excerpt || "",
+                dateStr: doc.displayDate || fallbackFormattedDate,
+                timeStr: doc.time || "",
+                location: doc.location || "",
+                mainImage: doc.mainImage || "",
+                registrationLink: doc.registrationLink || "/inscricoes",
+              };
+            });
+            setEvents(mappedEvents);
+          } else {
+            setEvents(fallbackEvents);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch events from CMS:", error);
+        if (mounted) setEvents(fallbackEvents);
+      }
+    };
+
+    loadEvents();
+
     return () => {
       mounted = false;
     };

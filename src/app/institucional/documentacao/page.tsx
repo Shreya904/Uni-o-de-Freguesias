@@ -5,7 +5,6 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
-import NewsHighlightBox from "@/components/NewsHighlightBox";
 import {
   Search,
   ChevronUp,
@@ -21,6 +20,7 @@ import {
   List as ListIcon,
   LayoutGrid,
 } from "lucide-react";
+import { fetchPublishedDocuments } from "@/lib/cms"; // Added import from your CMS lib
 
 // --- FRONTEND ARCHITECTURE TYPES ---
 export interface DocItem {
@@ -63,21 +63,48 @@ const handleDownload = async (url: string, filename: string) => {
   }
 };
 
-// Helper to silently print a PDF
-const handlePrint = (url: string) => {
+// Helper to silently print a PDF (Bypasses Cross-Origin iframe blocks)
+const handlePrint = async (url: string) => {
   if (!url || url === "#") return;
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = url;
 
-  document.body.appendChild(iframe);
+  try {
+    // 1. Fetch the document as a Blob
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch document for printing");
 
-  iframe.onload = () => {
-    setTimeout(() => {
-      iframe.contentWindow?.focus();
-      iframe.contentWindow?.print();
-    }, 500); // Slight delay to ensure PDF is fully rendered
-  };
+    const blob = await response.blob();
+
+    // 2. Create a local Object URL (Same-Origin)
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    // 3. Create the iframe
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = blobUrl;
+
+    document.body.appendChild(iframe);
+
+    // 4. Print once loaded
+    iframe.onload = () => {
+      setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+
+        // 5. Cleanup memory and DOM after a slight delay
+        setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
+          }
+          window.URL.revokeObjectURL(blobUrl);
+        }, 5000); // Gives the print dialog time to open before cleanup
+      }, 500);
+    };
+  } catch (error) {
+    console.error("Print failed (likely CORS issue). Falling back to new tab.", error);
+    // Fallback: If the fetch fails due to strict CORS rules on your media bucket,
+    // gracefully degrade by opening the PDF in a new tab so the user can print it manually.
+    window.open(url, "_blank");
+  }
 };
 
 // --- FALLBACK DATA ---
@@ -153,55 +180,6 @@ const fallbackDocs: DocItem[] = [
   },
 ];
 
-// --- CMS FETCH FUNCTION ---
-const fetchDocsFromCMS = async (): Promise<DocItem[]> => {
-  try {
-    // UPDATED: Using depth=1 to fetch relationship details (like file URLs) from Payload
-    const res = await fetch("/api/documents?depth=1");
-
-    if (!res.ok) {
-      console.warn("CMS endpoint not ready. Using fallback data.");
-      return fallbackDocs;
-    }
-
-    const data = await res.json();
-
-    // UPDATED: Mapping the Payload structure to the frontend format
-    if (data && data.docs && data.docs.length > 0) {
-      return data.docs.map((doc: any): DocItem => {
-        // Format ISO date into Portuguese localized date
-        const formattedDate = new Date(doc.date).toLocaleDateString("pt-PT", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
-
-        return {
-          id: doc.id,
-          format: doc.format,
-          type: doc.type,
-          topic: doc.topic,
-          date: formattedDate,
-          readTime: doc.readTime || "5min",
-          // Map tags from Payload array of objects to array of strings
-          tags: doc.tags ? doc.tags.map((t: any) => t.tag) : [],
-          title: doc.title,
-          description: doc.description,
-          fileTypeLabel: doc.fileTypeLabel,
-          // Safely access nested file url, fallback to sourceUrl if provided
-          fileUrl: doc.file?.url || doc.sourceUrl || "#",
-          thumbnailUrl: doc.thumbnail?.url || undefined,
-        };
-      });
-    }
-
-    return fallbackDocs;
-  } catch (error) {
-    console.warn("Fetch aborted or network error. Using fallback data.");
-    return fallbackDocs;
-  }
-};
-
 export default function DocumentacaoPage() {
   const [documents, setDocuments] = useState<DocItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -225,11 +203,20 @@ export default function DocumentacaoPage() {
     },
   ];
 
+  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let isMounted = true;
     const loadDocs = async () => {
-      const data = await fetchDocsFromCMS();
-      if (isMounted) setDocuments(data);
+      try {
+        const cmsData = await fetchPublishedDocuments(100);
+        if (isMounted) {
+          // Type casting is safe here as CmsDocumentItem matches DocItem structurally
+          setDocuments(cmsData && cmsData.length > 0 ? (cmsData as DocItem[]) : fallbackDocs);
+        }
+      } catch (error) {
+        console.error("Error fetching documents from CMS:", error);
+        if (isMounted) setDocuments(fallbackDocs);
+      }
     };
     loadDocs();
     return () => {
@@ -370,6 +357,7 @@ export default function DocumentacaoPage() {
                     </label>
                   ))}
                 </div>
+                {/* Render divider unless it's the last category */}
                 {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
               </div>
             ))}
@@ -408,7 +396,22 @@ export default function DocumentacaoPage() {
               </div>
             </div>
 
-            <NewsHighlightBox />
+            {/* Notícias Snippet */}
+            <div className="bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6">
+              <h3 className="font-extrabold text-[#1c2841] mb-3 text-sm uppercase tracking-wide">
+                Notícias
+              </h3>
+              <p className="text-xs text-gray-500 mb-2 font-medium">24 Abril, 2024</p>
+              <Link
+                href="#"
+                className="text-sm font-bold text-[#1c2841] hover:text-blue-800 transition-colors leading-snug block"
+              >
+                <span className="underline underline-offset-2 decoration-[#1c2841]/30">
+                  Novo acordo de parceria entre o Município de Aveiro e Instituições locais para
+                  reforçar a vitalidade, as artes e a cultura no concelho.
+                </span>
+              </Link>
+            </div>
           </aside>
 
           {/* RIGHT MAIN CONTENT */}
@@ -547,7 +550,7 @@ export default function DocumentacaoPage() {
                         <div className="flex items-center gap-4 text-sm font-bold text-gray-500">
                           {doc.format === "Documento" && (
                             <>
-                              {/* UPDATED: VIEW LOGIC */}
+                              {/* VIEW LOGIC */}
                               <a
                                 href={doc.fileUrl}
                                 target="_blank"
@@ -558,7 +561,7 @@ export default function DocumentacaoPage() {
                               </a>
                               <span className="text-gray-300">|</span>
 
-                              {/* UPDATED: DOWNLOAD LOGIC */}
+                              {/* DOWNLOAD LOGIC */}
                               <button
                                 onClick={() => handleDownload(doc.fileUrl, `${doc.title}.pdf`)}
                                 className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
@@ -567,7 +570,7 @@ export default function DocumentacaoPage() {
                               </button>
                               <span className="text-gray-300">|</span>
 
-                              {/* UPDATED: PRINT LOGIC */}
+                              {/* PRINT LOGIC */}
                               <button
                                 onClick={() => handlePrint(doc.fileUrl)}
                                 className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
@@ -604,7 +607,7 @@ export default function DocumentacaoPage() {
                           <p className="text-sm text-[#1c2841] font-medium">
                             Visite o{" "}
                             <Link
-                              href="#"
+                              href="/ajuda"
                               className="underline decoration-2 underline-offset-4 font-bold text-[#1c2841] hover:text-[#1c2841]/70 transition-colors"
                             >
                               Centro de Ajuda
