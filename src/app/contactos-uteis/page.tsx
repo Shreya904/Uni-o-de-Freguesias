@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
+import { fetchUsefulContacts } from "@/lib/cms"; // Added import from your CMS lib
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 interface ContactItem {
@@ -86,43 +87,6 @@ const fallbackContacts: ContactItem[] = [
   },
 ];
 
-// --- CMS FETCH FUNCTION WITH GRACEFUL FALLBACK ---
-const fetchContactsFromCMS = async (): Promise<ContactItem[]> => {
-  try {
-    // UPDATED: Using the correct Payload endpoint. Limit set high to get all contacts.
-    const res = await fetch("/api/useful-contacts?limit=100");
-
-    if (!res.ok) {
-      console.warn("CMS endpoint not ready. Using fallback data.");
-      return fallbackContacts;
-    }
-
-    const data = await res.json();
-
-    // UPDATED: Mapping the Payload 'docs' array to the frontend format
-    if (data && data.docs && data.docs.length > 0) {
-      return data.docs.map(
-        (doc: any): ContactItem => ({
-          id: doc.id,
-          categoryTop: doc.categoryTop,
-          categorySub: doc.categorySub,
-          title: doc.title,
-          address: doc.address || undefined,
-          phone: doc.phone || undefined,
-          schedule: doc.schedule || undefined,
-          websiteUrl: doc.websiteUrl || undefined,
-          email: doc.email || undefined,
-        }),
-      );
-    }
-
-    return fallbackContacts;
-  } catch (error) {
-    console.warn("Fetch aborted or network error. Using fallback data.");
-    return fallbackContacts;
-  }
-};
-
 export default function ContactosUteisPage() {
   const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -149,13 +113,24 @@ export default function ContactosUteisPage() {
     },
   ];
 
+  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let isMounted = true;
+
     const loadContacts = async () => {
-      const data = await fetchContactsFromCMS();
-      if (isMounted) setContacts(data);
+      try {
+        const data = await fetchUsefulContacts(100);
+        if (isMounted) {
+          setContacts(data && data.length > 0 ? data : fallbackContacts);
+        }
+      } catch (error) {
+        console.error("Error fetching contacts from CMS:", error);
+        if (isMounted) setContacts(fallbackContacts);
+      }
     };
+
     loadContacts();
+
     return () => {
       isMounted = false;
     };
@@ -289,6 +264,7 @@ export default function ContactosUteisPage() {
                     </label>
                   ))}
                 </div>
+                {/* Render divider unless it's the last category */}
                 {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
               </div>
             ))}
@@ -402,7 +378,7 @@ export default function ContactosUteisPage() {
                           <p className="text-sm text-[#1c2841] font-medium">
                             Visite o{" "}
                             <Link
-                              href="#"
+                              href="/ajuda"
                               className="underline decoration-2 underline-offset-4 font-bold text-[#1c2841] hover:text-[#1c2841]/70 transition-colors"
                             >
                               Centro de Ajuda

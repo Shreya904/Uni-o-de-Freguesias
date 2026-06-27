@@ -83,8 +83,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
             {/* LEFT MAIN ARTICLE */}
             <div className="lg:col-span-8">
-              <div className="border-t-[3px] border-dotted border-[#4eaaf4] w-full mb-8"></div>
-
               <p className="text-xs font-semibold text-gray-500 mb-4">
                 {newsItem.date && formatNewsDate(newsItem.date)}
               </p>
@@ -129,7 +127,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                       <p className="text-white/90 text-sm font-medium">
                         Visite a{" "}
                         <Link
-                          href="#"
+                          href="/contact-uteis"
                           className="underline decoration-1 underline-offset-4 hover:text-white transition-colors"
                         >
                           Lista pública
@@ -175,7 +173,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
         </div>
       </main>
 
-      <div className="border-t-[3px] border-dotted border-[#4eaaf4] w-full"></div>
       <Footer />
     </div>
   );

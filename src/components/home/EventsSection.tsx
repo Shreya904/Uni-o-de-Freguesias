@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FileEdit } from "lucide-react";
 import EmptyState from "@/components/ui/emptystate";
 import { motion } from "framer-motion";
+import { fetchPublishedEvents } from "@/lib/cms"; // <-- Using your centralized CMS fetcher
 
 // --- TYPES & INTERFACES ---
 interface LatestEvent {
@@ -47,44 +48,6 @@ const fallbackEvent: LatestEvent = {
   registrationLink: "/balcao-digital/inscricoes",
 };
 
-// --- MOCK CMS FETCH FUNCTION ---
-const fetchLatestEventFromCMS = async (): Promise<LatestEvent | null> => {
-  try {
-    // Fetch only the latest event (limit=1) and ensure images are populated (depth=1)
-    const res = await fetch("/api/events?limit=1&depth=1&sort=-date");
-
-    if (!res.ok) throw new Error("CMS fetch failed");
-
-    const data = await res.json();
-
-    if (data && data.docs && data.docs.length > 0) {
-      const doc = data.docs[0];
-
-      return {
-        id: doc.id,
-        title: doc.title,
-        // Map the short excerpt for the card description
-        description: doc.excerpt || "",
-        // Use the displayDate if available, otherwise format the exact date
-        dateStr: doc.displayDate || (doc.date ? formatFullDate(doc.date) : ""),
-        time: doc.time || "",
-        location: doc.location || "",
-        imageUrl: doc.mainImage?.url || fallbackEvent.imageUrl,
-        price: doc.priceType || "Gratuito",
-        // Defaulting to true as per your UI requirement, or you could drive this via CMS later
-        hasRegistration: true,
-        // Keep standard link unless overridden in CMS
-        registrationLink: doc.registrationLink || "/balcao-digital/inscricoes",
-      };
-    }
-
-    return null;
-  } catch (error) {
-    console.warn("Failed to fetch latest event from CMS.");
-    return null;
-  }
-};
-
 const EventsSection = () => {
   const [latestEvent, setLatestEvent] = useState<LatestEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,10 +59,37 @@ const EventsSection = () => {
     let isMounted = true;
 
     const loadEvent = async () => {
-      const eventData = await fetchLatestEventFromCMS();
-      if (isMounted) {
-        setLatestEvent(eventData);
-        setIsLoading(false);
+      try {
+        // Fetch 1 event using your unified CMS API
+        const events = await fetchPublishedEvents(1);
+
+        if (isMounted) {
+          if (events && events.length > 0) {
+            const doc = events[0];
+
+            setLatestEvent({
+              id: doc.id,
+              title: doc.title,
+              description: doc.excerpt || "",
+              dateStr: doc.displayDate || (doc.date ? formatFullDate(doc.date) : ""),
+              time: doc.time || "",
+              location: doc.location || "",
+              imageUrl: doc.mainImage || fallbackEvent.imageUrl,
+              price: doc.priceType || "Gratuito",
+              hasRegistration: true,
+              registrationLink: doc.registrationLink || "/balcao-digital/inscricoes",
+            });
+          } else {
+            setLatestEvent(null);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch latest event from CMS:", error);
+        if (isMounted) {
+          setLatestEvent(null);
+          setIsLoading(false);
+        }
       }
     };
 

@@ -184,7 +184,7 @@ export default function OrganismoPage() {
                   <p className="text-[14px]">
                     Visite o{" "}
                     <Link
-                      href="#"
+                      href="/balcao-digital/comunidade"
                       className="underline underline-offset-4 hover:text-gray-200 transition-colors"
                     >
                       Espaço Comunidade
