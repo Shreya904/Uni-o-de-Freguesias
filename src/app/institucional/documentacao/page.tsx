@@ -250,7 +250,7 @@ export default function DocumentacaoPage() {
             <Header />
           </div>
 
-          <section className="relative w-full h-[350px] md:h-[450px] overflow-hidden flex items-end pb-12">
+          <section className="relative w-full min-h-[400px] md:min-h-[450px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
                 src="/documents-hero.jpg"
@@ -529,7 +529,7 @@ export default function DocumentacaoPage() {
                           {doc.fileTypeLabel}
                         </span>
 
-                        <div className="flex items-center gap-4 text-sm font-bold text-gray-500">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-bold text-gray-500">
                           {doc.format === "Documento" && (
                             <>
                               {/* VIEW LOGIC */}
@@ -541,7 +541,7 @@ export default function DocumentacaoPage() {
                               >
                                 Visualizar <Eye className="w-4 h-4" />
                               </a>
-                              <span className="text-gray-300">|</span>
+                              <span className="text-gray-300 hidden sm:inline">|</span>
 
                               {/* DOWNLOAD LOGIC */}
                               <button
@@ -550,7 +550,7 @@ export default function DocumentacaoPage() {
                               >
                                 Descarregar <Download className="w-4 h-4" />
                               </button>
-                              <span className="text-gray-300">|</span>
+                              <span className="text-gray-300 hidden sm:inline">|</span>
 
                               {/* PRINT LOGIC */}
                               <button

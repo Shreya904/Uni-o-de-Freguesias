@@ -201,7 +201,9 @@ export default function EventsPage() {
             <Header />
           </div>
 
-          <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden flex items-end pb-12">
+          {/* FIX: Swapped fixed 'h-[...]' for 'min-h-[...]' and added 'pt-[180px] md:pt-[160px]' 
+              to ensure the wrapped header doesn't obscure the content below it. */}
+          <section className="relative w-full min-h-[400px] md:min-h-[450px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
                 src="/hero-bg.jpg"

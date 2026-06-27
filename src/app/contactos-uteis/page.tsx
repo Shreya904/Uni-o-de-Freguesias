@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
-import { fetchUsefulContacts } from "@/lib/cms"; // Added import from your CMS lib
+import { fetchUsefulContacts } from "@/lib/cms";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 interface ContactItem {
@@ -113,7 +113,6 @@ export default function ContactosUteisPage() {
     },
   ];
 
-  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let isMounted = true;
 
@@ -171,7 +170,9 @@ export default function ContactosUteisPage() {
             <Header />
           </div>
 
-          <section className="relative w-full h-[350px] md:h-[450px] overflow-hidden flex items-end pb-12">
+          {/* FIX: Swapped fixed 'h-[...]' for 'min-h-[...]' and added 'pt-[180px] md:pt-[160px]' 
+              to ensure the wrapped header doesn't obscure the content below it. */}
+          <section className="relative w-full min-h-[450px] md:min-h-[500px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
                 src="/visitar-hero.jpg"
@@ -262,7 +263,6 @@ export default function ContactosUteisPage() {
                     </label>
                   ))}
                 </div>
-                {/* Render divider unless it's the last category */}
                 {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
               </div>
             ))}
@@ -359,7 +359,7 @@ export default function ContactosUteisPage() {
                       </div>
                     </div>
 
-                    {/* NEW MIDDLE BANNER (Inserted after the 6th item to break the grid nicely) */}
+                    {/* NEW MIDDLE BANNER */}
                     {index === 5 && (
                       <div className="col-span-1 md:col-span-2 relative my-2 rounded-xl overflow-hidden h-[260px] shadow-sm">
                         <img
