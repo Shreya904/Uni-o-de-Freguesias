@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 
 type InscricaoType = "passeios" | "almosos" | "hidroginastica";
 
@@ -11,15 +11,70 @@ const titles: Record<InscricaoType, string> = {
 };
 
 const descriptions: Record<InscricaoType, string> = {
-  passeios:
-    "Inscreva-se online nos passeios organizados pela junta de freguesia, preenchendo os dados solicitados e efetuando o respetivo pagamento, quando aplicável. A inscrição fica sujeita às vagas disponíveis e às condições definidas para cada atividade.",
-  almosos:
-    "Inscreva-se online nos almoços organizados pela junta de freguesia, preenchendo os dados solicitados e efetuando o respetivo pagamento, quando aplicável. A inscrição fica sujeita às vagas disponíveis e às condições definidas para cada atividade.",
-  hidroginastica:
-    "Inscreva-se online nas aulas de hidroginástica organizadas pela junta de freguesia, preenchendo os dados solicitados e efetuando o respetivo pagamento, quando aplicável. A inscrição fica sujeita às vagas disponíveis e às condições definidas para cada atividade.",
+  passeios: "Inscreva-se online nos passeios organizados pela junta de freguesia, preenchendo os dados solicitados e efetuando o respetivo pagamento, quando aplicável. A inscrição fica sujeita às vagas disponíveis e às condições definidas para cada atividade.",
+  almosos: "Inscreva-se online nos almoços organizados pela junta de freguesia, preenchendo os dados solicitados e efetuando o respetivo pagamento, quando aplicável. A inscrição fica sujeita às vagas disponíveis e às condições definidas para cada atividade.",
+  hidroginastica: "Inscreva-se online nas aulas de hidroginástica organizadas pela junta de freguesia, preenchendo os dados solicitados e efetuando o respetivo pagamento, quando aplicável. A inscrição fica sujeita às vagas disponíveis e às condições definidas para cada atividade.",
 };
 
 const steps = ["Dados", "Pagamento", "Confirmação"];
+
+const faqAnswer = "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
+
+function SidebarFaqs() {
+  const [open, setOpen] = useState<number | null>(null);
+  const faqs = [
+    "Como posso inscrever-me para participar na feira?",
+    "Que documentos são necessários para participar?",
+  ];
+  return (
+    <div className="space-y-2">
+      {faqs.map((faq, i) => (
+        <div key={i} className="border rounded-lg p-3 bg-amber-50 cursor-pointer text-xs text-muted-foreground" onClick={() => setOpen(open === i ? null : i)}>
+          <div className="flex items-center justify-between">
+            <span>{faq}</span>
+            <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+          </div>
+          {open === i && <p className="mt-2">Deve tentar novamente :)</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MainFaqs() {
+  const [open, setOpen] = useState<number | null>(null);
+  const faqs = ["Quero casar, o que devo fazer?", "Sinto-me só preciso de ajuda como fazer?"];
+  return (
+    <div className="space-y-3">
+      {faqs.map((faq, i) => (
+        <div key={i} className="bg-amber-50 rounded-lg overflow-hidden">
+          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground">
+            {faq}
+            <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+          </button>
+          {open === i && (
+            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200">
+              <p className="mt-3 mb-3">{faqAnswer}</p>
+              <ul className="space-y-1 mb-3 text-xs">
+                <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
+                <li>📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática</li>
+                <li>📄 consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis online</li>
+                <li>🏛 explore documentos relacionados com iniciativas, projetos e processos participativos da freguesia</li>
+                <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
+                <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
+              </ul>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200">
+                <span>Atualizado a 29 abril, 2026</span>
+                <span>Partilhar 🔗</span>
+                <span>Esta informação foi útil? 👍 👎</span>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function InscricaoWizard({ active }: { active: InscricaoType }) {
   const [step, setStep] = useState(1);
@@ -27,50 +82,26 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
 
   return (
     <div className="balcao-shell">
-      {/* SIDEBAR */}
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3">Em que atividades se quer inscrever?</p>
         <ul className="space-y-3 text-muted-foreground mb-8">
           {(["passeios", "almosos", "hidroginastica"] as InscricaoType[]).map((t) => (
             <li key={t} className="flex items-center gap-2">
               <input type="radio" readOnly checked={active === t} className="accent-[#C41230]" />
-
-<a
-  href={`/balcao-digital/inscricoes/${t === "almosos" ? "almocos" : t}`}
-  className={
-    active === t
-      ? "text-foreground font-medium"
-      : "hover:text-foreground transition"
-  }
->
-  {t === "passeios"
-    ? "Passeios Sénior"
-    : t === "almosos"
-    ? "Almoços Sénior"
-    : "Hidroginástica"}
-</a>
-</li>
+              <a href={`/balcao-digital/inscricoes/${t === "almosos" ? "almocos" : t}`} className={active === t ? "text-foreground font-medium" : "hover:text-foreground transition"}>
+                {t === "passeios" ? "Passeios Sénior" : t === "almosos" ? "Almoços Sénior" : "Hidroginástica"}
+              </a>
+            </li>
           ))}
         </ul>
         <p className="font-bold text-foreground mb-3">Perguntas frequentes</p>
-        <details className="border rounded-lg p-3 text-muted-foreground text-xs bg-amber-50 cursor-pointer">
-          <summary>Como posso inscrever-me para participar na feira?</summary>
-        </details>
-        <details className="border rounded-lg p-3 text-muted-foreground text-xs bg-amber-50 cursor-pointer mt-2">
-          <summary>Que documentos são necessários para participar?</summary>
-        </details>
+        <SidebarFaqs />
       </aside>
 
-      {/* MAIN */}
       <div className="balcao-main">
-        <h1>
-          {titles[active]}
-        </h1>
-        <p className="mb-8 max-w-2xl">
-          {descriptions[active]}
-        </p>
+        <h1>{titles[active]}</h1>
+        <p className="mb-8 max-w-2xl">{descriptions[active]}</p>
 
-        {/* STEP INDICATOR */}
         <div className="flex items-center gap-10 mb-10">
           {steps.map((label, i) => {
             const n = i + 1;
@@ -78,9 +109,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
             const isDone = n < step;
             return (
               <div key={label} className="flex flex-col items-center gap-2">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${
-                  isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground"
-                }`}>{n}</div>
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground"}`}>{n}</div>
                 <span className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}>{label}</span>
               </div>
             );
@@ -92,14 +121,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
         {step === 3 && <StepConfirmacao />}
 
         <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
-        <div className="space-y-3">
-          <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
-            <summary className="font-medium text-foreground">Quero casar, o que devo fazer?</summary>
-          </details>
-          <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
-            <summary className="font-medium text-foreground">Sinto-me só preciso de ajuda como fazer?</summary>
-          </details>
-        </div>
+        <MainFaqs />
       </div>
     </div>
   );
@@ -108,7 +130,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
 function StepDados({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">1 – Os seus dados pessoais</p>
+      <p className="font-bold text-foreground mb-4">1 — Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
           <label className="text-sm text-muted-foreground">Nome <span className="text-xs">(Necessário)</span></label>
@@ -128,9 +150,7 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
         </div>
         <div>
           <label className="text-sm text-muted-foreground">Data de passeia</label>
-          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground">
-            <option>— Selecione</option>
-          </select>
+          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground"><option>— Selecione</option></select>
         </div>
         <div />
         <div>
@@ -142,12 +162,8 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
-        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
-      </p>
-      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
-        Continuar <ChevronRight className="w-4 h-4" />
-      </button>
+      <p className="text-xs text-muted-foreground mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
+      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
     </div>
   );
 }
@@ -155,19 +171,12 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
 function StepPagamento({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">2 – Pagamento</p>
+      <p className="font-bold text-foreground mb-4">2 — Pagamento</p>
       <p className="text-sm text-muted-foreground mb-2">Qual o método que prefere usar para efetuar o pagamento?</p>
-      <p className="text-xs text-muted-foreground mb-4">Dor data entidade não temos nas gls parti ispar.</p>
       <button className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">Na Junta</button>
-      <p className="text-sm text-muted-foreground mb-6">
-        Deverá deslocar-se aos serviços da junta para efetuar o pagamento e confirmar a sua participação e finar a série teste.
-      </p>
-      <p className="text-xs text-muted-foreground mb-4">
-        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
-      </p>
-      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
-        Continuar <ChevronRight className="w-4 h-4" />
-      </button>
+      <p className="text-sm text-muted-foreground mb-6">Deverá deslocar-se aos serviços da junta para efetuar o pagamento e confirmar a sua participação.</p>
+      <p className="text-xs text-muted-foreground mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
+      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
     </div>
   );
 }
@@ -175,14 +184,12 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
 function StepConfirmacao() {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">3 – Confirmação</p>
+      <p className="font-bold text-foreground mb-4">3 — Confirmação</p>
       <p className="text-sm text-muted-foreground mb-2">
         A confirmação da inscrição será enviada para o endereço de email indicado, que poderá ser{" "}
         <span className="font-semibold text-foreground">confirmado@gmail.pt</span>.
       </p>
-      <p className="text-sm text-muted-foreground mb-6">
-        Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065
-      </p>
+      <p className="text-sm text-muted-foreground mb-6">Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065</p>
       <div className="space-y-3 mb-6 max-w-2xl">
         <label className="flex items-start gap-2 text-sm text-muted-foreground">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
@@ -197,12 +204,8 @@ function StepConfirmacao() {
         <label className="text-sm text-muted-foreground">Descrição</label>
         <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20" />
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
-        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
-      </p>
-      <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
-        Continuar <ChevronRight className="w-4 h-4" />
-      </button>
+      <p className="text-xs text-muted-foreground mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
+      <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
     </div>
   );
 }
