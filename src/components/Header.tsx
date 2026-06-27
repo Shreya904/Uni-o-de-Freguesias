@@ -8,10 +8,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 
 interface MegaMenuSection {
   heading: string;
-  links: {
-    label: string;
-    href?: string;
-  }[];
+  links: { label: string; href?: string }[];
 }
 
 interface NavItem {
@@ -91,11 +88,29 @@ const navItems: NavItem[] = [
   { label: "Contactos", href: "/contactos" },
 ];
 
+const faqs = [
+  {
+    q: "Precisa de usar auriculares para ouvir as entrevistas?",
+    a: "Não precisa! Mas se estiver num espaço público é capaz de não ser má ideia ;)",
+  },
+  {
+    q: "Devo usar sempre desodorizante?",
+    a: "Não precisa! Mas se estiver num espaço público é capaz de não ser má ideia ;)",
+  },
+  {
+    q: "Devo sempre tirar o som ao meu telemóvel?",
+    a: "Não precisa! Mas se estiver num espaço público é capaz de não ser má ideia ;)",
+  },
+];
+
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [ajudaOpen, setAjudaOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [fontSize, setFontSize] = useState(100);
+  const [darkMode, setDarkMode] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
@@ -119,6 +134,18 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
+    document.documentElement.style.fontSize = `${fontSize}%`;
+  }, [fontSize]);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+
+  useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
@@ -130,22 +157,75 @@ const Header = () => {
   };
 
   const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setOpenDropdown(null);
-    }, 150);
+    timeoutRef.current = setTimeout(() => setOpenDropdown(null), 150);
   };
 
   const isActive = (item: NavItem): boolean => {
-    if (item.megaMenu?.some((section) => section.links.some((link) => link.href && pathname.startsWith(link.href)))) return true;
+    if (item.megaMenu?.some((s) => s.links.some((l) => l.href && pathname.startsWith(l.href)))) return true;
     if (item.href) return pathname === item.href || pathname.startsWith(`${item.href}/`);
-    return item.megaMenu?.some((section) => section.links.some((link) => link.href && pathname.startsWith(link.href))) ?? false;
+    return false;
   };
+
+  const AjudaPanel = () => (
+    <div className="space-y-4">
+      <div>
+        <p className="font-bold text-[#1C2E56] mb-2">Acessibilidade</p>
+        <div className="space-y-2">
+          <button
+            onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(document.body.innerText))}
+            className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left hover:bg-gray-50"
+          >
+            🔊 Ouvir o site
+          </button>
+          <button
+            onClick={() => setFontSize((f) => Math.min(f + 10, 140))}
+            className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left hover:bg-gray-50"
+          >
+            T↑ Letra grande
+          </button>
+          <button
+            onClick={() => { setDarkMode((d) => !d); }}
+            className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left hover:bg-gray-50"
+          >
+            {darkMode ? "☀️ Claro" : "🌙 Escuro"}
+          </button>
+        </div>
+      </div>
+      <div>
+        <p className="font-bold text-[#1C2E56] mb-2">Informação útil</p>
+        <div className="text-sm text-[#1C2E56] space-y-2">
+          <p>⏰ Segunda a Sexta<br />09h00-13h00 14h00-17h00</p>
+          <p>📍 Avenida Dr. Lourenço Peixinho, Edifício 18 - 1º B, 3800-164 Aveiro</p>
+          <p>✉️ geral.fgloriavcruz@gmail.com</p>
+          <p className="font-bold text-lg">📞 234 427 832</p>
+        </div>
+      </div>
+      <Link href="/ajuda" className="block bg-[#F0BE2A] text-[#1C2E56] font-bold text-center rounded-lg px-4 py-3 hover:bg-[#F0BE2A]/90 transition">
+        Abrir o Centro de Ajuda →
+      </Link>
+      <div className="space-y-2">
+        {faqs.map((faq, i) => (
+          <div key={i} className="border rounded-lg text-sm cursor-pointer overflow-hidden">
+            <button
+              onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              className="w-full flex items-center justify-between px-3 py-3 text-left font-medium text-[#1C2E56]"
+            >
+              {faq.q}
+              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+            </button>
+            {openFaq === i && (
+              <div className="px-3 pb-3 text-[#1C2E56]/80">{faq.a}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <header className={`relative z-50 px-4 py-6 lg:px-12 ${isBalcaoDigital ? "bg-[#C41230]" : "bg-transparent"}`}>
       <nav ref={dropdownRef} className="relative bg-white rounded-2xl shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto">
         <div className="h-[96px] px-8 flex items-center justify-between">
-          {/* LEFT */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center">
               <Image src="/header logo1.png" alt="Logo" width={170} height={70} className="object-contain" priority />
@@ -153,7 +233,6 @@ const Header = () => {
             <div className="hidden lg:block h-8 w-px bg-gray-300" />
           </div>
 
-          {/* DESKTOP NAV */}
           <div className="hidden lg:flex items-center gap-8 h-full">
             {navItems.map((item) =>
               item.megaMenu ? (
@@ -211,60 +290,23 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            {/* AJUDA DROPDOWN */}
             <div className="relative">
-              <button
-                onClick={() => setAjudaOpen(!ajudaOpen)}
-                className="flex items-center gap-1 text-[#1C2E56] text-[18px] font-medium hover:underline hover:underline-offset-4 transition"
-              >
+              <button onClick={() => setAjudaOpen(!ajudaOpen)} className="flex items-center gap-1 text-[#1C2E56] text-[18px] font-medium hover:underline hover:underline-offset-4 transition">
                 Ajuda <ChevronDown className={`w-4 h-4 transition-transform ${ajudaOpen ? "rotate-180" : ""}`} />
               </button>
-
               {ajudaOpen && (
-                <div className="absolute right-0 top-[calc(100%+16px)] w-72 bg-white rounded-xl shadow-xl border p-5 z-50 space-y-4">
-                  <div>
-                    <p className="font-bold text-[#1C2E56] mb-2">Acessibilidade</p>
-                    <div className="space-y-2">
-                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">🔊 Ouvir o site</button>
-                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">T↑ Letra grande</button>
-                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">☀️ Claro</button>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#1C2E56] mb-2">Informação útil</p>
-                    <div className="text-sm text-[#1C2E56] space-y-2">
-                      <p>⏰ Segunda a Sexta<br />09h00-13h00 14h00-17h00</p>
-                      <p>📍 Avenida Dr. Lourenço Peixinho, Edifício 18 - 1º B, 3800-1em Aveiro</p>
-                      <p>✉️ geral.fgloriavcruz@gmail.com</p>
-                      <p className="font-bold text-lg">📞 234 427 832</p>
-                    </div>
-                  </div>
-                  <Link href="/ajuda" className="block bg-[#F0BE2A] text-[#1C2E56] font-bold text-center rounded-lg px-4 py-3 hover:bg-[#F0BE2A]/90 transition">
-                    Abrir o Centro de Ajuda →
-                  </Link>
-                  <div className="space-y-2">
-                    <details className="border rounded-lg p-3 text-sm cursor-pointer">
-                      <summary className="font-medium text-[#1C2E56]">Precisa de auto-avaliação para ouvir as suas dificuldades?</summary>
-                    </details>
-                    <details className="border rounded-lg p-3 text-sm cursor-pointer">
-                      <summary className="font-medium text-[#1C2E56]">Devo usar sempre desodorizante?</summary>
-                    </details>
-                    <details className="border rounded-lg p-3 text-sm cursor-pointer">
-                      <summary className="font-medium text-[#1C2E56]">Devo ter pré-titor à saúde no meu telemóvel?</summary>
-                    </details>
-                  </div>
+                <div className="absolute right-0 top-[calc(100%+16px)] w-72 bg-white rounded-xl shadow-xl border p-5 z-50 max-h-[80vh] overflow-y-auto">
+                  <AjudaPanel />
                 </div>
               )}
             </div>
           </div>
 
-          {/* MOBILE BUTTON */}
           <button className="lg:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* MOBILE MENU */}
         {mobileOpen && (
           <div className="lg:hidden border-t bg-white px-4 py-4 space-y-2">
             {navItems.map((item) =>
@@ -320,33 +362,13 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            {/* MOBILE AJUDA */}
             <div>
               <button onClick={() => setAjudaOpen(!ajudaOpen)} className="flex items-center justify-between w-full py-3 text-[#1C2E56] font-medium">
                 Ajuda <ChevronDown className={`w-4 h-4 transition-transform ${ajudaOpen ? "rotate-180" : ""}`} />
               </button>
               {ajudaOpen && (
-                <div className="ml-4 border-l pl-4 space-y-4 pb-3">
-                  <div>
-                    <p className="font-bold text-[#1C2E56] mb-2">Acessibilidade</p>
-                    <div className="space-y-2">
-                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">🔊 Ouvir o site</button>
-                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">T↑ Letra grande</button>
-                      <button className="flex items-center gap-2 border rounded-lg px-3 py-2 w-full text-sm text-left">☀️ Claro</button>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#1C2E56] mb-2">Informação útil</p>
-                    <div className="text-sm text-[#1C2E56] space-y-2">
-                      <p>⏰ Segunda a Sexta 09h00-13h00 14h00-17h00</p>
-                      <p>📍 Avenida Dr. Lourenço Peixinho, Edifício 18 - 1º B, 3800-1em Aveiro</p>
-                      <p>✉️ geral.fgloriavcruz@gmail.com</p>
-                      <p className="font-bold">📞 234 427 832</p>
-                    </div>
-                  </div>
-                  <Link href="/ajuda" className="block bg-[#F0BE2A] text-[#1C2E56] font-bold text-center rounded-lg px-4 py-3">
-                    Abrir o Centro de Ajuda →
-                  </Link>
+                <div className="ml-4 border-l pl-4 pb-3">
+                  <AjudaPanel />
                 </div>
               )}
             </div>
