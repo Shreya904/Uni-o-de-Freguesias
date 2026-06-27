@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 
 type AppointmentType = "presidente" | "cemiterio";
 
@@ -17,6 +17,56 @@ const descriptions: Record<AppointmentType, string> = {
 };
 
 const steps = ["Marcação", "Dados", "Confirmação"];
+
+const faqAnswer = "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia.";
+
+function SidebarFaq() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border rounded-lg p-3 bg-amber-50 cursor-pointer text-xs text-muted-foreground" onClick={() => setOpen(!open)}>
+      <div className="flex items-center justify-between">
+        <span>O que fazer se um ficheiro não abrir corretamente?</span>
+        <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </div>
+      {open && <p className="mt-2">Deve tentar novamente :)</p>}
+    </div>
+  );
+}
+
+function MainFaqs() {
+  const [open, setOpen] = useState<number | null>(null);
+  const faqs = ["Quero casar, o que devo fazer?", "Sinto-me só preciso de ajuda como fazer?"];
+  return (
+    <div className="space-y-3">
+      {faqs.map((faq, i) => (
+        <div key={i} className="bg-amber-50 rounded-lg overflow-hidden">
+          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground">
+            {faq}
+            <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+          </button>
+          {open === i && (
+            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200">
+              <p className="mt-3 mb-3">{faqAnswer}</p>
+              <ul className="space-y-1 mb-3 text-xs">
+                <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
+                <li>📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática</li>
+                <li>📄 consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis online</li>
+                <li>🏛 explore documentos relacionados com iniciativas, projetos e processos participativos da freguesia</li>
+                <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
+                <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
+              </ul>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200">
+                <span>Atualizado a 29 abril, 2026</span>
+                <span>Partilhar 🔗</span>
+                <span>Esta informação foi útil? 👍 👎</span>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function MarcacaoWizard() {
   const [type, setType] = useState<AppointmentType>("presidente");
@@ -54,9 +104,7 @@ export default function MarcacaoWizard() {
         </ul>
 
         <p className="font-bold text-foreground mb-3">Perguntas frequentes</p>
-        <details className="border rounded-lg p-3 text-muted-foreground text-xs bg-amber-50 cursor-pointer">
-          <summary>O que fazer se um ficheiro não abrir corretamente?</summary>
-        </details>
+        <SidebarFaq />
       </aside>
 
       <div className="balcao-main">
@@ -97,14 +145,7 @@ export default function MarcacaoWizard() {
         {step === 3 && <StepConfirmacao />}
 
         <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
-        <div className="space-y-3">
-          <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
-            <summary className="font-medium text-foreground">Quero casar, o que devo fazer?</summary>
-          </details>
-          <details className="bg-amber-50 rounded-lg p-4 cursor-pointer">
-            <summary className="font-medium text-foreground">Sinto-me só preciso de ajuda como fazer?</summary>
-          </details>
-        </div>
+        <MainFaqs />
       </div>
     </div>
   );
