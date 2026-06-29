@@ -144,6 +144,10 @@ const Header = () => {
     }, 150);
   };
 
+  const openAjudaSidebar = () => {
+    window.dispatchEvent(new CustomEvent("open-ajuda-sidebar"));
+  };
+
   const isActive = (item: NavItem): boolean => {
     if (
       item.megaMenu?.some((section) =>
@@ -290,7 +294,7 @@ const Header = () => {
 
             <div className="h-8 w-px bg-gray-300 ml-2" />
 
-            {/* BALCÃO DIGITAL - Updated hover states */}
+            {/* BALCÃO DIGITAL */}
             <Link
               href="/balcao-digital"
               className="h-[44px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors"
@@ -298,13 +302,14 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            <Link
-              href="/ajuda"
+            {/* AJUDA - opens sidebar */}
+            <button
+              onClick={openAjudaSidebar}
               className="flex items-center gap-1 ml-2 text-[#1C2E56] text-[16px] font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition"
             >
               Ajuda
               <ChevronLeft className="w-[18px] h-[18px] stroke-[2]" />
-            </Link>
+            </button>
           </div>
 
           {/* MOBILE BUTTON */}
@@ -415,7 +420,7 @@ const Header = () => {
               ),
             )}
 
-            {/* MOBILE BALCÃO DIGITAL - Updated hover states */}
+            {/* MOBILE BALCÃO DIGITAL */}
             <Link
               href="/balcao-digital"
               className="mt-4 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold text-[16px] hover:bg-[#DE092D] hover:text-white transition-colors"
@@ -423,13 +428,14 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            <Link
-              href="/ajuda"
-              className="mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline"
+            {/* MOBILE AJUDA - opens sidebar */}
+            <button
+              onClick={openAjudaSidebar}
+              className="mt-2 w-full flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline"
             >
               Ajuda
               <ChevronLeft className="w-5 h-5" />
-            </Link>
+            </button>
           </div>
         )}
       </nav>
