@@ -164,7 +164,7 @@ export default function EspacosPublicosPage() {
             <Header />
           </div>
 
-          <section className="relative w-full h-[350px] md:h-[450px] overflow-hidden flex items-end pb-12">
+          <section className="relative w-full min-h-[450px] md:min-h-[500px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
                 src="/visitar-hero.jpg"

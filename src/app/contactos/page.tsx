@@ -118,7 +118,7 @@ export default function ContactPage() {
 
       setSubmissionRef(data.doc.id);
       setSubmitted(true);
-      toast.success(`Questão submetida com sucesso! Ref: ${data.doc.id}`);
+      toast.success(`Questão submetida com sucesso!`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Erro ao submeter");
     } finally {
@@ -131,11 +131,8 @@ export default function ContactPage() {
       <main>
         {/* WRAPPED HEADER & HERO */}
         <div className="relative">
-          {/* Top Blue Utility Bar */}
-          <div className="bg-[#253e6b] h-8 w-full relative z-50" />
-
           {/* Header overlaying the section */}
-          <div className="absolute top-8 left-0 right-0 z-50">
+          <div className="absolute top-0 left-0 right-0 z-50">
             <Header />
           </div>
 
@@ -151,12 +148,12 @@ export default function ContactPage() {
             <div className="absolute inset-0 bg-[#253e6b]/70 mix-blend-multiply" />
             <div className="absolute inset-0 bg-[#253e6b]/40" />
 
-            <div className="relative z-10 flex h-full items-end px-8 lg:px-16 pb-10 max-w-[1600px] mx-auto">
+            <div className="relative z-10 flex h-full items-end px-6 md:px-8 lg:px-16 pb-10 max-w-[1600px] mx-auto">
               <div>
-                <h1 className="text-white text-[56px] leading-[52px] font-extrabold tracking-[1.12px]">
+                <h1 className="text-white text-4xl md:text-[56px] leading-tight md:leading-[52px] font-extrabold tracking-[1.12px]">
                   Contacto
                 </h1>
-                <p className="text-white text-[28px] font-extrabold tracking-[0.56px] mt-2">
+                <p className="text-white text-xl md:text-[28px] font-extrabold tracking-[0.56px] mt-2">
                   Fale connosco
                 </p>
               </div>
@@ -166,12 +163,13 @@ export default function ContactPage() {
 
         {/* CONTENT */}
         <section className="max-w-[1600px] mx-auto border-x border-[#E5E5E5]">
-          <div className="grid lg:grid-cols-[450px_1fr] xl:grid-cols-[500px_1fr]">
+          {/* Added grid-cols-1 for proper mobile stacking */}
+          <div className="grid grid-cols-1 lg:grid-cols-[450px_1fr] xl:grid-cols-[500px_1fr]">
             {/* SIDEBAR */}
-            <aside className="bg-[#F8F8F8] px-8 py-12 lg:px-12 border-r border-[#E5E5E5]">
+            <aside className="bg-[#F8F8F8] px-6 md:px-8 py-12 lg:px-12 border-r border-[#E5E5E5]">
               {/* SEDE */}
               <div className="mb-14">
-                <h2 className="text-[#1C2E56] text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-1">
+                <h2 className="text-[#1C2E56] text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-1">
                   Sede
                 </h2>
                 <p className="text-[#1C2E56] font-bold text-[16px] mb-6">
@@ -221,7 +219,7 @@ export default function ContactPage() {
                 <div className="mt-6 space-y-4">
                   <div className="flex gap-2 items-center text-[#1C2E56]">
                     <Mail className="w-5 h-5 shrink-0" />
-                    <p className="font-semibold">geral.fgloriavcruz@gmail.com</p>
+                    <p className="font-semibold break-all">geral.fgloriavcruz@gmail.com</p>
                   </div>
                   <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] rounded-none px-6 py-3 font-extrabold text-[#1C2E56] hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
                     <Phone className="w-5 h-5" />
@@ -235,10 +233,10 @@ export default function ContactPage() {
 
               {/* CASA DA COMUNIDADE SUSTENTÁVEL */}
               <div>
-                <h2 className="text-[#1C2E56] text-[32px] font-extrabold leading-tight tracking-[0.64px]">
+                <h2 className="text-[#1C2E56] text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px]">
                   Casa da Comunidade
                 </h2>
-                <h2 className="text-[#1C2E56] text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-6">
+                <h2 className="text-[#1C2E56] text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-6">
                   Sustentável
                 </h2>
 
@@ -301,7 +299,7 @@ export default function ContactPage() {
                 <div className="mt-6 space-y-4">
                   <div className="flex gap-2 items-center text-[#1C2E56]">
                     <Mail className="w-5 h-5 shrink-0" />
-                    <p className="font-semibold">servicos.fgloriavcruz@gmail.com</p>
+                    <p className="font-semibold break-all">servicos.fgloriavcruz@gmail.com</p>
                   </div>
                   <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] rounded-none px-6 py-3 font-extrabold text-[#1C2E56] hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
                     <Phone className="w-5 h-5" />
@@ -315,12 +313,12 @@ export default function ContactPage() {
             </aside>
 
             {/* MAIN FORM AREA */}
-            <div className="px-8 py-12 lg:px-16 lg:py-16 bg-white">
-              <div className="max-w-[700px]">
+            <div className="px-6 py-12 md:px-8 lg:px-16 lg:py-16 bg-white">
+              <div className="max-w-[700px] w-full">
                 {submitted ? (
-                  <div className="bg-[#F8F8F8] border-2 border-[#1C2E56] p-10 text-center">
+                  <div className="bg-[#F8F8F8] border-2 border-[#1C2E56] p-6 md:p-10 text-center">
                     <CheckCircle className="w-16 h-16 text-[#B4142F] mx-auto mb-6" />
-                    <h2 className="text-[#1C2E56] text-[36px] font-extrabold mb-4">
+                    <h2 className="text-[#1C2E56] text-2xl md:text-[36px] font-extrabold mb-4">
                       Mensagem Enviada!
                     </h2>
                     <p className="text-[#1C2E56] text-[18px] leading-relaxed mb-8">
@@ -338,24 +336,24 @@ export default function ContactPage() {
                         });
                         setFile(null);
                       }}
-                      className="h-[50px] px-8 bg-[#1C2E56] hover:bg-[#162545] rounded-none text-white font-extrabold text-[16px]"
+                      className="h-[50px] px-8 bg-[#1C2E56] hover:bg-[#162545] rounded-none text-white font-extrabold text-[16px] w-full sm:w-auto"
                     >
                       Enviar Nova Mensagem
                     </Button>
                   </div>
                 ) : (
                   <>
-                    <h2 className="text-[#1C2E56] text-[48px] leading-tight font-extrabold tracking-[0.96px] mb-6">
+                    <h2 className="text-[#1C2E56] text-3xl md:text-[48px] leading-tight font-extrabold tracking-[0.96px] mb-6">
                       Estamos aqui para ajudar
                     </h2>
 
-                    <p className="text-[#1C2E56] text-[22px] leading-relaxed mb-12">
+                    <p className="text-[#1C2E56] text-lg md:text-[22px] leading-relaxed mb-12">
                       Procuramos responder a toda a comunicação escrita o mais rapidamente possível
                       e no prazo máximo de 20 dias úteis. Saiba mais sobre como gerimos a sua
                       correspondência.
                     </p>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form onSubmit={handleSubmit} className="space-y-8 w-full">
                       {/* Name & Surname Group */}
                       <div className="grid md:grid-cols-2 gap-8">
                         <div className="space-y-3">
@@ -463,7 +461,7 @@ export default function ContactPage() {
                               setFormData({ ...formData, message: e.target.value });
                             }
                           }}
-                          className="min-h-[126px] rounded-none border-2 border-[#1C2E56] bg-white text-[#1C2E56] text-[16px] resize-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="min-h-[126px] rounded-none border-2 border-[#1C2E56] bg-white text-[#1C2E56] text-[16px] resize-none focus-visible:ring-0 focus-visible:ring-offset-0 w-full"
                           required
                         />
                       </div>
@@ -482,16 +480,16 @@ export default function ContactPage() {
                           xls, xlsx.
                         </p>
 
-                        <div className="h-[50px] border-2 border-[#1C2E56] flex items-center px-[10px] gap-[10px] bg-white">
+                        <div className="h-[50px] border-2 border-[#1C2E56] flex items-center px-[10px] gap-[10px] bg-white w-full overflow-hidden">
                           <Button
                             type="button"
                             variant="outline"
-                            className="rounded-none border border-[#D0CCCC] h-[34px] px-4 font-bold text-[#1C2E56] hover:bg-[#F8F8F8]"
+                            className="rounded-none border border-[#D0CCCC] h-[34px] px-4 font-bold text-[#1C2E56] hover:bg-[#F8F8F8] shrink-0"
                             onClick={() => fileRef.current?.click()}
                           >
                             Escolher ficheiro
                           </Button>
-                          <span className="text-[15px] text-[#1C2E56] truncate max-w-[250px]">
+                          <span className="text-[15px] text-[#1C2E56] truncate">
                             {file ? file.name : "Nenhum ficheiro selecionado"}
                           </span>
                         </div>
@@ -517,7 +515,7 @@ export default function ContactPage() {
                           <Button
                             type="submit"
                             disabled={formData.message.length > MAX_CHARS || isSubmitting}
-                            className="h-[60px] px-12 bg-[#B4142F] hover:bg-[#9B1128] rounded-none text-white font-extrabold text-[18px] tracking-[0.36px] transition-colors"
+                            className="h-[60px] px-12 bg-[#B4142F] hover:bg-[#9B1128] rounded-none text-white font-extrabold text-[18px] tracking-[0.36px] transition-colors w-full sm:w-auto"
                           >
                             {isSubmitting ? "A submeter..." : "Continuar"}
                           </Button>

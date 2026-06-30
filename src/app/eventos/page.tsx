@@ -201,7 +201,9 @@ export default function EventsPage() {
             <Header />
           </div>
 
-          <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden flex items-end pb-12">
+          {/* FIX: Swapped fixed 'h-[...]' for 'min-h-[...]' and added 'pt-[180px] md:pt-[160px]' 
+              to ensure the wrapped header doesn't obscure the content below it. */}
+          <section className="relative w-full min-h-[400px] md:min-h-[450px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
                 src="/hero-bg.jpg"
@@ -263,13 +265,13 @@ export default function EventsPage() {
                 onClick={() => toggleFilter("Esta semana")}
                 className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Esta semana") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
               >
-                Esta <br /> Semana
+                Esta Semana
               </button>
               <button
                 onClick={() => toggleFilter("Este mês")}
                 className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Este mês") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
               >
-                Este <br /> Mês
+                Este Mês
               </button>
             </div>
 
