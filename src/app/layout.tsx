@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import QueryClientWrapper from "./query-client-wrapper";
+import AcessibilidadeSidebar from "@/components/AcessibilidadeSidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <AcessibilidadeSidebar />
             {children}
           </TooltipProvider>
         </QueryClientWrapper>
