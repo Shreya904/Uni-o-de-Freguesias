@@ -27,7 +27,7 @@ const sidebarSections = [
 
 // Default answer stored in a variable for easy reuse
 const defaultAnswer = (
-  <div className="bg-white border-t border-gray-200 px-6 py-6 text-[#1C2E56] text-[15px] leading-relaxed">
+  <div className="bg-white dark:bg-[#111111] border-t border-gray-200 dark:border-white/10 px-6 py-6 text-[#1C2E56] dark:text-gray-300 text-[15px] leading-relaxed">
     <p className="mb-5">
       A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma,
       onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas,
@@ -143,7 +143,7 @@ export default function CentroAjudaPage() {
   const toggleSort = () => setIsAscending(!isAscending);
 
   return (
-    <main className="min-h-screen bg-white font-sans flex flex-col">
+    <main className="min-h-screen bg-white dark:bg-[#0a0a0a] font-sans flex flex-col transition-colors">
       <div className="bg-[#F8C127] dark:bg-[#F8C127]">
         <Header />
 
@@ -190,15 +190,17 @@ export default function CentroAjudaPage() {
       <section className="flex-1 w-full max-w-[1300px] mx-auto">
         <div className="grid lg:grid-cols-[280px_1fr] gap-x-12">
           {/* SIDEBAR */}
-          <aside className="py-10 px-6 lg:px-0 dark:text-white">
-            <div className="space-y-6 dark:text-white">
+          <aside className="py-10 px-6 lg:px-0">
+            <div className="space-y-6">
               {sidebarSections.map((section, idx) => (
                 <div
                   key={section.title}
                   className={idx !== 0 ? "pt-6 border-t border-gray-200 dark:border-white/10" : ""}
                 >
                   <div className="flex items-center justify-between mb-5 cursor-pointer">
-                    <h3 className="font-bold text-[#111f3d] dark:text-white text-[16px]">{section.title}</h3>
+                    <h3 className="font-bold text-[#111f3d] dark:text-white text-[16px]">
+                      {section.title}
+                    </h3>
                     <ChevronUp className="w-5 h-5 text-[#111f3d] dark:text-white" />
                   </div>
 
@@ -210,8 +212,8 @@ export default function CentroAjudaPage() {
                           key={item}
                           className={`block text-left text-[15px] transition-colors ${
                             isActive
-                              ? "text-[#C41230] font-semibold"
-                              : "text-[#111f3d] hover:text-[#C41230] dark:text-white dark:hover:text-white/80"
+                              ? "text-[#C41230] dark:text-[#F8C127] font-semibold"
+                              : "text-[#111f3d] hover:text-[#C41230] dark:text-white/70 dark:hover:text-white"
                           }`}
                         >
                           {item}
@@ -232,10 +234,10 @@ export default function CentroAjudaPage() {
           <div className="py-10 px-6 lg:px-0 lg:pl-4">
             {/* FILTER BAR */}
             <div className="flex items-center justify-end gap-3 mb-6">
-              <span className="text-[14px] text-[#111f3d] dark:text-white">Ordenar</span>
+              <span className="text-[14px] text-[#111f3d] dark:text-white/80">Ordenar</span>
               <button
                 onClick={toggleSort}
-                className="px-4 py-1.5 rounded-full border border-[#111f3d]/30 text-[13px] text-[#111f3d] font-medium bg-white hover:bg-gray-50 transition-colors dark:bg-[#FDF9F0] dark:border-[#111f3d] dark:text-[#111f3d] dark:hover:bg-[#f8f0d8]"
+                className="px-4 py-1.5 rounded-full border border-[#111f3d]/30 text-[13px] text-[#111f3d] font-medium bg-white hover:bg-gray-50 transition-colors dark:bg-transparent dark:border-white/30 dark:text-white dark:hover:bg-white/10"
               >
                 Nome
               </button>
@@ -254,14 +256,14 @@ export default function CentroAjudaPage() {
               {sortedFaqTop.map((faq) => (
                 <div
                   key={faq.id}
-                  className="rounded-lg overflow-hidden border border-[#111f3d] shadow-sm"
+                  className="rounded-lg overflow-hidden border border-[#111f3d] dark:border-white/15 shadow-sm transition-colors"
                 >
                   <button
                     onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
                     className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
                       openFaq === faq.id
-                        ? "bg-white dark:bg-black"
-                        : "bg-[#FCEFB4] hover:bg-[#fae899] dark:bg-black dark:hover:bg-white/10"
+                        ? "bg-white dark:bg-[#111111]"
+                        : "bg-[#FCEFB4] hover:bg-[#fae899] dark:bg-white/5 dark:hover:bg-white/10"
                     }`}
                   >
                     <span className="font-bold text-[16px] text-[#111f3d] dark:text-white pr-4">
@@ -283,10 +285,10 @@ export default function CentroAjudaPage() {
               <img
                 src="/help-banner.jpg"
                 alt="Procura um documento?"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover dark:opacity-90"
               />
 
-              <div className="absolute right-6 bottom-6 bg-[#1C2E56] text-white rounded-xl p-6 lg:p-7 max-w-[340px] shadow-lg">
+              <div className="absolute right-6 bottom-6 bg-[#1C2E56] dark:bg-[#1C2E56]/90 dark:backdrop-blur-sm text-white rounded-xl p-6 lg:p-7 max-w-[340px] shadow-lg">
                 <h3 className="font-bold text-[22px] leading-tight mb-2">Procura um documento?</h3>
                 <p className="text-[15px]">
                   Visite o{" "}
@@ -309,14 +311,14 @@ export default function CentroAjudaPage() {
                 {sortedFaqBottom.map((faq) => (
                   <div
                     key={faq.id}
-                    className="rounded-lg overflow-hidden border border-[#111f3d] shadow-sm"
+                    className="rounded-lg overflow-hidden border border-[#111f3d] dark:border-white/15 shadow-sm transition-colors"
                   >
                     <button
                       onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
                       className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
                         openFaq === faq.id
-                          ? "bg-white dark:bg-black"
-                          : "bg-[#FCEFB4] hover:bg-[#fae899] dark:bg-black dark:hover:bg-white/10"
+                          ? "bg-white dark:bg-[#111111]"
+                          : "bg-[#FCEFB4] hover:bg-[#fae899] dark:bg-white/5 dark:hover:bg-white/10"
                       }`}
                     >
                       <span className="font-bold text-[16px] text-[#111f3d] dark:text-white pr-4">

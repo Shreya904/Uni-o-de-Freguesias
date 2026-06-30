@@ -18,8 +18,8 @@ const slides = [
   {
     id: 2,
     image: "/hero/hero2.jpg",
-    title: "Noticias e\nAvisos",
-    date: "Atualidade\nLocal",
+    title: "Noticias e Avisos",
+    date: "Atualidade Local",
     location: "Acompanhe comunicados, avisos e novidades da freguesia.",
     linkText: "Ver noticias",
     href: "/noticias",
@@ -28,8 +28,8 @@ const slides = [
   {
     id: 3,
     image: "/hero/hero3.jpg",
-    title: "Agenda de\nEventos",
-    date: "Participe\nConosco",
+    title: "Agenda de Eventos",
+    date: "Participe Conosco",
     location: "Descubra iniciativas, atividades e encontros abertos a comunidade.",
     linkText: "Ver eventos",
     href: "/eventos",
@@ -38,8 +38,8 @@ const slides = [
   {
     id: 4,
     image: "/hero/hero4.jpg",
-    title: "Documentos\nPublicos",
-    date: "Consulte\nOnline",
+    title: "Documentos Publicos",
+    date: "Consulte Online",
     location: "Encontre atas, editais, regulamentos, formularios e outros documentos.",
     linkText: "Ver documentos",
     href: "/institucional/documentacao",
@@ -48,8 +48,8 @@ const slides = [
   {
     id: 5,
     image: "/hero/hero5.jpg",
-    title: "Balcao\nDigital",
-    date: "Servicos\nOnline",
+    title: "Balcao Digital",
+    date: "Servicos Online",
     location: "Trate de pedidos, inscricoes, declaracoes e marcacoes sem deslocacoes.",
     linkText: "Aceder ao balcao",
     href: "/balcao-digital",
@@ -86,7 +86,7 @@ const HeroSection = () => {
         >
           <img
             src={slides[currentSlide].image}
-            alt={slides[currentSlide].title.replace("\n", " ")}
+            alt={slides[currentSlide].title}
             className={`w-full h-full object-cover transition-all duration-700 ${
               slides[currentSlide].id === 1 ? "grayscale" : "grayscale-0"
             }`}
@@ -117,21 +117,23 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full max-w-2xl text-left"
+            className="w-full text-left"
           >
             {slides[currentSlide].type === "hero" ? (
               // LAYOUT 1: Simple text (Bem-vindo slide)
-              <div className="mb-8">
-                <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4 drop-shadow-md">
-                  {slides[currentSlide].title}
-                  <br />
-                  <span className="text-3xl md:text-4xl lg:text-5xl font-medium text-white/90">
+              <div className="mb-8 w-full">
+                {/* Changed to flex-col to force stacked lines */}
+                <h1 className="font-display font-bold text-white leading-tight mb-4 drop-shadow-md flex flex-col gap-2">
+                  <span className="text-5xl md:text-6xl lg:text-7xl w-max max-w-full">
+                    {slides[currentSlide].title}
+                  </span>
+                  <span className="text-3xl md:text-4xl lg:text-5xl font-medium text-white/90 w-max max-w-full">
                     {slides[currentSlide].subtitle}
                   </span>
                 </h1>
                 <Link
                   href={slides[currentSlide].href}
-                  className="inline-flex items-center gap-1 mt-4 text-white/90 text-sm md:text-base hover:text-white transition-colors drop-shadow-sm"
+                  className="inline-flex items-center gap-1 mt-4 text-white/90 text-sm md:text-base hover:text-white transition-colors drop-shadow-sm w-max max-w-full"
                 >
                   <ChevronRight className="w-4 h-4" />
                   {slides[currentSlide].linkText}
@@ -139,26 +141,26 @@ const HeroSection = () => {
               </div>
             ) : (
               // LAYOUT 2: Split Box (Events and Classes slides)
-              <div className="inline-block bg-[#1c2841]/90 backdrop-blur-md rounded-xl p-6 md:p-8 shadow-2xl mb-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-stretch gap-6 md:gap-8 text-white">
+              <div className="inline-block bg-[#1c2841]/90 backdrop-blur-md rounded-xl p-6 md:p-8 shadow-2xl mb-4 max-w-full w-fit">
+                <div className="flex flex-col md:flex-row items-start md:items-stretch gap-6 md:gap-8 text-white">
                   {/* Left Side: Title & Location */}
-                  <div className="flex flex-col justify-between sm:border-r border-white/20 sm:pr-8">
-                    <h2 className="text-3xl md:text-4xl font-bold leading-tight whitespace-pre-line mb-6 sm:mb-0">
+                  <div className="flex flex-col justify-between md:border-r border-white/20 md:pr-8 min-w-0">
+                    <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4 md:mb-0 w-max max-w-full">
                       {slides[currentSlide].title}
                     </h2>
-                    <span className="text-xs md:text-sm text-white/70 flex items-center gap-1">
+                    <p className="text-sm md:text-base text-white/70 flex items-center mt-2 md:mt-6 w-max max-w-full">
                       {slides[currentSlide].location}
-                    </span>
+                    </p>
                   </div>
 
                   {/* Right Side: Date & Link */}
-                  <div className="flex flex-col justify-between pt-4 sm:pt-0 border-t border-white/20 sm:border-none w-full sm:w-auto">
-                    <h2 className="text-3xl md:text-4xl font-bold leading-tight whitespace-pre-line mb-6 sm:mb-0">
+                  <div className="flex flex-col justify-between pt-4 md:pt-0 border-t border-white/20 md:border-none w-full md:w-auto shrink-0 min-w-0">
+                    <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4 md:mb-0 w-max max-w-full">
                       {slides[currentSlide].date}
                     </h2>
                     <Link
                       href={slides[currentSlide].href}
-                      className="inline-flex items-center gap-1 text-xs md:text-sm text-white/90 hover:text-white transition-colors group"
+                      className="inline-flex items-center gap-1 text-sm md:text-base text-white/90 hover:text-white transition-colors group mt-2 md:mt-6 w-max max-w-full"
                     >
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       {slides[currentSlide].linkText}
