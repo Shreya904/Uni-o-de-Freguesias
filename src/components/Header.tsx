@@ -160,6 +160,105 @@ const Header = () => {
     );
   };
 
+  const renderDesktopNavItem = (item: NavItem) => {
+    if (item.megaMenu) {
+      return (
+        <div
+          key={item.label}
+          className="flex items-center h-full cursor-pointer"
+          onMouseEnter={() => handleMouseEnter(item.label)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Link
+            href={item.href || "#"}
+            className={`text-[16px] text-[#1C2E56] transition-all ${
+              isActive(item)
+                ? "font-extrabold"
+                : `font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 ${
+                    openDropdown === item.label
+                      ? "underline decoration-[#1C2E56] decoration-2 underline-offset-8"
+                      : ""
+                  }`
+            }`}
+          >
+            {item.label}
+          </Link>
+
+          {openDropdown === item.label && (
+            <div className="absolute left-0 w-full top-[96px] z-50 px-8">
+              <div className="bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+                <div className="flex p-8 lg:p-10 gap-6 lg:gap-8 justify-between flex-wrap">
+                  {item.megaMenu.map((section) => (
+                    <div
+                      key={section.heading}
+                      className={`flex-1 min-w-[200px] ${
+                        section.heading === "Links rápidos" ? "pl-8 border-l border-gray-200" : ""
+                      }`}
+                    >
+                      <h3 className="font-bold text-[#1C2E56] text-[17px] mb-6">
+                        {section.heading}
+                      </h3>
+
+                      <div className="flex flex-col gap-4">
+                        {section.links.map((link) =>
+                          link.href ? (
+                            <Link
+                              key={`${section.heading}-${link.label}`}
+                              href={link.href}
+                              className="group flex items-center gap-3 transition"
+                            >
+                              <ChevronRight
+                                className={`w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 text-[#1C2E56]`}
+                              />
+                              <span
+                                className={`text-[16px] transition-colors ${
+                                  pathname === link.href
+                                    ? "text-[#1C2E56] font-bold"
+                                    : "text-[#1C2E56] font-medium group-hover:opacity-75"
+                                }`}
+                              >
+                                {link.label}
+                              </span>
+                            </Link>
+                          ) : (
+                            <span
+                              key={`${section.heading}-${link.label}`}
+                              className="flex items-center gap-3 cursor-default"
+                              aria-disabled="true"
+                            >
+                              <ChevronRight className="w-5 h-5 stroke-[2.5] text-gray-400" />
+                              <span className="text-[16px] font-medium text-gray-400">
+                                {link.label}
+                              </span>
+                            </span>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <Link
+        key={item.href}
+        href={item.href!}
+        className={`text-[16px] text-[#1C2E56] transition-all ${
+          isActive(item)
+            ? "font-extrabold"
+            : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
+        }`}
+      >
+        {item.label}
+      </Link>
+    );
+  };
+
   return (
     <header
       className={`relative z-50 px-4 py-6 lg:px-12 ${
@@ -172,9 +271,10 @@ const Header = () => {
           openDropdown ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"
         }`}
       >
-        <div className="h-[96px] px-8 flex items-center justify-between">
-          {/* LEFT */}
-          <div className="flex items-center gap-6">
+        {/* Added gap-6 lg:gap-8 to prevent the left and right containers from sticking together on smaller screens */}
+        <div className="h-[96px] px-8 flex items-center justify-between gap-6 lg:gap-8">
+          {/* LEFT: Logo, Partition Line, and Começar */}
+          <div className="flex items-center gap-6 xl:gap-8 h-full">
             <Link href="/" className="flex items-center">
               <Image
                 src="/header logo1.png"
@@ -187,120 +287,32 @@ const Header = () => {
             </Link>
 
             <div className="hidden lg:block h-8 w-px bg-gray-300" />
+
+            <div className="hidden lg:flex items-center h-full">
+              {/* Render only Começar (index 0) */}
+              {navItems.slice(0, 1).map(renderDesktopNavItem)}
+            </div>
           </div>
 
-          {/* DESKTOP NAV */}
-          <div className="hidden lg:flex items-center gap-7 xl:gap-9 h-full">
-            {navItems.map((item) =>
-              item.megaMenu ? (
-                <div
-                  key={item.label}
-                  className="relative flex items-center h-full cursor-pointer"
-                  onMouseEnter={() => handleMouseEnter(item.label)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <Link
-                    href={item.href || "#"}
-                    className={`text-[16px] text-[#1C2E56] transition-all ${
-                      isActive(item) || openDropdown === item.label
-                        ? "font-bold underline decoration-[#1C2E56] decoration-2 underline-offset-8"
-                        : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
+          {/* RIGHT: Remaining Nav Items, Partition Line, and Actions */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 h-full">
+            <div className="flex items-center gap-6 xl:gap-8 h-full">
+              {/* Render rest of the navigation (index 1 to end) */}
+              {navItems.slice(1).map(renderDesktopNavItem)}
+            </div>
 
-                  {openDropdown === item.label && (
-                    <div className="absolute left-0 top-[96px] w-[1100px] max-w-[calc(100vw-96px)] z-50 -translate-x-[40%] xl:-translate-x-[30%]">
-                      <div className="bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden">
-                        <div className="flex p-10 gap-8 justify-between">
-                          {item.megaMenu.map((section) => (
-                            <div
-                              key={section.heading}
-                              className={`flex-1 min-w-[200px] ${
-                                section.heading === "Links rápidos"
-                                  ? "pl-8 border-l border-gray-200"
-                                  : ""
-                              }`}
-                            >
-                              <h3 className="font-bold text-[#1C2E56] text-[17px] mb-6">
-                                {section.heading}
-                              </h3>
+            <div className="h-8 w-px bg-gray-300" />
 
-                              <div className="flex flex-col gap-4">
-                                {section.links.map((link) =>
-                                  link.href ? (
-                                    <Link
-                                      key={`${section.heading}-${link.label}`}
-                                      href={link.href}
-                                      className="group flex items-center gap-3 transition"
-                                    >
-                                      <ChevronRight
-                                        className={`w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 ${
-                                          pathname === link.href
-                                            ? "text-[#1C2E56]"
-                                            : "text-[#1C2E56]"
-                                        }`}
-                                      />
-                                      <span
-                                        className={`text-[16px] transition-colors ${
-                                          pathname === link.href
-                                            ? "text-[#1C2E56] font-bold"
-                                            : "text-[#1C2E56] font-medium group-hover:opacity-75"
-                                        }`}
-                                      >
-                                        {link.label}
-                                      </span>
-                                    </Link>
-                                  ) : (
-                                    <span
-                                      key={`${section.heading}-${link.label}`}
-                                      className="flex items-center gap-3 cursor-default"
-                                      aria-disabled="true"
-                                    >
-                                      <ChevronRight className="w-5 h-5 stroke-[2.5] text-gray-400" />
-                                      <span className="text-[16px] font-medium text-gray-400">
-                                        {link.label}
-                                      </span>
-                                    </span>
-                                  ),
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href!}
-                  className={`text-[16px] text-[#1C2E56] transition-all ${
-                    pathname === item.href
-                      ? "font-bold underline decoration-[#1C2E56] decoration-2 underline-offset-8"
-                      : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ),
-            )}
-
-            <div className="h-8 w-px bg-gray-300 ml-2" />
-
-            {/* BALCÃO DIGITAL - Updated hover states */}
             <Link
               href="/balcao-digital"
-              className="h-[44px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors"
+              className="h-[44px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
             >
               Balcão Digital
             </Link>
 
             <Link
               href="/ajuda"
-              className="flex items-center gap-1 ml-2 text-[#1C2E56] text-[16px] font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition"
+              className="flex items-center gap-1 text-[#1C2E56] text-[16px] font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition whitespace-nowrap"
             >
               Ajuda
               <ChevronLeft className="w-[18px] h-[18px] stroke-[2]" />
@@ -328,7 +340,7 @@ const Header = () => {
                         href={item.href}
                         className={`flex-grow py-3 transition ${
                           isActive(item) || mobileExpanded === item.label
-                            ? "font-bold text-[#1C2E56]"
+                            ? "font-extrabold text-[#1C2E56]"
                             : "font-medium text-[#1C2E56]"
                         }`}
                       >
@@ -338,7 +350,7 @@ const Header = () => {
                       <span
                         className={`flex-grow py-3 transition ${
                           isActive(item) || mobileExpanded === item.label
-                            ? "font-bold text-[#1C2E56]"
+                            ? "font-extrabold text-[#1C2E56]"
                             : "font-medium text-[#1C2E56]"
                         }`}
                       >
@@ -376,7 +388,7 @@ const Header = () => {
                                   href={link.href}
                                   className={`flex items-center gap-3 transition ${
                                     pathname === link.href
-                                      ? "text-[#1C2E56] font-bold"
+                                      ? "text-[#1C2E56] font-extrabold"
                                       : "text-[#1C2E56] font-medium"
                                   }`}
                                 >
@@ -406,7 +418,7 @@ const Header = () => {
                   href={item.href!}
                   className={`block py-3 transition ${
                     pathname === item.href
-                      ? "font-bold text-[#1C2E56]"
+                      ? "font-extrabold text-[#1C2E56]"
                       : "font-medium text-[#1C2E56]"
                   }`}
                 >
@@ -415,17 +427,17 @@ const Header = () => {
               ),
             )}
 
-            {/* MOBILE BALCÃO DIGITAL - Updated hover states */}
+            {/* MOBILE BALCÃO DIGITAL */}
             <Link
               href="/balcao-digital"
-              className="mt-4 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold text-[16px] hover:bg-[#DE092D] hover:text-white transition-colors"
+              className="mt-4 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold text-[16px] hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
             >
               Balcão Digital
             </Link>
 
             <Link
               href="/ajuda"
-              className="mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline"
+              className="mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
             >
               Ajuda
               <ChevronLeft className="w-5 h-5" />

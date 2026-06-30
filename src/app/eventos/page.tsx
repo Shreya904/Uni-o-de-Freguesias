@@ -265,13 +265,13 @@ export default function EventsPage() {
                 onClick={() => toggleFilter("Esta semana")}
                 className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Esta semana") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
               >
-                Esta <br /> Semana
+                Esta Semana
               </button>
               <button
                 onClick={() => toggleFilter("Este mês")}
                 className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Este mês") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
               >
-                Este <br /> Mês
+                Este Mês
               </button>
             </div>
 
