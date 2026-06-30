@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +19,11 @@ export default function AcessibilidadeSidebar() {
   const [open, setOpen] = useState(false);
   const [largeFont, setLargeFont] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("darkMode");
+    if (saved === "true") setDarkMode(true);
+  }, []);
   const [reading, setReading] = useState(false);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
@@ -61,6 +66,8 @@ export default function AcessibilidadeSidebar() {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    localStorage.setItem("darkMode", String(darkMode));
+    localStorage.setItem("darkMode", String(darkMode));
   }, [darkMode]);
 
   const handleReadAloud = () => {
@@ -288,3 +295,6 @@ export default function AcessibilidadeSidebar() {
     </>
   );
 }
+
+
+
