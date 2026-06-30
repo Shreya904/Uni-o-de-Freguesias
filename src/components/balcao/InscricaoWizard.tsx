@@ -68,7 +68,7 @@ function MainFaqs() {
             />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200 dark:border-white/20 dark:text-white/70">
+            <div className="px-4 pb-4 text-sm text-muted-foreground dark:text-white/70 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
                 <li>
@@ -92,7 +92,7 @@ function MainFaqs() {
                   atualizações.
                 </li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-white/70 pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
                 <span>Partilhar 🔗</span>
                 <span>Esta informação foi útil? 👍 👎</span>
@@ -115,7 +115,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
         <p className="font-bold text-foreground mb-3 dark:text-white">
           Em que atividades se quer inscrever?
         </p>
-        <ul className="space-y-3 text-muted-foreground mb-8 dark:text-white/70">
+        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 dark:text-white/70">
           {(["passeios", "almosos", "hidroginastica"] as InscricaoType[]).map((t) => (
             <li key={t} className="flex items-center gap-2">
               <input type="radio" readOnly checked={active === t} className="accent-[#C41230]" />
@@ -152,12 +152,12 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
             return (
               <div key={label} className="flex flex-col items-center gap-2">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground"}`}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground dark:text-white/70"}`}
                 >
                   {n}
                 </div>
                 <span
-                  className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}
+                  className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground dark:text-white/70"}`}
                 >
                   {label}
                 </span>
@@ -180,51 +180,51 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
 function StepDados({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">1 — Os seus dados pessoais</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">1 — Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
-          <label className="text-sm text-muted-foreground">
+          <label className="text-sm text-muted-foreground dark:text-white/70">
             Nome <span className="text-xs">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">
+          <label className="text-sm text-muted-foreground dark:text-white/70">
             Apelido <span className="text-xs">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">
+          <label className="text-sm text-muted-foreground dark:text-white/70">
             Idade <span className="text-xs">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">
+          <label className="text-sm text-muted-foreground dark:text-white/70">
             Freguesia <span className="text-xs">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Data do passeio</label>
-          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground">
+          <label className="text-sm text-muted-foreground dark:text-white/70">Data do passeio</label>
+          <select className="w-full border dark:border-white/20 rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70">
             <option>— Selecione</option>
           </select>
         </div>
         <div />
         <div>
-          <label className="text-sm text-muted-foreground">
+          <label className="text-sm text-muted-foreground dark:text-white/70">
             Email <span className="text-xs">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Telefone ou Telemóvel</label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Telefone ou Telemóvel</label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
@@ -241,16 +241,16 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
 function StepPagamento({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">2 — Pagamento</p>
-      <p className="text-sm text-muted-foreground mb-2">
+      <p className="font-bold text-foreground dark:text-white mb-4">2 — Pagamento</p>
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">
         Qual o método que prefere usar para efetuar o pagamento?
       </p>
       <button className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">Na Junta</button>
-      <p className="text-sm text-muted-foreground mb-6">
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">
         Deverá deslocar-se aos serviços da junta para efetuar o pagamento e confirmar a sua
         participação.
       </p>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
@@ -267,23 +267,23 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
 function StepConfirmacao() {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">3 — Confirmação</p>
-      <p className="text-sm text-muted-foreground mb-2">
+      <p className="font-bold text-foreground dark:text-white mb-4">3 — Confirmação</p>
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">
         A confirmação da inscrição será enviada para o endereço de email indicado, que poderá ser{" "}
-        <span className="font-semibold text-foreground">confirmado@gmail.pt</span>.
+        <span className="font-semibold text-foreground dark:text-white">confirmado@gmail.pt</span>.
       </p>
-      <p className="text-sm text-muted-foreground mb-6">
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">
         Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427
         065
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
-        <label className="flex items-start gap-2 text-sm text-muted-foreground">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
           Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
           pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
           informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
-        <label className="flex items-start gap-2 text-sm text-muted-foreground">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
           Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos
           Administrativos, os documentos apresentados no âmbito do presente processo são documentos
@@ -292,10 +292,10 @@ function StepConfirmacao() {
         </label>
       </div>
       <div className="max-w-xl mb-4">
-        <label className="text-sm text-muted-foreground">Descrição</label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20" />
+        <label className="text-sm text-muted-foreground dark:text-white/70">Descrição</label>
+        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
@@ -305,3 +305,7 @@ function StepConfirmacao() {
     </div>
   );
 }
+
+
+
+

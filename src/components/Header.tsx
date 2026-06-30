@@ -175,12 +175,12 @@ const Header = () => {
         >
           <Link
             href={item.href || "#"}
-            className={`text-[16px] text-[#1C2E56] transition-all ${
+            className={`text-[16px] transition-all text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white ${
               isActive(item)
                 ? "font-extrabold"
-                : `font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 ${
+                : `font-medium hover:underline hover:decoration-2 hover:underline-offset-8 ${
                     openDropdown === item.label
-                      ? "underline decoration-[#1C2E56] decoration-2 underline-offset-8"
+                      ? "underline decoration-2 underline-offset-8"
                       : ""
                   }`
             }`}
@@ -190,16 +190,18 @@ const Header = () => {
 
           {openDropdown === item.label && (
             <div className="absolute left-0 w-full top-[96px] z-50 px-8">
-              <div className="bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+              <div className="border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden bg-white dark:bg-black">
                 <div className="flex p-8 lg:p-10 gap-6 lg:gap-8 justify-between flex-wrap">
                   {item.megaMenu.map((section) => (
                     <div
                       key={section.heading}
                       className={`flex-1 min-w-[200px] ${
-                        section.heading === "Links rápidos" ? "pl-8 border-l border-gray-200" : ""
+                        section.heading === "Links rápidos"
+                          ? "pl-8 border-l border-gray-200 dark:border-gray-700"
+                          : ""
                       }`}
                     >
-                      <h3 className="font-bold text-[#1C2E56] text-[17px] mb-6">
+                      <h3 className="font-bold text-[17px] mb-6 text-[#1C2E56] dark:text-white">
                         {section.heading}
                       </h3>
 
@@ -211,14 +213,10 @@ const Header = () => {
                               href={link.href}
                               className="group flex items-center gap-3 transition"
                             >
-                              <ChevronRight
-                                className={`w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 text-[#1C2E56]`}
-                              />
+                              <ChevronRight className="w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 text-[#1C2E56] dark:text-white" />
                               <span
-                                className={`text-[16px] transition-colors ${
-                                  pathname === link.href
-                                    ? "text-[#1C2E56] font-bold"
-                                    : "text-[#1C2E56] font-medium group-hover:opacity-75"
+                                className={`text-[16px] transition-colors text-[#1C2E56] dark:text-white ${
+                                  pathname === link.href ? "font-bold" : "font-medium group-hover:opacity-75"
                                 }`}
                               >
                                 {link.label}
@@ -230,8 +228,8 @@ const Header = () => {
                               className="flex items-center gap-3 cursor-default"
                               aria-disabled="true"
                             >
-                              <ChevronRight className="w-5 h-5 stroke-[2.5] text-gray-400" />
-                              <span className="text-[16px] font-medium text-gray-400">
+                              <ChevronRight className="w-5 h-5 stroke-[2.5] text-gray-400 dark:text-gray-600" />
+                              <span className="text-[16px] font-medium text-gray-400 dark:text-gray-600">
                                 {link.label}
                               </span>
                             </span>
@@ -252,10 +250,10 @@ const Header = () => {
       <Link
         key={item.href}
         href={item.href!}
-        className={`text-[16px] text-[#1C2E56] transition-all ${
+        className={`text-[16px] transition-all text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white ${
           isActive(item)
             ? "font-extrabold"
-            : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
+            : "font-medium hover:underline hover:decoration-2 hover:underline-offset-8"
         }`}
       >
         {item.label}
@@ -271,11 +269,10 @@ const Header = () => {
     >
       <nav
         ref={dropdownRef}
-        className={`relative bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto transition-all ${
+        className={`relative bg-white dark:bg-black shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto transition-all ${
           openDropdown ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"
         }`}
       >
-        {/* Added gap-6 lg:gap-8 to prevent the left and right containers from sticking together on smaller screens */}
         <div className="h-[96px] px-8 flex items-center justify-between gap-6 lg:gap-8">
           {/* LEFT: Logo, Partition Line, and Começar */}
           <div className="flex items-center gap-6 xl:gap-8 h-full">
@@ -290,10 +287,9 @@ const Header = () => {
               />
             </Link>
 
-            <div className="hidden lg:block h-8 w-px bg-gray-300" />
+            <div className="hidden lg:block h-8 w-px bg-gray-300 dark:bg-gray-700" />
 
             <div className="hidden lg:flex items-center h-full">
-              {/* Render only Começar (index 0) */}
               {navItems.slice(0, 1).map(renderDesktopNavItem)}
             </div>
           </div>
@@ -301,11 +297,10 @@ const Header = () => {
           {/* RIGHT: Remaining Nav Items, Partition Line, and Actions */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8 h-full">
             <div className="flex items-center gap-6 xl:gap-8 h-full">
-              {/* Render rest of the navigation (index 1 to end) */}
               {navItems.slice(1).map(renderDesktopNavItem)}
             </div>
 
-            <div className="h-8 w-px bg-gray-300" />
+            <div className="h-8 w-px bg-gray-300 dark:bg-gray-700" />
 
             <Link
               href="/balcao-digital"
@@ -314,10 +309,9 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            {/* AJUDA - opens sidebar */}
             <button
               onClick={openAjudaSidebar}
-              className="flex items-center gap-1 ml-2 text-[#1C2E56] text-[16px] font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition"
+              className="flex items-center gap-1 ml-2 text-[16px] font-medium hover:underline hover:decoration-2 hover:underline-offset-8 transition text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white"
             >
               Ajuda
               <ChevronLeft className="w-[18px] h-[18px] stroke-[2]" />
@@ -326,7 +320,7 @@ const Header = () => {
 
           {/* MOBILE BUTTON */}
           <button
-            className="lg:hidden p-2 text-[#1C2E56]"
+            className="lg:hidden p-2 text-[#1C2E56] dark:text-white"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -335,18 +329,16 @@ const Header = () => {
 
         {/* MOBILE MENU */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-white px-4 py-4 space-y-2 rounded-b-2xl">
+          <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-4 space-y-2 rounded-b-2xl bg-white dark:bg-black">
             {navItems.map((item) =>
               item.megaMenu ? (
                 <div key={item.label}>
-                  <div className="flex items-center justify-between w-full text-[#1C2E56]">
+                  <div className="flex items-center justify-between w-full text-[#1C2E56] dark:text-white">
                     {item.href ? (
                       <Link
                         href={item.href}
                         className={`flex-grow py-3 transition ${
-                          isActive(item) || mobileExpanded === item.label
-                            ? "font-extrabold text-[#1C2E56]"
-                            : "font-medium text-[#1C2E56]"
+                          isActive(item) || mobileExpanded === item.label ? "font-extrabold" : "font-medium"
                         }`}
                       >
                         {item.label}
@@ -354,9 +346,7 @@ const Header = () => {
                     ) : (
                       <span
                         className={`flex-grow py-3 transition ${
-                          isActive(item) || mobileExpanded === item.label
-                            ? "font-extrabold text-[#1C2E56]"
-                            : "font-medium text-[#1C2E56]"
+                          isActive(item) || mobileExpanded === item.label ? "font-extrabold" : "font-medium"
                         }`}
                       >
                         {item.label}
@@ -378,10 +368,10 @@ const Header = () => {
                   </div>
 
                   {mobileExpanded === item.label && (
-                    <div className="ml-2 border-l-2 border-gray-100 pl-4 space-y-5 pb-4 mt-2">
+                    <div className="ml-2 border-l-2 border-gray-100 dark:border-gray-800 pl-4 space-y-5 pb-4 mt-2">
                       {item.megaMenu.map((section) => (
                         <div key={section.heading}>
-                          <h4 className="font-bold text-[#1C2E56] mb-3 text-[15px]">
+                          <h4 className="font-bold mb-3 text-[15px] text-[#1C2E56] dark:text-white">
                             {section.heading}
                           </h4>
 
@@ -391,10 +381,8 @@ const Header = () => {
                                 <Link
                                   key={`${section.heading}-${link.label}`}
                                   href={link.href}
-                                  className={`flex items-center gap-3 transition ${
-                                    pathname === link.href
-                                      ? "text-[#1C2E56] font-extrabold"
-                                      : "text-[#1C2E56] font-medium"
+                                  className={`flex items-center gap-3 transition text-[#1C2E56] dark:text-white ${
+                                    pathname === link.href ? "font-extrabold" : "font-medium"
                                   }`}
                                 >
                                   <ChevronRight className="w-[18px] h-[18px] stroke-[2.5]" />
@@ -406,8 +394,8 @@ const Header = () => {
                                   className="flex items-center gap-3 cursor-default"
                                   aria-disabled="true"
                                 >
-                                  <ChevronRight className="w-[18px] h-[18px] stroke-[2.5] text-gray-400" />
-                                  <span className="font-medium text-gray-400">{link.label}</span>
+                                  <ChevronRight className="w-[18px] h-[18px] stroke-[2.5] text-gray-400 dark:text-gray-600" />
+                                  <span className="font-medium text-gray-400 dark:text-gray-600">{link.label}</span>
                                 </span>
                               ),
                             )}
@@ -421,10 +409,8 @@ const Header = () => {
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className={`block py-3 transition ${
-                    pathname === item.href
-                      ? "font-extrabold text-[#1C2E56]"
-                      : "font-medium text-[#1C2E56]"
+                  className={`block py-3 transition text-[#1C2E56] dark:text-white ${
+                    pathname === item.href ? "font-extrabold" : "font-medium"
                   }`}
                 >
                   {item.label}
@@ -432,7 +418,6 @@ const Header = () => {
               ),
             )}
 
-            {/* MOBILE BALCÃO DIGITAL */}
             <Link
               href="/balcao-digital"
               className="mt-4 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold text-[16px] hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
@@ -442,10 +427,10 @@ const Header = () => {
 
             <button
               onClick={openAjudaSidebar}
-              className="w-full mt-2 flex items-center justify-center gap-1 py-3 !text-[#1C2E56] dark:!text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
+              className="w-full mt-2 flex items-center justify-center gap-1 py-3 font-medium hover:underline whitespace-nowrap text-[#1C2E56] dark:text-white"
             >
               Ajuda
-              <ChevronLeft className="w-5 h-5 !text-[#1C2E56] dark:!text-[#1C2E56]" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
           </div>
         )}

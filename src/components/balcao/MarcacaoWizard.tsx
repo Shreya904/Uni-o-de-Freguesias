@@ -45,7 +45,7 @@ function MainFaqs() {
             <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200 dark:border-white/20 dark:text-white/70">
+            <div className="px-4 pb-4 text-sm text-muted-foreground dark:text-white/70 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
                 <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
@@ -55,7 +55,7 @@ function MainFaqs() {
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
                 <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-white/70 pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
                 <span>Partilhar 🔗</span>
                 <span>Esta informação foi útil? 👍 👎</span>
@@ -78,7 +78,7 @@ export default function MarcacaoWizard() {
     <div className="balcao-shell">
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">Com quem quer reunir?</p>
-        <ul className="space-y-3 text-muted-foreground mb-8 dark:text-white/70">
+        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 dark:text-white/70">
           <li className="flex items-center gap-2">
             <input
               type="radio"
@@ -127,12 +127,12 @@ export default function MarcacaoWizard() {
                   className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${
                     isActive || isDone
                       ? "bg-[#C41230] text-white border-[#C41230]"
-                      : "border-border text-muted-foreground"
+                      : "border-border text-muted-foreground dark:text-white/70"
                   }`}
                 >
                   {n}
                 </div>
-                <span className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                <span className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground dark:text-white/70"}`}>
                   {label}
                 </span>
               </div>
@@ -165,7 +165,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
             <span className="text-sm font-medium">Janeiro 2026</span>
             <button><ChevronRight className="w-4 h-4" /></button>
           </div>
-          <div className="grid grid-cols-7 text-xs text-muted-foreground mb-2">
+          <div className="grid grid-cols-7 text-xs text-muted-foreground dark:text-white/70 mb-2">
             {["S", "T", "Q", "Q", "S", "S", "D"].map((d, i) => (
               <div key={i} className="text-center">{d}</div>
             ))}
@@ -176,7 +176,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
                 key={i}
                 onClick={() => setSelectedDay(d)}
                 className={`h-7 rounded-full ${
-                  d === selectedDay ? "bg-[#1C2E56] text-white" : "hover:bg-muted text-foreground"
+                  d === selectedDay ? "bg-[#1C2E56] text-white" : "hover:bg-muted text-foreground dark:text-white"
                 }`}
               >
                 {d}
@@ -191,9 +191,9 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
             <span className="text-sm font-medium">{selectedDay} janeiro</span>
             <button><ChevronRight className="w-4 h-4" /></button>
           </div>
-          <p className="text-xs text-muted-foreground mb-2">Horário disponível</p>
+          <p className="text-xs text-muted-foreground dark:text-white/70 mb-2">Horário disponível</p>
           <div className="space-y-2">
-            <button className="w-full border rounded-md py-2 text-sm text-muted-foreground">15:30 – 16:00</button>
+            <button className="w-full border rounded-md py-2 text-sm text-muted-foreground dark:text-white/70">15:30 – 16:00</button>
             <button className="w-full bg-[#1C2E56] text-white rounded-md py-2 text-sm">16:30 – 17:00</button>
           </div>
         </div>
@@ -215,35 +215,35 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
       <p className="font-bold text-foreground mb-4">2 – Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
-          <label className="text-sm text-muted-foreground">Nome <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Nome <span className="text-xs">(Necessário)</span></label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Apelido <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Apelido <span className="text-xs">(Necessário)</span></label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Idade <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Idade <span className="text-xs">(Necessário)</span></label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Freguesia <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Freguesia <span className="text-xs">(Necessário)</span></label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Email <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Email <span className="text-xs">(Necessário)</span></label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Telefone ou Telemóvel</label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">Telefone ou Telemóvel</label>
+          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
       </div>
       <div className="max-w-xl mb-2">
-        <label className="text-sm text-muted-foreground">Assunto <span className="text-xs">(Necessário)</span></label>
+        <label className="text-sm text-muted-foreground dark:text-white/70">Assunto <span className="text-xs">(Necessário)</span></label>
         <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24" />
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
       </p>
       <button
@@ -260,30 +260,30 @@ function StepConfirmacao() {
   return (
     <div>
       <p className="font-bold text-foreground mb-4">3 – Confirmação</p>
-      <p className="text-sm text-muted-foreground mb-4">
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-4">
         Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias da Glória e Vera Cruz podem ser consultados em www.ufgloriavcruz.pt
       </p>
-      <p className="text-sm text-muted-foreground mb-6">
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">
         Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
-        <label className="flex items-start gap-2 text-sm text-muted-foreground">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
           Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
-        <label className="flex items-start gap-2 text-sm text-muted-foreground">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
           Tomei conhecimento que, de acordo com o atendimento da Comissão de Acesso aos Documentos Administrativos, os documentos apresentados no âmbito do presente processo são documentos administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso integral a todos aqueles que o solicitem.
         </label>
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Para mais informações sobre as práticas de privacidade da União das Freguesias de Glória e Vera Cruz consulte a nossa página da privacidade ou envie-nos um email para direitoprivacidade.fgloriavcruz@gmail.com
       </p>
       <div className="max-w-xl mb-4">
-        <label className="text-sm text-muted-foreground">Observações</label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20" />
+        <label className="text-sm text-muted-foreground dark:text-white/70">Observações</label>
+        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
       </p>
       <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
@@ -292,3 +292,5 @@ function StepConfirmacao() {
     </div>
   );
 }
+
+
