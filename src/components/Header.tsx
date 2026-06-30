@@ -143,7 +143,9 @@ const Header = () => {
       setOpenDropdown(null);
     }, 150);
   };
-
+  const openAjudaSidebar = () => {
+    window.dispatchEvent(new CustomEvent("open-ajuda-sidebar"));
+  };
   const isActive = (item: NavItem): boolean => {
     if (
       item.megaMenu?.some((section) =>
@@ -435,13 +437,13 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            <Link
-              href="/ajuda"
-              className="mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
+            <button
+              onClick={openAjudaSidebar}
+              className="w-full mt-2 flex items-center justify-center gap-1 py-3 !text-[#1C2E56] dark:!text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
             >
               Ajuda
-              <ChevronLeft className="w-5 h-5" />
-            </Link>
+              <ChevronLeft className="w-5 h-5 !text-[#1C2E56] dark:!text-[#1C2E56]" />
+            </button>
           </div>
         )}
       </nav>
