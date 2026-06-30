@@ -139,7 +139,7 @@ function ComunhaoContent() {
 function ProponenteFields({ label }: { label: string }) {
   return (
     <div className="mb-8">
-      <p className="font-semibold text-foreground mb-4">{label}</p>
+      <p className="font-semibold text-foreground dark:text-white mb-4">{label}</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Nome <span className="text-xs">(Necessário)</span></label>
@@ -193,9 +193,9 @@ function ProponenteFields({ label }: { label: string }) {
 function StepProponentes({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-6">1A — Dados do 1º Proponente</p>
+      <p className="font-bold text-foreground dark:text-white mb-6">1A — Dados do 1º Proponente</p>
       <ProponenteFields label="1A — Dados do 1º Proponente" />
-      <p className="font-bold text-foreground mb-6">1B — Dados do 2º Proponente</p>
+      <p className="font-bold text-foreground dark:text-white mb-6">1B — Dados do 2º Proponente</p>
       <ProponenteFields label="1B — Dados do 2º Proponente" />
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
       <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
@@ -206,7 +206,7 @@ function StepProponentes({ onContinue }: { onContinue: () => void }) {
 function StepDocumentos({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-2">2 — Documentos instrutórios</p>
+      <p className="font-bold text-foreground dark:text-white mb-2">2 — Documentos instrutórios</p>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-6">
         Número de Identificação Civil e Número de Identificação Fiscal<br />
         Limite de 2 MB. Ficheiros maiores do que este não serão aceites pelo sistema.<br />
@@ -214,7 +214,7 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
       </p>
       {["1º Proponente", "2º Proponente"].map((label, idx) => (
         <div key={idx} className="mb-8">
-          <p className="font-semibold text-foreground mb-4">2{idx === 0 ? "A" : "B"} — Documentos do {label}</p>
+          <p className="font-semibold text-foreground dark:text-white mb-4">2{idx === 0 ? "A" : "B"} — Documentos do {label}</p>
           <div className="space-y-3 max-w-xl">
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground dark:text-white/70 w-56">Carregar a fotocópia do Cartão de Cidadão</span>
@@ -241,7 +241,7 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
 function StepPagamento({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">3 — Pagamento</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">3 — Pagamento</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Qual é o método que prefere usar para efetuar o pagamento?</p>
       <button className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">Na Junta</button>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">Deverá deslocar-se aos serviços da junta para efetuar o pagamento e confirmar a sua participação.</p>
@@ -254,7 +254,7 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
 function StepConfirmacao() {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">4 — Confirmação</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias de Glória e Vera Cruz podem ser consultados em www.ufgloriaveracruz.pt.</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065</p>
       <div className="space-y-3 mb-6 max-w-2xl">

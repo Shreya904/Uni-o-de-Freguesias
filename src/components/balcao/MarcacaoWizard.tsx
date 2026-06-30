@@ -157,7 +157,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
 
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">1 – Quando é que lhe dá jeito?</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">1 – Quando é que lhe dá jeito?</p>
       <div className="flex flex-wrap gap-6">
         <div className="border rounded-xl p-4 w-72">
           <div className="flex items-center justify-between mb-3">
@@ -212,7 +212,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
 function StepDados({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">2 – Os seus dados pessoais</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">2 – Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Nome <span className="text-xs">(Necessário)</span></label>
@@ -259,7 +259,7 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
 function StepConfirmacao() {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">3 – Confirmação</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">3 – Confirmação</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-4">
         Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias da Glória e Vera Cruz podem ser consultados em www.ufgloriavcruz.pt
       </p>

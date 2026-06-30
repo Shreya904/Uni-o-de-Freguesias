@@ -130,7 +130,7 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
         {step === 3 && <StepDocumentos onContinue={next} />}
         {step === 4 && <StepConfirmacao />}
 
-        <p className="font-bold text-foreground mb-3 mt-12">Outros assuntos populares</p>
+        <p className="font-bold text-foreground dark:text-white mb-3 mt-12">Outros assuntos populares</p>
         <MainFaqs />
       </div>
     </div>
@@ -140,7 +140,7 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
 function StepRequerente({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-6">1 — Dados do(s) requerente(s)</p>
+      <p className="font-bold text-foreground dark:text-white mb-6">1 — Dados do(s) requerente(s)</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-4">
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Nome <span className="text-xs">(Necessário)</span></label>
@@ -193,7 +193,7 @@ function StepRequerente({ onContinue }: { onContinue: () => void }) {
 function StepObjeto({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-6">2 — Objeto do requerimento</p>
+      <p className="font-bold text-foreground dark:text-white mb-6">2 — Objeto do requerimento</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-4">
         <div className="md:col-span-2">
           <label className="text-sm text-muted-foreground dark:text-white/70">Tipo de pedido <span className="text-xs">(Necessário)</span></label>
@@ -231,7 +231,7 @@ function StepObjeto({ onContinue }: { onContinue: () => void }) {
 function StepDocumentos({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
-      <p className="font-bold text-foreground mb-2">3 — Documentos instrutórios</p>
+      <p className="font-bold text-foreground dark:text-white mb-2">3 — Documentos instrutórios</p>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-6">
         Limite de 2 MB. Ficheiros maiores do que este não serão aceites pelo sistema.<br />
         Tipos permitidos: gif, jpg, jpeg, png, txt, pdf, doc, docx, ppt, pptx, xls, xlsx.
@@ -256,7 +256,7 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
 function StepConfirmacao() {
   return (
     <div>
-      <p className="font-bold text-foreground mb-4">4 — Confirmação</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias de Glória e Vera Cruz podem ser consultados em www.ufgloriaveracruz.pt.</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065</p>
       <div className="space-y-3 mb-6 max-w-2xl">

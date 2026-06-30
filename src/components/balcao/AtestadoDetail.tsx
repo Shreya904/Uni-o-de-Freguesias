@@ -37,19 +37,19 @@ export default function AtestadoDetail({
   return (
     <div className="balcao-shell">
       <aside className="balcao-sidebar">
-        <p className="font-bold text-foreground mb-3">Qual é o atestado que precisa?</p>
+        <p className="font-bold text-foreground dark:text-white mb-3">Qual é o atestado que precisa?</p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
           {sidebarItems.map((item) => (
             <li key={item.label} className="flex items-center gap-2">
               <input type="radio" checked={item.active} readOnly className="accent-[#C41230]" />
-              <Link href={item.href} className={item.active ? "text-foreground font-medium" : "hover:text-foreground transition"}>
+              <Link href={item.href} className={item.active ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
                 {item.label}
               </Link>
             </li>
           ))}
         </ul>
 
-        <p className="font-bold text-foreground mb-3">Perguntas frequentes</p>
+        <p className="font-bold text-foreground dark:text-white mb-3">Perguntas frequentes</p>
         <div
           className="border rounded-lg p-3 text-muted-foreground dark:text-white/70 text-xs bg-amber-50 dark:bg-black cursor-pointer"
           onClick={() => setOpenSidebarFaq(!openSidebarFaq)}
@@ -65,12 +65,12 @@ export default function AtestadoDetail({
       </aside>
 
       <div className="balcao-main">
-        <h1>{title}</h1>
+        <h1 className="dark:text-white">{title}</h1>
         <div className="mb-10 space-y-4">
-          {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+          {paragraphs.map((p, i) => <p key={i} className="dark:text-white/80">{p}</p>)}
         </div>
 
-        <p className="balcao-section-title mb-3">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 dark:text-white">Outros assuntos populares</p>
         <div className="space-y-3">
           {faqContent.map((faq, i) => (
             <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">

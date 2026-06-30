@@ -22,11 +22,11 @@ export default function CanideosPage() {
       <BalcaoHeader />
       <div className="balcao-shell">
         <aside className="balcao-sidebar">
-          <p className="font-bold text-foreground mb-3">O que precisa?</p>
+          <p className="font-bold text-foreground dark:text-white mb-3">O que precisa?</p>
           <ul className="space-y-3 mb-8">
             <li className="flex items-center gap-2">
               <input type="radio" checked readOnly className="accent-[#C41230]" />
-              <span className="text-foreground font-medium">Licencas para canideos</span>
+              <span className="text-foreground font-medium dark:text-white">Licencas para canideos</span>
             </li>
           </ul>
           <p className="font-bold text-foreground mb-3 dark:text-white">Perguntas frequentes</p>
@@ -44,13 +44,13 @@ export default function CanideosPage() {
         </aside>
 
         <main className="balcao-main">
-          <h1>Licencas para canideos</h1>
-          <p className="mb-4 max-w-2xl">Para tratar do licenciamento do seu cao, devera dirigir-se presencialmente aos servicos da junta de freguesia.</p>
-          <p className="mb-4 max-w-2xl">Este procedimento exige a apresentacao de documentacao obrigatoria, nomeadamente a identificacao do animal e do respetivo detentor, bem como os comprovativos legitimamente necessarios para a emissao ou renovacao da licenca.</p>
-          <p className="mb-4 max-w-2xl">Os formularios/declaracoes/requerimentos e os regulamentos da Uniao das Freguesias de Gloria e Vera Cruz podem ser consultados em www.ufgloriaveracruz.pt.</p>
-          <p className="mb-4 max-w-2xl">Para qualquer esclarecimento podera contactar os nossos servicos atraves do numero 234 427 065</p>
+          <h1 className="dark:text-white">Licencas para canideos</h1>
+          <p className="mb-4 max-w-2xl dark:text-white/80">Para tratar do licenciamento do seu cao, devera dirigir-se presencialmente aos servicos da junta de freguesia.</p>
+          <p className="mb-4 max-w-2xl dark:text-white/80">Este procedimento exige a apresentacao de documentacao obrigatoria, nomeadamente a identificacao do animal e do respetivo detentor, bem como os comprovativos legitimamente necessarios para a emissao ou renovacao da licenca.</p>
+          <p className="mb-4 max-w-2xl dark:text-white/80">Os formularios/declaracoes/requerimentos e os regulamentos da Uniao das Freguesias de Gloria e Vera Cruz podem ser consultados em www.ufgloriaveracruz.pt.</p>
+          <p className="mb-4 max-w-2xl dark:text-white/80">Para qualquer esclarecimento podera contactar os nossos servicos atraves do numero 234 427 065</p>
 
-          <h3 className="font-bold text-foreground mt-10 mb-4 dark:text-white">Outros assuntos populares</h3>
+          <h3 className="font-bold text-foreground dark:text-white mt-10 mb-4">Outros assuntos populares</h3>
           <div className="space-y-3">
             {mainFaqs.map((faq, i) => (
               <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
