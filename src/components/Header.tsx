@@ -440,14 +440,13 @@ const Header = () => {
               Balcão Digital
             </Link>
 
-            {/* MOBILE AJUDA - opens sidebar */}
-            <button
-              onClick={openAjudaSidebar}
-              className="mt-2 w-full flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline"
+            <Link
+              href="/ajuda"
+              className="mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
             >
               Ajuda
               <ChevronLeft className="w-5 h-5" />
-            </button>
+            </Link>
           </div>
         )}
       </nav>
