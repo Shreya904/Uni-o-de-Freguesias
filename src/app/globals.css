@@ -8,34 +8,24 @@
   :root {
     --background: 210 20% 98%;
     --foreground: 221 49% 27%;
-
     --card: 0 0% 100%;
     --card-foreground: 221 49% 27%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 221 49% 27%;
-
     --primary: 354 93% 45%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 210 30% 94%;
     --secondary-foreground: 354 93% 45%;
-
     --muted: 210 20% 95%;
     --muted-foreground: 220 10% 46%;
-
     --accent: 44 98% 60%;
     --accent-foreground: 221 49% 27%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 214 20% 90%;
     --input: 214 20% 90%;
     --ring: 215 65% 28%;
-
     --radius: 0.625rem;
-
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -44,10 +34,8 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-
     --success: 152 60% 40%;
     --success-foreground: 0 0% 100%;
-
     --section-alt: 210 25% 96%;
   }
 
@@ -91,12 +79,7 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-display;
   }
 }
@@ -188,4 +171,40 @@
     @apply cursor-pointer font-bold text-[#1C2E56];
     font-size: 1rem;
   }
+}
+
+html.dark {
+  background-color: #000000 !important;
+}
+
+.dark body {
+  background-color: #000000 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark section,
+.dark main {
+  background-color: #000000 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4,
+.dark p, .dark li {
+  color: #f0f0f0 !important;
+}
+
+.dark span:not([class*="text-white"]):not([class*="bg-"]) {
+  color: #f0f0f0 !important;
+}
+
+.dark div[class*="bg-gray"],
+.dark div[class*="bg-slate"],
+.dark div[class*="bg-white"],
+.dark div[class*="bg-neutral"] {
+  background-color: #111111 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark a {
+  color: #9ec5ff !important;
 }
