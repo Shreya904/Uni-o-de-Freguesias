@@ -35,16 +35,20 @@ function SidebarFaqs() {
       {faqs.map((faq, i) => (
         <div
           key={i}
-          className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70"
+          className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer"
           onClick={() => setOpen(open === i ? null : i)}
         >
           <div className="flex items-center justify-between">
-            <span>{faq}</span>
+            <span className="text-xs font-medium text-foreground dark:text-white">{faq}</span>
             <ChevronDown
-              className={`w-3 h-3 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
+              className={`w-3 h-3 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${open === i ? "rotate-180" : ""}`}
             />
           </div>
-          {open === i && <p className="mt-2">Deve tentar novamente :)</p>}
+          {open === i && (
+            <p className="mt-2 text-xs text-muted-foreground dark:text-white/70">
+              Deve tentar novamente :)
+            </p>
+          )}
         </div>
       ))}
     </div>
@@ -62,15 +66,17 @@ function MainFaqs() {
             onClick={() => setOpen(open === i ? null : i)}
             className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white"
           >
-            {faq}
+            <span className="text-foreground dark:text-white">{faq}</span>
             <ChevronDown
-              className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
+              className={`w-4 h-4 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${open === i ? "rotate-180" : ""}`}
             />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground dark:text-white/70 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
-              <p className="mt-3 mb-3">{faqAnswer}</p>
-              <ul className="space-y-1 mb-3 text-xs">
+            <div className="px-4 pb-4 border-t border-amber-200 dark:border-white/20">
+              <p className="mt-3 mb-3 text-sm text-muted-foreground dark:text-white/80">
+                {faqAnswer}
+              </p>
+              <ul className="space-y-1 mb-3 text-xs text-muted-foreground dark:text-white/80">
                 <li>
                   🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave
                   ou assunto
@@ -92,10 +98,14 @@ function MainFaqs() {
                   atualizações.
                 </li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-white/70 pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
-                <span>Atualizado a 29 abril, 2026</span>
-                <span>Partilhar 🔗</span>
-                <span>Esta informação foi útil? 👍 👎</span>
+              <div className="flex items-center gap-4 text-xs pt-2 border-t border-amber-200 dark:border-white/20">
+                <span className="text-muted-foreground dark:text-white/70">
+                  Atualizado a 29 abril, 2026
+                </span>
+                <span className="text-muted-foreground dark:text-white/70">Partilhar 🔗</span>
+                <span className="text-muted-foreground dark:text-white/70">
+                  Esta informação foi útil? 👍 👎
+                </span>
               </div>
             </div>
           )}
@@ -115,7 +125,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
         <p className="font-bold text-foreground mb-3 dark:text-white">
           Em que atividades se quer inscrever?
         </p>
-        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 dark:text-white/70">
+        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 ">
           {(["passeios", "almosos", "hidroginastica"] as InscricaoType[]).map((t) => (
             <li key={t} className="flex items-center gap-2">
               <input type="radio" readOnly checked={active === t} className="accent-[#C41230]" />
@@ -124,7 +134,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
                 className={
                   active === t
                     ? "text-foreground font-medium dark:text-white"
-                    : "hover:text-foreground transition dark:text-white/70"
+                    : "hover:text-foreground transition dark:text-white/70 dark:hover:text-white"
                 }
               >
                 {t === "passeios"
@@ -141,8 +151,10 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
       </aside>
 
       <div className="balcao-main">
-        <h1 className="dark:text-white">{titles[active]}</h1>
-        <p className="mb-8 max-w-2xl dark:text-white/80">{descriptions[active]}</p>
+        <h1 className="text-foreground dark:text-white">{titles[active]}</h1>
+        <p className="mb-8 max-w-2xl text-muted-foreground dark:text-white/80">
+          {descriptions[active]}
+        </p>
 
         <div className="flex items-center gap-10 mb-10">
           {steps.map((label, i) => {
@@ -157,7 +169,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
                   {n}
                 </div>
                 <span
-                  className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground dark:text-white/70"}`}
+                  className={`text-xs ${isActive ? "text-foreground font-medium dark:text-white" : "text-muted-foreground dark:text-white/70"}`}
                 >
                   {label}
                 </span>
@@ -170,7 +182,9 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
         {step === 2 && <StepPagamento onContinue={next} />}
         {step === 3 && <StepConfirmacao />}
 
-        <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 mt-12 text-foreground dark:text-white">
+          Outros assuntos populares
+        </p>
         <MainFaqs />
       </div>
     </div>
@@ -183,44 +197,48 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
       <p className="font-bold text-foreground dark:text-white mb-4">1 — Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">
-            Nome <span className="text-xs">(Necessário)</span>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Nome <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">
-            Apelido <span className="text-xs">(Necessário)</span>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Apelido <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">
-            Idade <span className="text-xs">(Necessário)</span>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Idade <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">
-            Freguesia <span className="text-xs">(Necessário)</span>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Freguesia <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Data do passeio</label>
-          <select className="w-full border dark:border-white/20 rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70">
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Data do passeio
+          </label>
+          <select className="w-full border dark:border-white/20 rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70 dark:bg-black">
             <option>— Selecione</option>
           </select>
         </div>
         <div />
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">
-            Email <span className="text-xs">(Necessário)</span>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Email <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Telefone ou Telemóvel</label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Telefone ou Telemóvel
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
       </div>
@@ -242,7 +260,7 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">2 — Pagamento</p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">
+      <p className="text-sm text-muted-foreground dark:text-white/80 mb-2">
         Qual o método que prefere usar para efetuar o pagamento?
       </p>
       <button className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">Na Junta</button>
@@ -268,7 +286,7 @@ function StepConfirmacao() {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">3 — Confirmação</p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">
+      <p className="text-sm text-muted-foreground dark:text-white/80 mb-2">
         A confirmação da inscrição será enviada para o endereço de email indicado, que poderá ser{" "}
         <span className="font-semibold text-foreground dark:text-white">confirmado@gmail.pt</span>.
       </p>
@@ -277,13 +295,13 @@ function StepConfirmacao() {
         065
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
-        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
           Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
           pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
           informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
-        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
           Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos
           Administrativos, os documentos apresentados no âmbito do presente processo são documentos
@@ -292,7 +310,7 @@ function StepConfirmacao() {
         </label>
       </div>
       <div className="max-w-xl mb-4">
-        <label className="text-sm text-muted-foreground dark:text-white/70">Descrição</label>
+        <label className="text-sm text-muted-foreground dark:text-white/80">Descrição</label>
         <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
@@ -305,7 +323,3 @@ function StepConfirmacao() {
     </div>
   );
 }
-
-
-
-

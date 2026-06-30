@@ -18,17 +18,29 @@ const descriptions: Record<AppointmentType, string> = {
 
 const steps = ["Marcação", "Dados", "Confirmação"];
 
-const faqAnswer = "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia.";
+const faqAnswer =
+  "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia.";
 
 function SidebarFaq() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70" onClick={() => setOpen(!open)}>
+    <div
+      className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer"
+      onClick={() => setOpen(!open)}
+    >
       <div className="flex items-center justify-between">
-        <span>O que fazer se um ficheiro não abrir corretamente?</span>
-        <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="text-xs font-medium text-foreground dark:text-white">
+          O que fazer se um ficheiro não abrir corretamente?
+        </span>
+        <ChevronDown
+          className={`w-3 h-3 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </div>
-      {open && <p className="mt-2">Deve tentar novamente :)</p>}
+      {open && (
+        <p className="mt-2 text-xs text-muted-foreground dark:text-white/70">
+          Deve tentar novamente :)
+        </p>
+      )}
     </div>
   );
 }
@@ -40,25 +52,50 @@ function MainFaqs() {
     <div className="space-y-3">
       {faqs.map((faq, i) => (
         <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
-          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white">
-            {faq}
-            <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white"
+          >
+            <span className="text-foreground dark:text-white">{faq}</span>
+            <ChevronDown
+              className={`w-4 h-4 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${open === i ? "rotate-180" : ""}`}
+            />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground dark:text-white/70 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
-              <p className="mt-3 mb-3">{faqAnswer}</p>
-              <ul className="space-y-1 mb-3 text-xs">
-                <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
-                <li>📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática</li>
-                <li>📄 consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis online</li>
-                <li>🏛 explore documentos relacionados com iniciativas, projetos e processos participativos da freguesia</li>
+            <div className="px-4 pb-4 border-t border-amber-200 dark:border-white/20">
+              <p className="mt-3 mb-3 text-sm text-muted-foreground dark:text-white/80">
+                {faqAnswer}
+              </p>
+              <ul className="space-y-1 mb-3 text-xs text-muted-foreground dark:text-white/80">
+                <li>
+                  🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave
+                  ou assunto
+                </li>
+                <li>
+                  📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática
+                </li>
+                <li>
+                  📄 consulte regulamentos, editais, atas, formulários e documentos administrativos
+                  disponíveis online
+                </li>
+                <li>
+                  🏛 explore documentos relacionados com iniciativas, projetos e processos
+                  participativos da freguesia
+                </li>
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
-                <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
+                <li>
+                  ⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e
+                  atualizações.
+                </li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-white/70 pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
-                <span>Atualizado a 29 abril, 2026</span>
-                <span>Partilhar 🔗</span>
-                <span>Esta informação foi útil? 👍 👎</span>
+              <div className="flex items-center gap-4 text-xs pt-2 border-t border-amber-200 dark:border-white/20">
+                <span className="text-muted-foreground dark:text-white/70">
+                  Atualizado a 29 abril, 2026
+                </span>
+                <span className="text-muted-foreground dark:text-white/70">Partilhar 🔗</span>
+                <span className="text-muted-foreground dark:text-white/70">
+                  Esta informação foi útil? 👍 👎
+                </span>
               </div>
             </div>
           )}
@@ -78,15 +115,28 @@ export default function MarcacaoWizard() {
     <div className="balcao-shell">
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">Com quem quer reunir?</p>
-        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 dark:text-white/70">
+        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
           <li className="flex items-center gap-2">
             <input
               type="radio"
               checked={type === "presidente"}
-              onChange={() => { setType("presidente"); setStep(1); }}
+              onChange={() => {
+                setType("presidente");
+                setStep(1);
+              }}
               className="accent-[#C41230]"
             />
-            <button onClick={() => { setType("presidente"); setStep(1); }} className={type === "presidente" ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
+            <button
+              onClick={() => {
+                setType("presidente");
+                setStep(1);
+              }}
+              className={
+                type === "presidente"
+                  ? "text-foreground font-medium dark:text-white"
+                  : "hover:text-foreground transition dark:text-white/70 dark:hover:text-white"
+              }
+            >
               Presidente
             </button>
           </li>
@@ -94,10 +144,23 @@ export default function MarcacaoWizard() {
             <input
               type="radio"
               checked={type === "cemiterio"}
-              onChange={() => { setType("cemiterio"); setStep(1); }}
+              onChange={() => {
+                setType("cemiterio");
+                setStep(1);
+              }}
               className="accent-[#C41230]"
             />
-            <button onClick={() => { setType("cemiterio"); setStep(1); }} className={type === "cemiterio" ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
+            <button
+              onClick={() => {
+                setType("cemiterio");
+                setStep(1);
+              }}
+              className={
+                type === "cemiterio"
+                  ? "text-foreground font-medium dark:text-white"
+                  : "hover:text-foreground transition dark:text-white/70 dark:hover:text-white"
+              }
+            >
               Secretariado do Cemitério
             </button>
           </li>
@@ -108,10 +171,8 @@ export default function MarcacaoWizard() {
       </aside>
 
       <div className="balcao-main">
-        <h1 className="dark:text-white">
-          {titles[type]}
-        </h1>
-        <p className="mb-8 max-w-2xl dark:text-white/80">
+        <h1 className="text-foreground dark:text-white">{titles[type]}</h1>
+        <p className="mb-8 max-w-2xl text-muted-foreground dark:text-white/80">
           {descriptions[type]}
         </p>
 
@@ -132,7 +193,9 @@ export default function MarcacaoWizard() {
                 >
                   {n}
                 </div>
-                <span className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground dark:text-white/70"}`}>
+                <span
+                  className={`text-xs ${isActive ? "text-foreground font-medium dark:text-white" : "text-muted-foreground dark:text-white/70"}`}
+                >
                   {label}
                 </span>
               </div>
@@ -144,7 +207,9 @@ export default function MarcacaoWizard() {
         {step === 2 && <StepDados onContinue={next} />}
         {step === 3 && <StepConfirmacao />}
 
-        <p className="balcao-section-title mb-3 mt-12">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 mt-12 text-foreground dark:text-white">
+          Outros assuntos populares
+        </p>
         <MainFaqs />
       </div>
     </div>
@@ -152,22 +217,33 @@ export default function MarcacaoWizard() {
 }
 
 function StepMarcacao({ onContinue }: { onContinue: () => void }) {
-  const days = [29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2];
+  const days = [
+    29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+    24, 25, 26, 27, 28, 29, 30, 1, 2,
+  ];
   const [selectedDay, setSelectedDay] = useState(14);
 
   return (
     <div>
-      <p className="font-bold text-foreground dark:text-white mb-4">1 – Quando é que lhe dá jeito?</p>
+      <p className="font-bold text-foreground dark:text-white mb-4">
+        1 – Quando é que lhe dá jeito?
+      </p>
       <div className="flex flex-wrap gap-6">
-        <div className="border rounded-xl p-4 w-72">
-          <div className="flex items-center justify-between mb-3">
-            <button><ChevronLeft className="w-4 h-4" /></button>
+        <div className="border dark:border-white/20 rounded-xl p-4 w-72">
+          <div className="flex items-center justify-between mb-3 text-foreground dark:text-white">
+            <button>
+              <ChevronLeft className="w-4 h-4" />
+            </button>
             <span className="text-sm font-medium">Janeiro 2026</span>
-            <button><ChevronRight className="w-4 h-4" /></button>
+            <button>
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
           <div className="grid grid-cols-7 text-xs text-muted-foreground dark:text-white/70 mb-2">
             {["S", "T", "Q", "Q", "S", "S", "D"].map((d, i) => (
-              <div key={i} className="text-center">{d}</div>
+              <div key={i} className="text-center">
+                {d}
+              </div>
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1 text-xs">
@@ -176,7 +252,9 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
                 key={i}
                 onClick={() => setSelectedDay(d)}
                 className={`h-7 rounded-full ${
-                  d === selectedDay ? "bg-[#1C2E56] text-white" : "hover:bg-muted text-foreground dark:text-white"
+                  d === selectedDay
+                    ? "bg-[#1C2E56] text-white"
+                    : "hover:bg-muted text-foreground dark:text-white dark:hover:bg-white/10"
                 }`}
               >
                 {d}
@@ -185,16 +263,26 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
           </div>
         </div>
 
-        <div className="border rounded-xl p-4 w-56">
-          <div className="flex items-center justify-between mb-3">
-            <button><ChevronLeft className="w-4 h-4" /></button>
+        <div className="border dark:border-white/20 rounded-xl p-4 w-56">
+          <div className="flex items-center justify-between mb-3 text-foreground dark:text-white">
+            <button>
+              <ChevronLeft className="w-4 h-4" />
+            </button>
             <span className="text-sm font-medium">{selectedDay} janeiro</span>
-            <button><ChevronRight className="w-4 h-4" /></button>
+            <button>
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
-          <p className="text-xs text-muted-foreground dark:text-white/70 mb-2">Horário disponível</p>
+          <p className="text-xs text-muted-foreground dark:text-white/70 mb-2">
+            Horário disponível
+          </p>
           <div className="space-y-2">
-            <button className="w-full border rounded-md py-2 text-sm text-muted-foreground dark:text-white/70">15:30 – 16:00</button>
-            <button className="w-full bg-[#1C2E56] text-white rounded-md py-2 text-sm">16:30 – 17:00</button>
+            <button className="w-full border dark:border-white/20 rounded-md py-2 text-sm text-muted-foreground dark:text-white/70 hover:bg-muted dark:hover:bg-white/10">
+              15:30 – 16:00
+            </button>
+            <button className="w-full bg-[#1C2E56] text-white rounded-md py-2 text-sm hover:bg-[#1C2E56]/90">
+              16:30 – 17:00
+            </button>
           </div>
         </div>
       </div>
@@ -215,36 +303,51 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
       <p className="font-bold text-foreground dark:text-white mb-4">2 – Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Nome <span className="text-xs">(Necessário)</span></label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Nome <span className="text-xs dark:text-white/60">(Necessário)</span>
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Apelido <span className="text-xs">(Necessário)</span></label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Apelido <span className="text-xs dark:text-white/60">(Necessário)</span>
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Idade <span className="text-xs">(Necessário)</span></label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Idade <span className="text-xs dark:text-white/60">(Necessário)</span>
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Freguesia <span className="text-xs">(Necessário)</span></label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Freguesia <span className="text-xs dark:text-white/60">(Necessário)</span>
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Email <span className="text-xs">(Necessário)</span></label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Email <span className="text-xs dark:text-white/60">(Necessário)</span>
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Telefone ou Telemóvel</label>
+          <label className="text-sm text-muted-foreground dark:text-white/80">
+            Telefone ou Telemóvel
+          </label>
           <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
       </div>
       <div className="max-w-xl mb-2">
-        <label className="text-sm text-muted-foreground dark:text-white/70">Assunto <span className="text-xs">(Necessário)</span></label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24" />
+        <label className="text-sm text-muted-foreground dark:text-white/80">
+          Assunto <span className="text-xs dark:text-white/60">(Necessário)</span>
+        </label>
+        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24 dark:bg-black dark:border-white/20 dark:text-white" />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
-        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
+        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
+        continuar.
       </p>
       <button
         onClick={onContinue}
@@ -260,31 +363,41 @@ function StepConfirmacao() {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">3 – Confirmação</p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-4">
-        Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias da Glória e Vera Cruz podem ser consultados em www.ufgloriavcruz.pt
+      <p className="text-sm text-muted-foreground dark:text-white/80 mb-4">
+        Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias da Glória
+        e Vera Cruz podem ser consultados em www.ufgloriavcruz.pt
       </p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">
-        Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065
+      <p className="text-sm text-muted-foreground dark:text-white/80 mb-6">
+        Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427
+        065
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
-        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
-          Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar informação sobre assuntos da autarquia e para fins estatísticos.
+          Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
+          pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
+          informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
-        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
+        <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
           <input type="checkbox" className="mt-1 accent-[#C41230]" />
-          Tomei conhecimento que, de acordo com o atendimento da Comissão de Acesso aos Documentos Administrativos, os documentos apresentados no âmbito do presente processo são documentos administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso integral a todos aqueles que o solicitem.
+          Tomei conhecimento que, de acordo com o atendimento da Comissão de Acesso aos Documentos
+          Administrativos, os documentos apresentados no âmbito do presente processo são documentos
+          administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso
+          integral a todos aqueles que o solicitem.
         </label>
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
-        Para mais informações sobre as práticas de privacidade da União das Freguesias de Glória e Vera Cruz consulte a nossa página da privacidade ou envie-nos um email para direitoprivacidade.fgloriavcruz@gmail.com
+        Para mais informações sobre as práticas de privacidade da União das Freguesias de Glória e
+        Vera Cruz consulte a nossa página da privacidade ou envie-nos um email para
+        direitoprivacidade.fgloriavcruz@gmail.com
       </p>
       <div className="max-w-xl mb-4">
-        <label className="text-sm text-muted-foreground dark:text-white/70">Observações</label>
+        <label className="text-sm text-muted-foreground dark:text-white/80">Observações</label>
         <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
-        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
+        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
+        continuar.
       </p>
       <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
         Continuar <ChevronRight className="w-4 h-4" />
@@ -292,5 +405,3 @@ function StepConfirmacao() {
     </div>
   );
 }
-
-

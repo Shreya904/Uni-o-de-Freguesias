@@ -12,11 +12,13 @@ interface SidebarItem {
 const faqContent = [
   {
     question: "Quero casar, o que devo fazer?",
-    answer: "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.",
+    answer:
+      "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.",
   },
   {
     question: "Sinto-me só preciso de ajuda como fazer?",
-    answer: "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.",
+    answer:
+      "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.",
   },
 ];
 
@@ -37,12 +39,21 @@ export default function AtestadoDetail({
   return (
     <div className="balcao-shell">
       <aside className="balcao-sidebar">
-        <p className="font-bold text-foreground dark:text-white mb-3">Qual é o atestado que precisa?</p>
+        <p className="font-bold text-foreground dark:text-white mb-3">
+          Qual é o atestado que precisa?
+        </p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
           {sidebarItems.map((item) => (
             <li key={item.label} className="flex items-center gap-2">
               <input type="radio" checked={item.active} readOnly className="accent-[#C41230]" />
-              <Link href={item.href} className={item.active ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
+              <Link
+                href={item.href}
+                className={
+                  item.active
+                    ? "text-foreground font-medium dark:text-white"
+                    : "hover:text-foreground transition dark:text-white/70 dark:hover:text-white"
+                }
+              >
                 {item.label}
               </Link>
             </li>
@@ -51,26 +62,38 @@ export default function AtestadoDetail({
 
         <p className="font-bold text-foreground dark:text-white mb-3">Perguntas frequentes</p>
         <div
-          className="border rounded-lg p-3 text-muted-foreground dark:text-white/70 text-xs bg-amber-50 dark:bg-black cursor-pointer"
+          className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer"
           onClick={() => setOpenSidebarFaq(!openSidebarFaq)}
         >
           <div className="flex items-center justify-between">
-            <span>O que fazer se um ficheiro não abrir corretamente?</span>
-            <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${openSidebarFaq ? "rotate-180" : ""}`} />
+            <span className="text-xs font-medium text-foreground dark:text-white">
+              O que fazer se um ficheiro não abrir corretamente?
+            </span>
+            <ChevronDown
+              className={`w-3 h-3 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${openSidebarFaq ? "rotate-180" : ""}`}
+            />
           </div>
           {openSidebarFaq && (
-            <p className="mt-2 text-muted-foreground dark:text-white/70">{sidebarFaqContent}</p>
+            <p className="mt-2 text-xs text-muted-foreground dark:text-white/70">
+              {sidebarFaqContent}
+            </p>
           )}
         </div>
       </aside>
 
       <div className="balcao-main">
-        <h1 className="dark:text-white">{title}</h1>
+        <h1 className="text-foreground dark:text-white">{title}</h1>
         <div className="mb-10 space-y-4">
-          {paragraphs.map((p, i) => <p key={i} className="dark:text-white/80">{p}</p>)}
+          {paragraphs.map((p, i) => (
+            <p key={i} className="text-muted-foreground dark:text-white/80">
+              {p}
+            </p>
+          ))}
         </div>
 
-        <p className="balcao-section-title mb-3 dark:text-white">Outros assuntos populares</p>
+        <p className="balcao-section-title mb-3 text-foreground dark:text-white">
+          Outros assuntos populares
+        </p>
         <div className="space-y-3">
           {faqContent.map((faq, i) => (
             <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
@@ -78,24 +101,46 @@ export default function AtestadoDetail({
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white"
               >
-                {faq.question}
-                <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                <span className="text-foreground dark:text-white">{faq.question}</span>
+                <ChevronDown
+                  className={`w-4 h-4 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${openFaq === i ? "rotate-180" : ""}`}
+                />
               </button>
               {openFaq === i && (
-                <div className="px-4 pb-4 text-sm text-muted-foreground dark:text-white/70 border-t border-amber-200 dark:border-white/20">
-                  <p className="mt-3 mb-3">{faq.answer}</p>
-                  <ul className="space-y-1 mb-3 text-xs">
-                    <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
-                    <li>📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática</li>
-                    <li>📄 consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis online</li>
-                    <li>🏛 explore documentos relacionados com iniciativas, projetos e processos participativos da freguesia</li>
+                <div className="px-4 pb-4 border-t border-amber-200 dark:border-white/20">
+                  <p className="mt-3 mb-3 text-sm text-muted-foreground dark:text-white/80">
+                    {faq.answer}
+                  </p>
+                  <ul className="space-y-1 mb-3 text-xs text-muted-foreground dark:text-white/80">
+                    <li>
+                      🔍 utilize a barra de pesquisa para procurar documentos por título,
+                      palavra-chave ou assunto
+                    </li>
+                    <li>
+                      📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática
+                    </li>
+                    <li>
+                      📄 consulte regulamentos, editais, atas, formulários e documentos
+                      administrativos disponíveis online
+                    </li>
+                    <li>
+                      🏛 explore documentos relacionados com iniciativas, projetos e processos
+                      participativos da freguesia
+                    </li>
                     <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
-                    <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
+                    <li>
+                      ⭐ utilize os destaques e documentos recentes para acompanhar novas
+                      publicações e atualizações.
+                    </li>
                   </ul>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-white/70 pt-2 border-t border-amber-200 dark:border-white/20">
-                    <span>Atualizado a 29 abril, 2026</span>
-                    <span>Partilhar 🔗</span>
-                    <span>Esta informação foi útil? 👍 👎</span>
+                  <div className="flex items-center gap-4 text-xs pt-2 border-t border-amber-200 dark:border-white/20">
+                    <span className="text-muted-foreground dark:text-white/70">
+                      Atualizado a 29 abril, 2026
+                    </span>
+                    <span className="text-muted-foreground dark:text-white/70">Partilhar 🔗</span>
+                    <span className="text-muted-foreground dark:text-white/70">
+                      Esta informação foi útil? 👍 👎
+                    </span>
                   </div>
                 </div>
               )}
@@ -106,4 +151,3 @@ export default function AtestadoDetail({
     </div>
   );
 }
-
