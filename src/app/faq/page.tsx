@@ -21,26 +21,34 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main>
-        <section className="section-padding bg-section-alt dark:bg-black">
-          <div className="container max-w-4xl mx-auto">
-            <div className="text-center mb-10">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground dark:text-white">Centro de Ajuda</h1>
-              <p className="text-muted-foreground mt-3 dark:text-white/70">Encontre respostas às questões mais frequentes.</p>
-            </div>
+        <div className="relative bg-section-alt dark:bg-black">
+          <div className="absolute top-0 left-0 right-0 z-50">
+            <Header />
+          </div>
 
-            <div className="relative max-w-md mx-auto mb-8">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground dark:text-white/60" />
-              <Input
-                placeholder="Pesquisar perguntas..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 dark:bg-black dark:text-white dark:border-white/20 dark:placeholder:text-white/50"
-              />
-            </div>
+          <section className="pt-[180px] md:pt-[160px] pb-16 md:pb-20 section-padding">
+            <div className="container max-w-4xl mx-auto">
+              <div className="text-center mb-10">
+                <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground dark:text-white">
+                  Centro de Ajuda
+                </h1>
+                <p className="text-muted-foreground mt-3 dark:text-white/70">
+                  Encontre respostas às questões mais frequentes.
+                </p>
+              </div>
 
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              <div className="relative max-w-md mx-auto mb-8">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground dark:text-white/60" />
+                <Input
+                  placeholder="Pesquisar perguntas..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-10 dark:bg-black dark:text-white dark:border-white/20 dark:placeholder:text-white/50"
+                />
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
               {faqCategories.map((cat) => (
                 <button
                   key={cat}
@@ -56,7 +64,7 @@ export default function FAQPage() {
               ))}
             </div>
 
-            <div className="space-y-3">
+              <div className="space-y-3">
               {filtered.map((item, i) => (
                 <motion.div
                   key={item.id}
@@ -88,11 +96,15 @@ export default function FAQPage() {
               ))}
             </div>
 
-            {filtered.length === 0 && (
-              <p className="text-center text-muted-foreground dark:text-white/70 py-16">Nenhuma pergunta encontrada.</p>
-            )}
-          </div>
-        </section>
+              {filtered.length === 0 && (
+                <p className="text-center text-muted-foreground dark:text-white/70 py-16">
+                  Nenhuma pergunta encontrada.
+                </p>
+              )}
+              </div>
+            </div>
+          </section>
+        </div>
       </main>
       <Footer />
     </div>

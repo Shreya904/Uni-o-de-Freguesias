@@ -1,7 +1,19 @@
 ﻿"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Volume2, Type, Sun, Moon, Phone, MapPin, Mail, ChevronDown, ChevronRight, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+  Volume2,
+  Type,
+  Sun,
+  Moon,
+  Phone,
+  MapPin,
+  Mail,
+  ChevronDown,
+  ChevronRight,
+  X,
+} from "lucide-react";
 
 export default function AcessibilidadeSidebar() {
   const [open, setOpen] = useState(false);
@@ -10,11 +22,24 @@ export default function AcessibilidadeSidebar() {
   const [reading, setReading] = useState(false);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
+  // Track route changes
+  const pathname = usePathname();
+
   useEffect(() => {
     const handler = () => setOpen(true);
     window.addEventListener("open-ajuda-sidebar", handler);
     return () => window.removeEventListener("open-ajuda-sidebar", handler);
   }, []);
+
+  // Stop reading when the user navigates to a different page or the component unmounts
+  useEffect(() => {
+    window.speechSynthesis.cancel();
+    setReading(false);
+
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, [pathname]);
 
   const faqs = [
     "Preciso de usar autocolantes para ouvir as entrevistas?",
@@ -44,10 +69,18 @@ export default function AcessibilidadeSidebar() {
       setReading(false);
       return;
     }
-    const text = document.body.innerText;
+
+    // Target the main content area first, fallback to body if <main> doesn't exist
+    const contentElement = document.querySelector("main") || document.body;
+    const text = contentElement.innerText;
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "pt-PT";
+
     utterance.onend = () => setReading(false);
+    // Safety fallback in case of errors interrupting the speech
+    utterance.onerror = () => setReading(false);
+
     window.speechSynthesis.speak(utterance);
     setReading(true);
   };
@@ -79,8 +112,12 @@ export default function AcessibilidadeSidebar() {
         }}
       >
         <div className="shrink-0 px-5 py-6 relative" style={{ backgroundColor: "#1C2E56" }}>
-          <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>Precisa</p>
-          <h2 className="text-2xl font-bold" style={{ color: "#ffffff" }}>de ajuda?</h2>
+          <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>
+            Precisa
+          </p>
+          <h2 className="text-2xl font-bold" style={{ color: "#ffffff" }}>
+            de ajuda?
+          </h2>
           <button
             onClick={() => setOpen(false)}
             className="absolute top-4 right-4 transition"
@@ -92,7 +129,12 @@ export default function AcessibilidadeSidebar() {
 
         <div className="px-5 py-5 flex flex-col gap-6 flex-1">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: darkMode ? "rgba(255,255,255,0.65)" : "#6b7280" }}>Acessibilidade</p>
+            <p
+              className="text-xs font-bold uppercase tracking-wide mb-3"
+              style={{ color: darkMode ? "rgba(255,255,255,0.65)" : "#6b7280" }}
+            >
+              Acessibilidade
+            </p>
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleReadAloud}
@@ -100,7 +142,11 @@ export default function AcessibilidadeSidebar() {
                 style={{
                   backgroundColor: reading ? "#1C2E56" : "transparent",
                   color: reading || darkMode ? "#ffffff" : "#1C2E56",
-                  borderColor: reading ? "#1C2E56" : darkMode ? "rgba(255,255,255,0.18)" : "#d1d5db",
+                  borderColor: reading
+                    ? "#1C2E56"
+                    : darkMode
+                      ? "rgba(255,255,255,0.18)"
+                      : "#d1d5db",
                 }}
               >
                 <Volume2 className="w-4 h-4 shrink-0" />
@@ -112,7 +158,11 @@ export default function AcessibilidadeSidebar() {
                 style={{
                   backgroundColor: largeFont ? "#1C2E56" : "transparent",
                   color: largeFont || darkMode ? "#ffffff" : "#1C2E56",
-                  borderColor: largeFont ? "#1C2E56" : darkMode ? "rgba(255,255,255,0.18)" : "#d1d5db",
+                  borderColor: largeFont
+                    ? "#1C2E56"
+                    : darkMode
+                      ? "rgba(255,255,255,0.18)"
+                      : "#d1d5db",
                 }}
               >
                 <Type className="w-4 h-4 shrink-0" />
@@ -121,38 +171,82 @@ export default function AcessibilidadeSidebar() {
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 className="flex items-center gap-3 border rounded-lg px-4 py-2.5 text-sm font-medium transition"
-                style={{ backgroundColor: darkMode ? "#1C2E56" : "transparent", color: darkMode ? "#ffffff" : "#1C2E56", borderColor: darkMode ? "#1C2E56" : "#d1d5db" }}
+                style={{
+                  backgroundColor: darkMode ? "#1C2E56" : "transparent",
+                  color: darkMode ? "#ffffff" : "#1C2E56",
+                  borderColor: darkMode ? "#1C2E56" : "#d1d5db",
+                }}
               >
-                {darkMode ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
+                {darkMode ? (
+                  <Sun className="w-4 h-4 shrink-0" />
+                ) : (
+                  <Moon className="w-4 h-4 shrink-0" />
+                )}
                 {darkMode ? "Modo claro" : "Escuro"}
               </button>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: darkMode ? "rgba(255,255,255,0.65)" : "#6b7280" }}>Informacao util</p>
-            <div className="flex flex-col gap-3 text-sm" style={{ color: darkMode ? "rgba(255,255,255,0.75)" : "#6b7280" }}>
+            <p
+              className="text-xs font-bold uppercase tracking-wide mb-3"
+              style={{ color: darkMode ? "rgba(255,255,255,0.65)" : "#6b7280" }}
+            >
+              Informacao util
+            </p>
+            <div
+              className="flex flex-col gap-3 text-sm"
+              style={{ color: darkMode ? "rgba(255,255,255,0.75)" : "#6b7280" }}
+            >
               <div className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>Segunda a Sexta<br />09h00-12h30 | 14h00-17h30</span>
+                <span>
+                  Segunda a Sexta
+                  <br />
+                  09h00-12h30 | 14h00-17h30
+                </span>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>Avenida Dr. Lourenco Peixinho,<br />Edificio 15 - 1 B,<br />3800-164 Aveiro</span>
+                <span>
+                  Avenida Dr. Lourenco Peixinho,
+                  <br />
+                  Edificio 15 - 1 B,
+                  <br />
+                  3800-164 Aveiro
+                </span>
               </div>
               <div className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>geral.fgloriaveracruz@gmail.com</span>
               </div>
-              <a href="tel:234427832" className="flex items-center gap-2 border rounded-lg px-4 py-2.5 font-medium transition" style={{ color: darkMode ? "#f0f0f0" : "#111827", borderColor: darkMode ? "rgba(255,255,255,0.18)" : "#d1d5db" }}>
-                <Phone className="w-4 h-4 shrink-0" /><span>234 427 832</span>
+              <a
+                href="tel:234427832"
+                className="flex items-center gap-2 border rounded-lg px-4 py-2.5 font-medium transition"
+                style={{
+                  color: darkMode ? "#f0f0f0" : "#111827",
+                  borderColor: darkMode ? "rgba(255,255,255,0.18)" : "#d1d5db",
+                }}
+              >
+                <Phone className="w-4 h-4 shrink-0" />
+                <span>234 427 832</span>
               </a>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: darkMode ? "rgba(255,255,255,0.65)" : "#6b7280" }}>Esta com dificuldades?</p>
-            <Link href="/ajuda" onClick={() => setOpen(false)} className="flex items-center justify-between w-full font-bold rounded-lg px-4 py-3 text-sm transition" style={{ backgroundColor: darkMode ? "#f59e0b" : "#f59e0b", color: "#1C2E56" }}>
+            <p
+              className="text-xs font-bold uppercase tracking-wide mb-3"
+              style={{ color: darkMode ? "rgba(255,255,255,0.65)" : "#6b7280" }}
+            >
+              Esta com dificuldades?
+            </p>
+            <Link
+              href="/ajuda"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between w-full font-bold rounded-lg px-4 py-3 text-sm transition"
+              style={{ backgroundColor: darkMode ? "#f59e0b" : "#f59e0b", color: "#1C2E56" }}
+            >
               Abrir o Centro de Ajuda
               <ChevronRight className="w-4 h-4" />
             </Link>
@@ -160,17 +254,29 @@ export default function AcessibilidadeSidebar() {
 
           <div className="flex flex-col gap-2">
             {faqs.map((faq, i) => (
-              <div key={i} className="border rounded-lg overflow-hidden" style={{ borderColor: darkMode ? "rgba(255,255,255,0.18)" : "#e5e7eb" }}>
+              <div
+                key={i}
+                className="border rounded-lg overflow-hidden"
+                style={{ borderColor: darkMode ? "rgba(255,255,255,0.18)" : "#e5e7eb" }}
+              >
                 <button
                   onClick={() => setFaqOpen(faqOpen === i ? null : i)}
                   className="w-full flex items-center justify-between px-4 py-3 text-sm text-left font-medium transition"
                   style={{ color: darkMode ? "#f0f0f0" : "#111827" }}
                 >
                   <span>{faq}</span>
-                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${faqOpen === i ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    className={`w-4 h-4 shrink-0 transition-transform ${faqOpen === i ? "rotate-180" : ""}`}
+                  />
                 </button>
                 {faqOpen === i && (
-                  <div className="px-4 py-3 text-xs border-t" style={{ color: darkMode ? "rgba(255,255,255,0.7)" : "#6b7280", borderColor: darkMode ? "rgba(255,255,255,0.18)" : "#e5e7eb" }}>
+                  <div
+                    className="px-4 py-3 text-xs border-t"
+                    style={{
+                      color: darkMode ? "rgba(255,255,255,0.7)" : "#6b7280",
+                      borderColor: darkMode ? "rgba(255,255,255,0.18)" : "#e5e7eb",
+                    }}
+                  >
                     Para mais informacoes contacte os servicos da junta.
                   </div>
                 )}

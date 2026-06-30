@@ -11,10 +11,12 @@ export default function LegalPage() {
     <div className="min-h-screen bg-white font-sans flex flex-col">
       {/* HEADER & HERO WRAPPER */}
       <div className="bg-[#222222]">
-        <Header />
+        <div className="absolute top-0 left-0 right-0 z-50">
+          <Header />
+        </div>
 
         {/* HERO SECTION */}
-        <section className="text-white py-16 px-8 lg:px-16">
+        <section className="text-white pt-[180px] md:pt-[160px] pb-16 px-8 lg:px-16">
           <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-10">
             <div>
               <h1 className="text-[40px] lg:text-[48px] font-extrabold leading-tight mb-2 tracking-wide">

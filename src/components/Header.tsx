@@ -175,12 +175,12 @@ const Header = () => {
         >
           <Link
             href={item.href || "#"}
-            className={`text-[16px] !text-[#1C2E56] dark:!text-[#1C2E56] transition-all ${
+            className={`text-[16px] text-[#1C2E56] transition-all ${
               isActive(item)
                 ? "font-extrabold"
-                : `font-medium hover:underline hover:!decoration-[#1C2E56] dark:hover:!decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 ${
+                : `font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 ${
                     openDropdown === item.label
-                      ? "underline !decoration-[#1C2E56] dark:!decoration-[#1C2E56] decoration-2 underline-offset-8"
+                      ? "underline decoration-[#1C2E56] decoration-2 underline-offset-8"
                       : ""
                   }`
             }`}
@@ -190,7 +190,7 @@ const Header = () => {
 
           {openDropdown === item.label && (
             <div className="absolute left-0 w-full top-[96px] z-50 px-8">
-              <div className="bg-white dark:bg-white border-t-2 !border-[#DE092D] dark:!border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+              <div className="bg-white dark:bg-white border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden">
                 <div className="flex p-8 lg:p-10 gap-6 lg:gap-8 justify-between flex-wrap">
                   {item.megaMenu.map((section) => (
                     <div
@@ -199,7 +199,7 @@ const Header = () => {
                         section.heading === "Links rápidos" ? "pl-8 border-l border-gray-200" : ""
                       }`}
                     >
-                      <h3 className="font-bold !text-[#1C2E56] dark:!text-[#1C2E56] text-[17px] mb-6">
+                      <h3 className="font-bold text-[#1C2E56] text-[17px] mb-6">
                         {section.heading}
                       </h3>
 
@@ -212,13 +212,13 @@ const Header = () => {
                               className="group flex items-center gap-3 transition"
                             >
                               <ChevronRight
-                                className={`w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 !text-[#1C2E56] dark:!text-[#1C2E56]`}
+                                className={`w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 text-[#1C2E56]`}
                               />
                               <span
                                 className={`text-[16px] transition-colors ${
                                   pathname === link.href
-                                    ? "!text-[#1C2E56] dark:!text-[#1C2E56] font-bold"
-                                    : "!text-[#1C2E56] dark:!text-[#1C2E56] font-medium group-hover:opacity-75"
+                                    ? "text-[#1C2E56] font-bold"
+                                    : "text-[#1C2E56] font-medium group-hover:opacity-75"
                                 }`}
                               >
                                 {link.label}
@@ -230,8 +230,8 @@ const Header = () => {
                               className="flex items-center gap-3 cursor-default"
                               aria-disabled="true"
                             >
-                              <ChevronRight className="w-5 h-5 stroke-[2.5] !text-gray-400 dark:!text-gray-400" />
-                              <span className="text-[16px] font-medium !text-gray-400 dark:!text-gray-400">
+                              <ChevronRight className="w-5 h-5 stroke-[2.5] text-gray-400" />
+                              <span className="text-[16px] font-medium text-gray-400">
                                 {link.label}
                               </span>
                             </span>
@@ -252,10 +252,10 @@ const Header = () => {
       <Link
         key={item.href}
         href={item.href!}
-        className={`text-[16px] !text-[#1C2E56] dark:!text-[#1C2E56] transition-all ${
+        className={`text-[16px] text-[#1C2E56] transition-all ${
           isActive(item)
             ? "font-extrabold"
-            : "font-medium hover:underline hover:!decoration-[#1C2E56] dark:hover:!decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
+            : "font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8"
         }`}
       >
         {item.label}
@@ -267,13 +267,13 @@ const Header = () => {
     <header
       data-site-header="true"
       style={{ colorScheme: "light" }}
-      className={`relative z-50 px-4 py-6 lg:px-12 !text-[#1C2E56] dark:!text-[#1C2E56] ${
-        isBalcaoDigital ? "!bg-[#C41230] dark:!bg-[#C41230]" : "!bg-white dark:!bg-white"
+      className={`relative z-50 px-4 py-6 lg:px-12 text-[#1C2E56] dark:text-[#1C2E56] ${
+        isBalcaoDigital ? "bg-[#C41230] dark:bg-[#C41230]" : "bg-white dark:bg-white"
       }`}
     >
       <nav
         ref={dropdownRef}
-        className={`relative !bg-white dark:!bg-white !text-[#1C2E56] dark:!text-[#1C2E56] shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto transition-all ${
+        className={`relative bg-white dark:bg-white text-[#1C2E56] dark:text-[#1C2E56] shadow-[0px_4px_12px_rgba(0,0,0,0.12)] max-w-[1600px] mx-auto transition-all ${
           openDropdown ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"
         }`}
       >
@@ -310,7 +310,7 @@ const Header = () => {
 
             <Link
               href="/balcao-digital"
-              className="h-[44px] px-5 rounded-lg border-2 !border-[#DE092D] dark:!border-[#DE092D] !text-[#DE092D] dark:!text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:!bg-[#DE092D] dark:hover:!bg-[#DE092D] hover:!text-white dark:hover:!text-white transition-colors whitespace-nowrap"
+              className="h-[44px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
             >
               Balcão Digital
             </Link>
@@ -318,40 +318,36 @@ const Header = () => {
             {/* AJUDA - opens sidebar */}
             <button
               onClick={openAjudaSidebar}
-              className="flex items-center gap-1 ml-2 !text-[#1C2E56] dark:!text-[#1C2E56] text-[16px] font-medium hover:underline hover:!decoration-[#1C2E56] dark:hover:!decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition"
+              className="flex items-center gap-1 ml-2 text-[#1C2E56] text-[16px] font-medium hover:underline hover:decoration-[#1C2E56] hover:decoration-2 hover:underline-offset-8 transition"
             >
               Ajuda
-              <ChevronLeft className="w-[18px] h-[18px] stroke-[2] !text-[#1C2E56] dark:!text-[#1C2E56]" />
+              <ChevronLeft className="w-[18px] h-[18px] stroke-[2]" />
             </button>
           </div>
 
           {/* MOBILE BUTTON */}
           <button
-            className="lg:hidden p-2 !text-[#1C2E56] dark:!text-[#1C2E56]"
+            className="lg:hidden p-2 text-[#1C2E56]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? (
-              <X className="w-6 h-6 !text-[#1C2E56] dark:!text-[#1C2E56]" />
-            ) : (
-              <Menu className="w-6 h-6 !text-[#1C2E56] dark:!text-[#1C2E56]" />
-            )}
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* MOBILE MENU */}
         {mobileOpen && (
-          <div className="lg:hidden border-t !bg-white dark:!bg-white px-4 py-4 space-y-2 rounded-b-2xl">
+          <div className="lg:hidden border-t bg-white dark:bg-white px-4 py-4 space-y-2 rounded-b-2xl">
             {navItems.map((item) =>
               item.megaMenu ? (
                 <div key={item.label}>
-                  <div className="flex items-center justify-between w-full !text-[#1C2E56] dark:!text-[#1C2E56]">
+                  <div className="flex items-center justify-between w-full text-[#1C2E56]">
                     {item.href ? (
                       <Link
                         href={item.href}
                         className={`flex-grow py-3 transition ${
                           isActive(item) || mobileExpanded === item.label
-                            ? "font-extrabold !text-[#1C2E56] dark:!text-[#1C2E56]"
-                            : "font-medium !text-[#1C2E56] dark:!text-[#1C2E56]"
+                            ? "font-extrabold text-[#1C2E56]"
+                            : "font-medium text-[#1C2E56]"
                         }`}
                       >
                         {item.label}
@@ -360,8 +356,8 @@ const Header = () => {
                       <span
                         className={`flex-grow py-3 transition ${
                           isActive(item) || mobileExpanded === item.label
-                            ? "font-extrabold !text-[#1C2E56] dark:!text-[#1C2E56]"
-                            : "font-medium !text-[#1C2E56] dark:!text-[#1C2E56]"
+                            ? "font-extrabold text-[#1C2E56]"
+                            : "font-medium text-[#1C2E56]"
                         }`}
                       >
                         {item.label}
@@ -372,7 +368,7 @@ const Header = () => {
                       onClick={() =>
                         setMobileExpanded(mobileExpanded === item.label ? null : item.label)
                       }
-                      className="p-3 !text-[#1C2E56] dark:!text-[#1C2E56]"
+                      className="p-3"
                     >
                       <ChevronDown
                         className={`w-5 h-5 transition-transform ${
@@ -386,7 +382,7 @@ const Header = () => {
                     <div className="ml-2 border-l-2 border-gray-100 pl-4 space-y-5 pb-4 mt-2">
                       {item.megaMenu.map((section) => (
                         <div key={section.heading}>
-                          <h4 className="font-bold !text-[#1C2E56] dark:!text-[#1C2E56] mb-3 text-[15px]">
+                          <h4 className="font-bold text-[#1C2E56] mb-3 text-[15px]">
                             {section.heading}
                           </h4>
 
@@ -398,8 +394,8 @@ const Header = () => {
                                   href={link.href}
                                   className={`flex items-center gap-3 transition ${
                                     pathname === link.href
-                                      ? "!text-[#1C2E56] dark:!text-[#1C2E56] font-extrabold"
-                                      : "!text-[#1C2E56] dark:!text-[#1C2E56] font-medium"
+                                      ? "text-[#1C2E56] font-extrabold"
+                                      : "text-[#1C2E56] font-medium"
                                   }`}
                                 >
                                   <ChevronRight className="w-[18px] h-[18px] stroke-[2.5]" />
@@ -411,10 +407,8 @@ const Header = () => {
                                   className="flex items-center gap-3 cursor-default"
                                   aria-disabled="true"
                                 >
-                                  <ChevronRight className="w-[18px] h-[18px] stroke-[2.5] !text-gray-400 dark:!text-gray-400" />
-                                  <span className="font-medium !text-gray-400 dark:!text-gray-400">
-                                    {link.label}
-                                  </span>
+                                  <ChevronRight className="w-[18px] h-[18px] stroke-[2.5] text-gray-400" />
+                                  <span className="font-medium text-gray-400">{link.label}</span>
                                 </span>
                               ),
                             )}
@@ -430,8 +424,8 @@ const Header = () => {
                   href={item.href!}
                   className={`block py-3 transition ${
                     pathname === item.href
-                      ? "font-extrabold !text-[#1C2E56] dark:!text-[#1C2E56]"
-                      : "font-medium !text-[#1C2E56] dark:!text-[#1C2E56]"
+                      ? "font-extrabold text-[#1C2E56]"
+                      : "font-medium text-[#1C2E56]"
                   }`}
                 >
                   {item.label}
@@ -442,17 +436,17 @@ const Header = () => {
             {/* MOBILE BALCÃO DIGITAL */}
             <Link
               href="/balcao-digital"
-              className="mt-4 flex justify-center rounded-lg border-2 !border-[#DE092D] dark:!border-[#DE092D] py-3 !text-[#DE092D] dark:!text-[#DE092D] font-bold text-[16px] hover:!bg-[#DE092D] dark:hover:!bg-[#DE092D] hover:!text-white dark:hover:!text-white transition-colors whitespace-nowrap"
+              className="mt-4 flex justify-center rounded-lg border-2 border-[#DE092D] py-3 text-[#DE092D] font-bold text-[16px] hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
             >
               Balcão Digital
             </Link>
 
             <button
               onClick={openAjudaSidebar}
-              className="w-full mt-2 flex items-center justify-center gap-1 py-3 !text-[#1C2E56] dark:!text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
+              className="w-full mt-2 flex items-center justify-center gap-1 py-3 text-[#1C2E56] font-medium hover:underline whitespace-nowrap"
             >
               Ajuda
-              <ChevronLeft className="w-5 h-5 !text-[#1C2E56] dark:!text-[#1C2E56]" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
           </div>
         )}

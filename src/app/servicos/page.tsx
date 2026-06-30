@@ -48,18 +48,23 @@ const services = [
 export default function ServicosPage() {
   return (
     <div className="min-h-screen">
-      <Header />
       <main>
-        <section className="relative bg-primary py-20 md:py-28">
-          <div className="container max-w-5xl mx-auto px-4 text-center">
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
-              Serviços Online
-            </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              Aceda aos serviços da Junta de Freguesia de forma rápida e cómoda, sem sair de casa.
-            </p>
+        <div className="relative bg-primary">
+          <div className="absolute top-0 left-0 right-0 z-50">
+            <Header />
           </div>
-        </section>
+
+          <section className="pt-[180px] md:pt-[160px] pb-20 md:pb-28">
+            <div className="container max-w-5xl mx-auto px-4 text-center">
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
+                Serviços Online
+              </h1>
+              <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
+                Aceda aos serviços da Junta de Freguesia de forma rápida e cómoda, sem sair de casa.
+              </p>
+            </div>
+          </section>
+        </div>
 
         <section className="section-padding">
           <div className="container max-w-5xl mx-auto px-4">
