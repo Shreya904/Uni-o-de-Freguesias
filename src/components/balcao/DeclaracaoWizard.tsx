@@ -11,7 +11,7 @@ const faqAnswer = "A pesquisa de documentos pode ser realizada através do centr
 function SidebarFaq() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border rounded-lg p-3 bg-amber-50 cursor-pointer text-xs text-muted-foreground" onClick={() => setOpen(!open)}>
+    <div className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70" onClick={() => setOpen(!open)}>
       <div className="flex items-center justify-between">
         <span>O que fazer se um ficheiro não abrir corretamente?</span>
         <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -27,13 +27,13 @@ function MainFaqs() {
   return (
     <div className="space-y-3">
       {faqs.map((faq, i) => (
-        <div key={i} className="bg-amber-50 rounded-lg overflow-hidden">
-          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground">
+        <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
+          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white">
             {faq}
             <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200">
+            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
                 <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
@@ -43,7 +43,7 @@ function MainFaqs() {
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
                 <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
                 <span>Partilhar 🔗</span>
                 <span>Esta informação foi útil? 👍 👎</span>
@@ -63,22 +63,22 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
   return (
     <div className="balcao-shell">
       <aside className="balcao-sidebar">
-        <p className="font-bold text-foreground mb-3">Que declaração precisa?</p>
-        <ul className="space-y-3 text-muted-foreground mb-8">
+        <p className="font-bold text-foreground mb-3 dark:text-white">Que declaração precisa?</p>
+        <ul className="space-y-3 text-muted-foreground mb-8 dark:text-white/70">
           <li className="flex items-center gap-2">
             <input type="radio" readOnly checked={active === "comunhao"} className="accent-[#C41230]" />
-            <a href="/balcao-digital/declaracoes" className={active === "comunhao" ? "text-foreground font-medium" : "hover:text-foreground transition"}>
+            <a href="/balcao-digital/declaracoes" className={active === "comunhao" ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
               Comunhão de mesa e habitação
             </a>
           </li>
           <li className="flex items-center gap-2">
             <input type="radio" readOnly checked={active === "uniao"} className="accent-[#C41230]" />
-            <a href="/balcao-digital/declaracoes/uniao-de-facto" className={active === "uniao" ? "text-foreground font-medium" : "hover:text-foreground transition"}>
+            <a href="/balcao-digital/declaracoes/uniao-de-facto" className={active === "uniao" ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
               União de facto
             </a>
           </li>
         </ul>
-        <p className="font-bold text-foreground mb-3">Perguntas frequentes</p>
+        <p className="font-bold text-foreground mb-3 dark:text-white">Perguntas frequentes</p>
         <SidebarFaq />
       </aside>
 
@@ -87,8 +87,8 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
           <ComunhaoContent />
         ) : (
           <>
-            <h1>União de facto</h1>
-            <p className="mb-8 max-w-2xl">
+            <h1 className="dark:text-white">União de facto</h1>
+            <p className="mb-8 max-w-2xl dark:text-white/80">
               Indique os dados necessários para a emissão da declaração de união de facto, identificando os requerentes, para que os serviços da junta possam analisar e dar seguimento ao processo.
             </p>
             <div className="flex items-center gap-8 mb-10">
@@ -121,8 +121,8 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
 function ComunhaoContent() {
   return (
     <div>
-      <h1>Comunhão de mesa e habitação</h1>
-      <div className="mb-10 max-w-2xl space-y-4">
+      <h1 className="dark:text-white">Comunhão de mesa e habitação</h1>
+      <div className="mb-10 max-w-2xl space-y-4 dark:text-white/80">
         <p>Para solicitar uma declaração de Comunhão de mesa e habitação, deverá dirigir-se presencialmente aos serviços da junta de freguesia.</p>
         <p>Este procedimento permite confirmar que a pessoa se encontra viva e pode ser necessário para efeitos de pensão, processos administrativos, entidades bancárias, seguradoras ou outros organismos públicos e privados.</p>
         <p>O requerente terá de trazer fotocópia dos seus documentos (B.I./Passaporte/Cartão de Cidadão e Cartão de Contribuinte).</p>

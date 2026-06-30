@@ -37,8 +37,8 @@ export default function BalcaoHeader() {
         );
 
   return (
-    <div className="bg-white">
-      <section className="bg-[#C41230] pb-6 text-white">
+    <div className="bg-white dark:bg-black">
+      <section className="bg-[#C41230] pb-6 text-white dark:text-white">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="grid gap-5 md:grid-cols-[300px_1fr] md:items-end">
             <div>
@@ -57,38 +57,38 @@ export default function BalcaoHeader() {
                     onFocus={() => setShowResults(true)}
                     onBlur={() => setTimeout(() => setShowResults(false), 150)}
                     placeholder="O que procuro"
-                    className="h-11 flex-1 px-4 text-sm text-foreground outline-none"
+                    className="h-11 flex-1 px-4 text-sm text-foreground outline-none dark:bg-black dark:text-white dark:placeholder:text-white/70"
                   />
                   <button
                     onClick={() => {
                       if (results.length > 0) router.push(results[0].href);
                     }}
-                    className="h-11 rounded-r-md border-l-2 border-[#C41230] bg-white px-5 text-sm font-bold text-foreground"
+                    className="h-11 rounded-r-md border-l-2 border-[#C41230] bg-white px-5 text-sm font-bold text-foreground dark:bg-black dark:text-white"
                   >
                     Pesquisar
                   </button>
                 </div>
                 {showResults && query.trim() !== "" && (
-                  <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-md border bg-white shadow-lg">
+                  <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-md border bg-white shadow-lg dark:bg-black dark:border-white/20">
                     {results.length > 0 ? (
                       results.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => { setQuery(""); setShowResults(false); }}
-                          className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-muted dark:text-white dark:hover:bg-white/10"
                         >
                           {item.label}
                         </Link>
                       ))
                     ) : (
-                      <p className="px-4 py-2 text-sm text-muted-foreground">Nenhum resultado encontrado</p>
+                      <p className="px-4 py-2 text-sm text-muted-foreground dark:text-white/70">Nenhum resultado encontrado</p>
                     )}
                   </div>
                 )}
               </div>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80">
-                <span className="font-semibold text-white">Termos Populares:</span>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80 dark:text-white">
+                <span className="font-semibold text-white dark:text-white">Termos Populares:</span>
                 <Link href="/balcao-digital/atestados/residencia" className="underline">Atestado de residência</Link>
                 <Link href="/balcao-digital/cemiterios" className="underline">Cemitério</Link>
                 <Link href="/balcao-digital/declaracoes" className="underline">União de facto</Link>
@@ -98,7 +98,7 @@ export default function BalcaoHeader() {
         </div>
       </section>
 
-      <div className="border-b border-[#C41230]">
+      <div className="border-b border-[#C41230] dark:border-[#C41230]">
         <div className="container mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
           <nav className="flex flex-wrap gap-2">
             {activeTabs.map((tab) => {
@@ -110,7 +110,7 @@ export default function BalcaoHeader() {
                   className={`rounded-md border-2 px-5 py-2.5 text-sm font-bold transition-colors ${
                     isActive
                       ? "border-[#C41230] bg-[#C41230] text-white"
-                      : "border-border text-foreground hover:bg-muted"
+                      : "border-border text-foreground hover:bg-muted dark:bg-black dark:text-white dark:border-white/20 dark:hover:bg-white/10"
                   }`}
                 >
                   {tab.label}
@@ -121,14 +121,14 @@ export default function BalcaoHeader() {
           {isComunidade ? (
             <Link
               href="/balcao-digital/inscricoes"
-              className="flex h-11 shrink-0 items-center justify-center rounded-md border-2 px-5 text-sm font-bold text-foreground hover:bg-muted transition-colors"
+              className="flex h-11 shrink-0 items-center justify-center rounded-md border-2 px-5 text-sm font-bold text-foreground hover:bg-muted transition-colors dark:text-white dark:border-white/20 dark:hover:bg-white/10"
             >
               {"<"} Serviços online
             </Link>
           ) : (
             <Link
               href="/balcao-digital/comunidade/quem-somos"
-              className="flex h-11 shrink-0 items-center justify-center rounded-md border-2 px-5 text-sm font-bold text-foreground hover:bg-muted transition-colors"
+              className="flex h-11 shrink-0 items-center justify-center rounded-md border-2 px-5 text-sm font-bold text-foreground hover:bg-muted transition-colors dark:text-white dark:border-white/20 dark:hover:bg-white/10"
             >
               Comunidade {">"}
             </Link>

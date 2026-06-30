@@ -166,17 +166,17 @@ export default function ContactPage() {
           {/* Added grid-cols-1 for proper mobile stacking */}
           <div className="grid grid-cols-1 lg:grid-cols-[450px_1fr] xl:grid-cols-[500px_1fr]">
             {/* SIDEBAR */}
-            <aside className="bg-[#F8F8F8] px-6 md:px-8 py-12 lg:px-12 border-r border-[#E5E5E5]">
+            <aside className="bg-[#F8F8F8] dark:bg-black px-6 md:px-8 py-12 lg:px-12 border-r border-[#E5E5E5] dark:border-white/10">
               {/* SEDE */}
               <div className="mb-14">
-                <h2 className="text-[#1C2E56] text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-1">
+                <h2 className="text-[#1C2E56] dark:text-white text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-1">
                   Sede
                 </h2>
-                <p className="text-[#1C2E56] font-bold text-[16px] mb-6">
+                <p className="text-[#1C2E56] dark:text-white font-bold text-[16px] mb-6">
                   Mudança Provisória de Instalações
                 </p>
 
-                <div className="space-y-6 text-[#1C2E56] text-[16px]">
+                <div className="space-y-6 text-[#1C2E56] dark:text-white text-[16px]">
                   <div className="flex gap-3 items-start">
                     <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
                     <div>
@@ -206,7 +206,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 overflow-hidden border border-[#E5E5E5]">
+                <div className="mt-6 overflow-hidden border border-[#E5E5E5] dark:border-white/10">
                   <iframe
                     title="Mapa Sede"
                     src="https://maps.google.com/maps?q=Avenida%20Dr.%20Louren%C3%A7o%20Peixinho,%20Edif%C3%ADcio%2015,%20Aveiro&t=&z=16&ie=UTF8&iwloc=&output=embed"
@@ -217,15 +217,15 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mt-6 space-y-4">
-                  <div className="flex gap-2 items-center text-[#1C2E56]">
+                  <div className="flex gap-2 items-center text-[#1C2E56] dark:text-white">
                     <Mail className="w-5 h-5 shrink-0" />
                     <p className="font-semibold break-all">geral.fgloriavcruz@gmail.com</p>
                   </div>
-                  <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] rounded-none px-6 py-3 font-extrabold text-[#1C2E56] hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
+                  <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] dark:border-white/20 rounded-none px-6 py-3 font-extrabold text-[#1C2E56] dark:text-white hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
                     <Phone className="w-5 h-5" />
                     <span>234 427 832</span>
                   </button>
-                  <p className="text-[13px] text-[#1C2E56] mt-2">
+                  <p className="text-[13px] text-[#1C2E56] dark:text-white mt-2">
                     (chamada para a rede fixa nacional)
                   </p>
                 </div>
@@ -233,14 +233,14 @@ export default function ContactPage() {
 
               {/* CASA DA COMUNIDADE SUSTENTÁVEL */}
               <div>
-                <h2 className="text-[#1C2E56] text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px]">
+                <h2 className="text-[#1C2E56] dark:text-white text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px]">
                   Casa da Comunidade
                 </h2>
-                <h2 className="text-[#1C2E56] text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-6">
+                <h2 className="text-[#1C2E56] dark:text-white text-3xl md:text-[32px] font-extrabold leading-tight tracking-[0.64px] mb-6">
                   Sustentável
                 </h2>
 
-                <div className="space-y-6 text-[#1C2E56] text-[16px]">
+                <div className="space-y-6 text-[#1C2E56] dark:text-white text-[16px]">
                   <div className="flex gap-3 items-start">
                     <Calendar className="w-5 h-5 mt-0.5 shrink-0" />
                     <div>
@@ -286,7 +286,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 overflow-hidden border border-[#E5E5E5]">
+                <div className="mt-6 overflow-hidden border border-[#E5E5E5] dark:border-white/10">
                   <iframe
                     title="Mapa Casa da Comunidade Sustentável"
                     src="https://maps.google.com/maps?q=Rua%20das%20Pombas%209%2011,%20Aveiro&t=&z=16&ie=UTF8&iwloc=&output=embed"
@@ -297,15 +297,15 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mt-6 space-y-4">
-                  <div className="flex gap-2 items-center text-[#1C2E56]">
+                  <div className="flex gap-2 items-center text-[#1C2E56] dark:text-white">
                     <Mail className="w-5 h-5 shrink-0" />
                     <p className="font-semibold break-all">servicos.fgloriavcruz@gmail.com</p>
                   </div>
-                  <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] rounded-none px-6 py-3 font-extrabold text-[#1C2E56] hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
+                  <button className="flex items-center justify-center gap-3 border-2 border-[#1C2E56] dark:border-white/20 rounded-none px-6 py-3 font-extrabold text-[#1C2E56] dark:text-white hover:bg-[#1C2E56] hover:text-white transition-colors w-full sm:w-auto">
                     <Phone className="w-5 h-5" />
                     <span>234 427 065</span>
                   </button>
-                  <p className="text-[13px] text-[#1C2E56] mt-2">
+                  <p className="text-[13px] text-[#1C2E56] dark:text-white mt-2">
                     (chamada para a rede fixa nacional)
                   </p>
                 </div>
@@ -313,15 +313,15 @@ export default function ContactPage() {
             </aside>
 
             {/* MAIN FORM AREA */}
-            <div className="px-6 py-12 md:px-8 lg:px-16 lg:py-16 bg-white">
+            <div className="px-6 py-12 md:px-8 lg:px-16 lg:py-16 bg-white dark:bg-black">
               <div className="max-w-[700px] w-full">
                 {submitted ? (
-                  <div className="bg-[#F8F8F8] border-2 border-[#1C2E56] p-6 md:p-10 text-center">
+                  <div className="bg-[#F8F8F8] dark:bg-black border-2 border-[#1C2E56] dark:border-white/20 p-6 md:p-10 text-center">
                     <CheckCircle className="w-16 h-16 text-[#B4142F] mx-auto mb-6" />
-                    <h2 className="text-[#1C2E56] text-2xl md:text-[36px] font-extrabold mb-4">
+                    <h2 className="text-[#1C2E56] dark:text-white text-2xl md:text-[36px] font-extrabold mb-4">
                       Mensagem Enviada!
                     </h2>
-                    <p className="text-[#1C2E56] text-[18px] leading-relaxed mb-8">
+                    <p className="text-[#1C2E56] dark:text-white/80 text-[18px] leading-relaxed mb-8">
                       Recebemos o seu contacto e responderemos com a maior brevidade possível.
                     </p>
                     <Button
@@ -343,11 +343,11 @@ export default function ContactPage() {
                   </div>
                 ) : (
                   <>
-                    <h2 className="text-[#1C2E56] text-3xl md:text-[48px] leading-tight font-extrabold tracking-[0.96px] mb-6">
+                    <h2 className="text-[#1C2E56] dark:text-white text-3xl md:text-[48px] leading-tight font-extrabold tracking-[0.96px] mb-6">
                       Estamos aqui para ajudar
                     </h2>
 
-                    <p className="text-[#1C2E56] text-lg md:text-[22px] leading-relaxed mb-12">
+                    <p className="text-[#1C2E56] dark:text-white/80 text-lg md:text-[22px] leading-relaxed mb-12">
                       Procuramos responder a toda a comunicação escrita o mais rapidamente possível
                       e no prazo máximo de 20 dias úteis. Saiba mais sobre como gerimos a sua
                       correspondência.

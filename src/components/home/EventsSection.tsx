@@ -112,14 +112,14 @@ const EventsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* LEFT CONTENT */}
           <div className="flex-1 max-w-lg">
-            <h2 className="text-[36px] md:text-[44px] leading-[1.15] font-bold text-[#1e3050] mb-4">
+            <h2 className="text-[36px] md:text-[44px] leading-[1.15] font-bold text-[#1e3050] dark:text-white mb-4">
               Descubra o que
               <br />
               pode fazer na
               <br />
               nossa freguesia
             </h2>
-            <h3 className="text-[22px] font-bold text-[#1e3050] mb-6">
+            <h3 className="text-[22px] font-bold text-[#1e3050] dark:text-white mb-6">
               Visite a{" "}
               <Link
                 href="/eventos"
@@ -128,7 +128,7 @@ const EventsSection = () => {
                 Agenda
               </Link>
             </h3>
-            <p className="text-[16px] font-medium text-[#1e3050] leading-relaxed">
+            <p className="text-[16px] font-medium text-[#1e3050] dark:text-white/90 leading-relaxed">
               O Centro de Documentação reúne regulamentos, editais, atas, formulários, documentos
               administrativos e outros conteúdos relacionados com a atividade da Junta de Freguesia.
               Utilize a pesquisa e os filtros disponíveis para encontrar rapidamente a informação ou

@@ -29,7 +29,7 @@ function SidebarFaqs() {
   return (
     <div className="space-y-2">
       {faqs.map((faq, i) => (
-        <div key={i} className="border rounded-lg p-3 bg-amber-50 cursor-pointer text-xs text-muted-foreground" onClick={() => setOpen(open === i ? null : i)}>
+        <div key={i} className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70" onClick={() => setOpen(open === i ? null : i)}>
           <div className="flex items-center justify-between">
             <span>{faq}</span>
             <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
@@ -47,13 +47,13 @@ function MainFaqs() {
   return (
     <div className="space-y-3">
       {faqs.map((faq, i) => (
-        <div key={i} className="bg-amber-50 rounded-lg overflow-hidden">
-          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground">
+        <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
+          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white">
             {faq}
             <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200">
+            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
                 <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
@@ -63,7 +63,7 @@ function MainFaqs() {
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
                 <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
                 <span>Partilhar 🔗</span>
                 <span>Esta informação foi útil? 👍 👎</span>
@@ -83,24 +83,24 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
   return (
     <div className="balcao-shell">
       <aside className="balcao-sidebar">
-        <p className="font-bold text-foreground mb-3">Em que atividades se quer inscrever?</p>
-        <ul className="space-y-3 text-muted-foreground mb-8">
+        <p className="font-bold text-foreground mb-3 dark:text-white">Em que atividades se quer inscrever?</p>
+        <ul className="space-y-3 text-muted-foreground mb-8 dark:text-white/70">
           {(["passeios", "almosos", "hidroginastica"] as InscricaoType[]).map((t) => (
             <li key={t} className="flex items-center gap-2">
               <input type="radio" readOnly checked={active === t} className="accent-[#C41230]" />
-              <a href={`/balcao-digital/inscricoes/${t === "almosos" ? "almocos" : t}`} className={active === t ? "text-foreground font-medium" : "hover:text-foreground transition"}>
+              <a href={`/balcao-digital/inscricoes/${t === "almosos" ? "almocos" : t}`} className={active === t ? "text-foreground font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>
                 {t === "passeios" ? "Passeios Sénior" : t === "almosos" ? "Almoços Sénior" : "Hidroginástica"}
               </a>
             </li>
           ))}
         </ul>
-        <p className="font-bold text-foreground mb-3">Perguntas frequentes</p>
+        <p className="font-bold text-foreground mb-3 dark:text-white">Perguntas frequentes</p>
         <SidebarFaqs />
       </aside>
 
       <div className="balcao-main">
-        <h1>{titles[active]}</h1>
-        <p className="mb-8 max-w-2xl">{descriptions[active]}</p>
+        <h1 className="dark:text-white">{titles[active]}</h1>
+        <p className="mb-8 max-w-2xl dark:text-white/80">{descriptions[active]}</p>
 
         <div className="flex items-center gap-10 mb-10">
           {steps.map((label, i) => {

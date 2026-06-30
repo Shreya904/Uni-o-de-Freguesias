@@ -39,7 +39,7 @@ function SidebarFaqs() {
   return (
     <div className="space-y-2">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="border rounded-lg p-3 bg-amber-50 cursor-pointer text-xs text-muted-foreground" onClick={() => setOpen(open === i ? null : i)}>
+        <div key={i} className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70" onClick={() => setOpen(open === i ? null : i)}>
           <div className="flex items-center justify-between">
             <span>O que fazer se um ficheiro não abrir corretamente?</span>
             <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
@@ -57,13 +57,13 @@ function MainFaqs() {
   return (
     <div className="space-y-3">
       {faqs.map((faq, i) => (
-        <div key={i} className="bg-amber-50 rounded-lg overflow-hidden">
-          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground">
+        <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
+          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white">
             {faq}
             <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
           </button>
           {open === i && (
-            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200">
+            <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
                 <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
@@ -73,7 +73,7 @@ function MainFaqs() {
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
                 <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
               </ul>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
                 <span>Partilhar 🔗</span>
                 <span>Esta informação foi útil? 👍 👎</span>
@@ -94,22 +94,22 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
   return (
     <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
       <aside className="hidden md:block w-72 shrink-0 text-sm">
-        <p className="font-bold text-foreground mb-3">O que precisa?</p>
-        <ul className="space-y-3 text-muted-foreground mb-8">
+        <p className="font-bold text-foreground mb-3 dark:text-white">O que precisa?</p>
+        <ul className="space-y-3 text-muted-foreground mb-8 dark:text-white/70">
           {sidebarItems.map((item) => (
             <li key={item.type} className="flex items-start gap-2">
               <input type="radio" readOnly checked={active === item.type} className="accent-[#C41230] mt-0.5 shrink-0" />
-              <a href={item.href} className={active === item.type ? "text-[#C41230] font-medium" : "hover:text-foreground transition"}>{item.label}</a>
+              <a href={item.href} className={active === item.type ? "text-[#C41230] font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>{item.label}</a>
             </li>
           ))}
         </ul>
-        <p className="font-bold text-foreground mb-3">Perguntas frequentes</p>
+        <p className="font-bold text-foreground mb-3 dark:text-white">Perguntas frequentes</p>
         <SidebarFaqs />
       </aside>
 
       <div className="flex-1">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">{title}</h1>
-        <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-2xl">{description}</p>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3 dark:text-white">{title}</h1>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-2xl dark:text-white/80">{description}</p>
 
         <div className="flex items-start gap-8 mb-10">
           {steps.map((label, i) => {
