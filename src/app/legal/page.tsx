@@ -28,9 +28,9 @@ export default function LegalPage() {
                 <input
                   type="text"
                   placeholder="O que procuro"
-                  className="w-full bg-transparent border border-white/40 rounded-[4px] py-3 pl-4 pr-12 text-white placeholder-white/70 focus:outline-none focus:border-white transition-colors"
+                  className="w-full bg-transparent border border-white/40 rounded-[4px] py-3 pl-4 pr-12 text-white placeholder-white/70 focus:outline-none focus:border-white transition-colors dark:bg-black dark:border-white/20 dark:text-white dark:placeholder:text-white/50"
                 />
-                <button className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors">
+                <button className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors dark:text-white dark:hover:text-white/80">
                   <Search className="w-5 h-5" />
                 </button>
               </div>

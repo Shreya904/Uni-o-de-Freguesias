@@ -112,14 +112,14 @@ const EventsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* LEFT CONTENT */}
           <div className="flex-1 max-w-lg">
-            <h2 className="text-[36px] md:text-[44px] leading-[1.15] font-bold text-[#1e3050] mb-4">
+            <h2 className="text-[36px] md:text-[44px] leading-[1.15] font-bold text-[#1e3050] dark:text-white mb-4">
               Descubra o que
               <br />
               pode fazer na
               <br />
               nossa freguesia
             </h2>
-            <h3 className="text-[22px] font-bold text-[#1e3050] mb-6">
+            <h3 className="text-[22px] font-bold text-[#1e3050] dark:text-white mb-6">
               Visite a{" "}
               <Link
                 href="/eventos"
@@ -128,7 +128,7 @@ const EventsSection = () => {
                 Agenda
               </Link>
             </h3>
-            <p className="text-[16px] font-medium text-[#1e3050] leading-relaxed">
+            <p className="text-[16px] font-medium text-[#1e3050] dark:text-white/90 leading-relaxed">
               O Centro de Documentação reúne regulamentos, editais, atas, formulários, documentos
               administrativos e outros conteúdos relacionados com a atividade da Junta de Freguesia.
               Utilize a pesquisa e os filtros disponíveis para encontrar rapidamente a informação ou
@@ -154,10 +154,10 @@ const EventsSection = () => {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="w-full max-w-[420px] lg:ml-auto bg-white border-2 border-[#1e3050] p-5 rounded-md shadow-sm"
+                className="w-full max-w-[420px] lg:ml-auto bg-white dark:bg-black border-2 border-[#1e3050] dark:border-white/20 p-5 rounded-md shadow-sm"
               >
                 {/* Image */}
-                <div className="w-full h-[220px] mb-5 overflow-hidden border border-slate-100">
+                <div className="w-full h-[220px] mb-5 overflow-hidden border border-slate-100 dark:border-white/10">
                   <img
                     src={displayEvent.imageUrl}
                     alt={displayEvent.title.replace("\n", " ")}
@@ -167,40 +167,40 @@ const EventsSection = () => {
 
                 {/* Body */}
                 <div>
-                  <h4 className="text-[22px] font-bold text-[#1e3050] whitespace-pre-line leading-tight mb-3">
+                  <h4 className="text-[22px] font-bold text-[#1e3050] dark:text-white whitespace-pre-line leading-tight mb-3">
                     {displayEvent.title}
                   </h4>
-                  <p className="text-[15px] font-medium text-[#1e3050] leading-relaxed mb-6">
+                  <p className="text-[15px] font-medium text-[#1e3050] dark:text-white/90 leading-relaxed mb-6">
                     {displayEvent.description}
                   </p>
 
                   {/* Details */}
                   <div className="space-y-2 text-[15px] mb-6">
-                    <p className="text-[#1e3050]">
+                    <p className="text-[#1e3050] dark:text-white">
                       <span className="font-bold">Data:</span>{" "}
                       <span className="font-medium">{displayEvent.dateStr}</span>
                     </p>
-                    <p className="text-[#1e3050]">
+                    <p className="text-[#1e3050] dark:text-white">
                       <span className="font-bold">Hora:</span>{" "}
                       <span className="font-medium">{displayEvent.time}</span>
                     </p>
-                    <p className="text-[#1e3050]">
+                    <p className="text-[#1e3050] dark:text-white">
                       <span className="font-bold">Local:</span>{" "}
                       <span className="font-medium">{displayEvent.location}</span>
                     </p>
                   </div>
 
-                  <hr className="border-[#1e3050]/20 border-t-2 mb-4" />
+                  <hr className="border-[#1e3050]/20 dark:border-white/20 border-t-2 mb-4" />
 
                   {/* Footer Elements (Link) */}
                   <Link
                     href={displayEvent.registrationLink}
-                    className="inline-flex items-center gap-4 text-[#1e3050] hover:opacity-75 transition-opacity"
+                    className="inline-flex items-center gap-4 text-[#1e3050] dark:text-white hover:opacity-75 transition-opacity"
                   >
                     <span className="font-bold text-[16px]">{displayEvent.price}</span>
                     {displayEvent.hasRegistration && (
                       <>
-                        <span className="w-0.5 h-5 bg-[#1e3050]/30"></span>
+                        <span className="w-0.5 h-5 bg-[#1e3050]/30 dark:bg-white/30"></span>
                         <span className="flex items-center gap-1.5 text-[16px] font-bold">
                           Inscrição <FileEdit className="w-4 h-4 ml-1" />
                         </span>

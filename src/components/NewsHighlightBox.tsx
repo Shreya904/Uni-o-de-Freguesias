@@ -22,25 +22,25 @@ const formatNewsDate = (dateString: string) => {
 
 const styles = {
   compact: {
-    wrapper: "bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6",
-    heading: "font-extrabold text-[#1c2841] mb-3 text-sm uppercase tracking-wide",
-    date: "text-xs text-gray-500 mb-2 font-medium",
-    link: "text-sm font-bold text-[#1c2841] hover:text-blue-800 transition-colors leading-snug block",
+    wrapper: "bg-[#e6f4fd] dark:bg-[#111111] border border-[#cbe5f8] dark:border-white/10 p-5 rounded-md mt-6",
+    heading: "font-extrabold text-[#1c2841] dark:text-white mb-3 text-sm uppercase tracking-wide",
+    date: "text-xs text-gray-500 dark:text-white/70 mb-2 font-medium",
+    link: "text-sm font-bold text-[#1c2841] dark:text-white hover:text-blue-800 dark:hover:text-white transition-colors leading-snug block",
     title: "underline underline-offset-2 decoration-[#1c2841]/30",
   },
   standard: {
-    wrapper: "bg-[#EAF4FD] p-6 rounded-[4px]",
-    heading: "font-extrabold text-[#1C2E56] text-[16px] mb-4",
-    date: "text-[12px] text-[#1C2E56]/70 mb-2 font-medium",
+    wrapper: "bg-[#EAF4FD] dark:bg-[#111111] p-6 rounded-[4px]",
+    heading: "font-extrabold text-[#1C2E56] dark:text-white text-[16px] mb-4",
+    date: "text-[12px] text-[#1C2E56]/70 dark:text-white/70 mb-2 font-medium",
     link:
-      "text-[#1C2E56] text-[14px] leading-relaxed underline underline-offset-2 hover:text-[#B4142F] transition-colors block",
+      "text-[#1C2E56] dark:text-white text-[14px] leading-relaxed underline underline-offset-2 hover:text-[#B4142F] dark:hover:text-white transition-colors block",
     title: "",
   },
   help: {
-    wrapper: "bg-[#DDE9F7] p-4 rounded-lg",
-    heading: "font-bold text-[#1C2E56] mb-3",
-    date: "text-xs text-[#1C2E56]/70 mb-2 font-medium",
-    link: "text-sm text-[#1C2E56] hover:text-[#DE092D] transition-colors block",
+    wrapper: "bg-[#DDE9F7] dark:bg-[#111111] p-4 rounded-lg",
+    heading: "font-bold text-[#1C2E56] dark:text-white mb-3",
+    date: "text-xs text-[#1C2E56]/70 dark:text-white/70 mb-2 font-medium",
+    link: "text-sm text-[#1C2E56] dark:text-white hover:text-[#DE092D] dark:hover:text-white transition-colors block",
     title: "",
   },
 };

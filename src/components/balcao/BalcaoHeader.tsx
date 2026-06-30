@@ -37,7 +37,7 @@ export default function BalcaoHeader() {
         );
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-black">
       <section className="bg-[#C41230] pb-6 text-white">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="grid gap-5 md:grid-cols-[300px_1fr] md:items-end">
@@ -49,7 +49,7 @@ export default function BalcaoHeader() {
             </div>
             <div>
               <div className="relative">
-                <div className="flex overflow-hidden rounded-md border-2 border-white bg-white">
+                <div className="flex overflow-hidden rounded-md border-2 border-white bg-white dark:bg-black dark:border-white/25">
                   <input
                     type="text"
                     value={query}
@@ -57,32 +57,32 @@ export default function BalcaoHeader() {
                     onFocus={() => setShowResults(true)}
                     onBlur={() => setTimeout(() => setShowResults(false), 150)}
                     placeholder="O que procuro"
-                    className="h-11 flex-1 px-4 text-sm text-foreground outline-none"
+                    className="h-11 flex-1 px-4 text-sm text-foreground outline-none dark:bg-black dark:text-white dark:placeholder:text-white/70"
                   />
                   <button
                     onClick={() => {
                       if (results.length > 0) router.push(results[0].href);
                     }}
-                    className="h-11 rounded-r-md border-l-2 border-[#C41230] bg-white px-5 text-sm font-bold text-foreground"
+                    className="h-11 rounded-r-md border-l-2 border-[#C41230] bg-white px-5 text-sm font-bold text-foreground dark:bg-black dark:text-white"
                   >
                     Pesquisar
                   </button>
                 </div>
                 {showResults && query.trim() !== "" && (
-                  <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-md border bg-white shadow-lg">
+                  <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-md border bg-white shadow-lg dark:bg-black dark:border-white/20">
                     {results.length > 0 ? (
                       results.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => { setQuery(""); setShowResults(false); }}
-                          className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-muted dark:text-white dark:hover:bg-white/10"
                         >
                           {item.label}
                         </Link>
                       ))
                     ) : (
-                      <p className="px-4 py-2 text-sm text-muted-foreground">Nenhum resultado encontrado</p>
+                      <p className="px-4 py-2 text-sm text-muted-foreground dark:text-white/70">Nenhum resultado encontrado</p>
                     )}
                   </div>
                 )}

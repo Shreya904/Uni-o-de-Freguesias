@@ -274,22 +274,22 @@ export default function ContactosUteisPage() {
               <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
                 Perguntas frequentes
               </h3>
-              <div className="bg-[#fef4d8] border border-[#f5e0a6] rounded-md overflow-hidden transition-all">
+              <div className="bg-[#fef4d8] dark:bg-black border border-[#f5e0a6] dark:border-white/20 rounded-md overflow-hidden transition-all">
                 <button
                   onClick={() => setFaqOpen(!faqOpen)}
-                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] transition-colors text-left"
+                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] dark:hover:bg-white/10 transition-colors text-left"
                 >
-                  <p className="text-sm font-bold text-[#1c2841] pr-4 leading-snug">
+                  <p className="text-sm font-bold text-[#1c2841] dark:text-white pr-4 leading-snug">
                     O que fazer se um ficheiro não abrir corretamente?
                   </p>
                   {faqOpen ? (
-                    <ChevronUp className="w-5 h-5 text-[#1c2841] shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-[#1c2841] dark:text-white/70 shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-[#1c2841] shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-[#1c2841] dark:text-white/70 shrink-0" />
                   )}
                 </button>
                 <div
-                  className={`px-4 text-sm text-[#1c2841]/80 font-medium transition-all duration-300 ease-in-out ${
+                  className={`px-4 text-sm text-[#1c2841]/80 dark:text-white/70 font-medium transition-all duration-300 ease-in-out ${
                     faqOpen ? "max-h-40 pb-4 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >

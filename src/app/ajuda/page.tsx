@@ -144,14 +144,14 @@ export default function CentroAjudaPage() {
 
   return (
     <main className="min-h-screen bg-white font-sans flex flex-col">
-      <div className="bg-[#F8C127]">
+      <div className="bg-[#F8C127] dark:!bg-[#F8C127]">
         <Header />
 
         {/* HERO SECTION */}
-        <section>
+        <section className="bg-[#F8C127] dark:!bg-[#F8C127]">
           <div className="max-w-[1300px] mx-auto px-6 py-10 lg:py-14 flex flex-col lg:flex-row gap-8 lg:gap-20 items-start">
             <div className="lg:w-1/3">
-              <h1 className="text-4xl lg:text-[52px] font-extrabold text-[#111f3d] leading-[1.05] tracking-tight">
+              <h1 className="text-4xl lg:text-[52px] font-extrabold text-[#111f3d] dark:text-[#111f3d] leading-[1.05] tracking-tight">
                 Centro de
                 <br />
                 Ajuda
@@ -164,20 +164,20 @@ export default function CentroAjudaPage() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="O que preciso saber"
-                  className="w-full h-[52px] rounded-lg border border-[#111f3d] bg-[#FDF9F0] px-5 pr-12 outline-none text-[16px] text-[#111f3d] placeholder:text-[#111f3d] focus:ring-2 focus:ring-[#111f3d]/20 transition-all"
+                  className="w-full h-[52px] rounded-lg border border-[#111f3d] bg-[#FDF9F0] px-5 pr-12 outline-none text-[16px] text-[#111f3d] placeholder:text-[#111f3d] focus:ring-2 focus:ring-[#111f3d]/20 transition-all dark:bg-[#FDF9F0] dark:border-[#111f3d] dark:text-[#111f3d] dark:placeholder:text-[#111f3d]"
                 />
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-[#111f3d] stroke-[2]" />
+                <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-[#111f3d] stroke-[2] dark:text-[#111f3d]" />
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-[13px] text-[#111f3d]">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-[13px] text-[#111f3d] dark:text-[#111f3d]">
                 <span className="font-bold text-[14px]">Termos Populares</span>
-                <button className="hover:underline hover:underline-offset-2 transition-all">
+                <button className="hover:underline hover:underline-offset-2 transition-all dark:text-[#111f3d]">
                   Cookies
                 </button>
-                <button className="hover:underline hover:underline-offset-2 transition-all">
+                <button className="hover:underline hover:underline-offset-2 transition-all dark:text-[#111f3d]">
                   Condições
                 </button>
-                <button className="hover:underline hover:underline-offset-2 transition-all">
+                <button className="hover:underline hover:underline-offset-2 transition-all dark:text-[#111f3d]">
                   Legislação
                 </button>
               </div>
@@ -190,16 +190,16 @@ export default function CentroAjudaPage() {
       <section className="flex-1 w-full max-w-[1300px] mx-auto">
         <div className="grid lg:grid-cols-[280px_1fr] gap-x-12">
           {/* SIDEBAR */}
-          <aside className="py-10 px-6 lg:px-0">
-            <div className="space-y-6">
+          <aside className="py-10 px-6 lg:px-0 dark:text-white">
+            <div className="space-y-6 dark:text-white">
               {sidebarSections.map((section, idx) => (
                 <div
                   key={section.title}
-                  className={idx !== 0 ? "pt-6 border-t border-gray-200" : ""}
+                  className={idx !== 0 ? "pt-6 border-t border-gray-200 dark:border-white/10" : ""}
                 >
                   <div className="flex items-center justify-between mb-5 cursor-pointer">
-                    <h3 className="font-bold text-[#111f3d] text-[16px]">{section.title}</h3>
-                    <ChevronUp className="w-5 h-5 text-[#111f3d]" />
+                    <h3 className="font-bold text-[#111f3d] dark:text-white text-[16px]">{section.title}</h3>
+                    <ChevronUp className="w-5 h-5 text-[#111f3d] dark:text-white" />
                   </div>
 
                   <div className="space-y-4">
@@ -211,7 +211,7 @@ export default function CentroAjudaPage() {
                           className={`block text-left text-[15px] transition-colors ${
                             isActive
                               ? "text-[#C41230] font-semibold"
-                              : "text-[#111f3d] hover:text-[#C41230]"
+                              : "text-[#111f3d] hover:text-[#C41230] dark:text-white dark:hover:text-white/80"
                           }`}
                         >
                           {item}
@@ -222,8 +222,8 @@ export default function CentroAjudaPage() {
                 </div>
               ))}
 
-              <div className="pt-6 border-t border-gray-200">
-                <NewsHighlightBox variant="help" />
+              <div className="pt-6 border-t border-gray-200 dark:border-white/10">
+                <NewsHighlightBox variant="standard" />
               </div>
             </div>
           </aside>
@@ -232,16 +232,16 @@ export default function CentroAjudaPage() {
           <div className="py-10 px-6 lg:px-0 lg:pl-4">
             {/* FILTER BAR */}
             <div className="flex items-center justify-end gap-3 mb-6">
-              <span className="text-[14px] text-[#111f3d]">Ordenar</span>
+              <span className="text-[14px] text-[#111f3d] dark:text-white">Ordenar</span>
               <button
                 onClick={toggleSort}
-                className="px-4 py-1.5 rounded-full border border-[#111f3d]/30 text-[13px] text-[#111f3d] font-medium bg-white hover:bg-gray-50 transition-colors"
+                className="px-4 py-1.5 rounded-full border border-[#111f3d]/30 text-[13px] text-[#111f3d] font-medium bg-white hover:bg-gray-50 transition-colors dark:bg-[#FDF9F0] dark:border-[#111f3d] dark:text-[#111f3d] dark:hover:bg-[#f8f0d8]"
               >
                 Nome
               </button>
               <button
                 onClick={toggleSort}
-                className="text-[#111f3d] hover:opacity-70 transition-transform"
+                className="text-[#111f3d] dark:text-white hover:opacity-70 transition-transform"
               >
                 <ArrowDownUp
                   className={`w-5 h-5 stroke-[1.5] transition-transform ${isAscending ? "" : "rotate-180"}`}
@@ -259,14 +259,14 @@ export default function CentroAjudaPage() {
                   <button
                     onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
                     className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
-                      openFaq === faq.id ? "bg-white" : "bg-[#FCEFB4] hover:bg-[#fae899]"
+                      openFaq === faq.id ? "bg-white dark:bg-black" : "bg-[#FCEFB4] hover:bg-[#fae899] dark:bg-black dark:hover:bg-white/10"
                     }`}
                   >
-                    <span className="font-bold text-[16px] text-[#111f3d] pr-4">
+                    <span className="font-bold text-[16px] text-[#111f3d] dark:text-white pr-4">
                       {faq.question}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-[#111f3d] flex-shrink-0 transition-transform ${
+                      className={`w-5 h-5 text-[#111f3d] dark:text-white/70 flex-shrink-0 transition-transform ${
                         openFaq === faq.id ? "rotate-180" : ""
                       }`}
                     />
@@ -300,7 +300,7 @@ export default function CentroAjudaPage() {
 
             {/* OTHER TOPICS */}
             <div className="mt-12 mb-20">
-              <h2 className="font-extrabold text-[22px] text-[#111f3d] mb-6">
+              <h2 className="font-extrabold text-[22px] text-[#111f3d] dark:text-white mb-6">
                 Outros assuntos populares
               </h2>
               <div className="space-y-4">
@@ -311,18 +311,18 @@ export default function CentroAjudaPage() {
                   >
                     <button
                       onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
-                      className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
-                        openFaq === faq.id ? "bg-white" : "bg-[#FCEFB4] hover:bg-[#fae899]"
+                    className={`w-full transition-colors px-6 py-4 flex justify-between items-center text-left ${
+                        openFaq === faq.id ? "bg-white dark:bg-black" : "bg-[#FCEFB4] hover:bg-[#fae899] dark:bg-black dark:hover:bg-white/10"
                       }`}
-                    >
-                      <span className="font-bold text-[16px] text-[#111f3d] pr-4">
-                        {faq.question}
-                      </span>
-                      <ChevronDown
-                        className={`w-5 h-5 text-[#111f3d] flex-shrink-0 transition-transform ${
-                          openFaq === faq.id ? "rotate-180" : ""
-                        }`}
-                      />
+                  >
+                    <span className="font-bold text-[16px] text-[#111f3d] dark:text-white pr-4">
+                      {faq.question}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-[#111f3d] dark:text-white/70 flex-shrink-0 transition-transform ${
+                        openFaq === faq.id ? "rotate-180" : ""
+                      }`}
+                    />
                     </button>
                     {openFaq === faq.id && faq.answer}
                   </div>

@@ -85,9 +85,9 @@ export default function NoticiasPage() {
                     placeholder="O que procura"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-5 py-3.5 text-black rounded-l-md outline-none"
+                    className="w-full px-5 py-3.5 text-black rounded-l-md outline-none dark:bg-black dark:text-white dark:placeholder:text-white/50"
                   />
-                  <button className="bg-white px-6 font-semibold text-[#253e6b] border-l border-gray-200 rounded-r-md hover:bg-gray-50 transition-colors">
+                  <button className="bg-white px-6 font-semibold text-[#253e6b] border-l border-gray-200 rounded-r-md hover:bg-gray-50 transition-colors dark:bg-black dark:text-white dark:border-white/20 dark:hover:bg-white/10">
                     Pesquisar
                   </button>
                 </div>

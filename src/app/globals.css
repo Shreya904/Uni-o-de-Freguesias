@@ -182,29 +182,132 @@ html.dark {
   color: #f0f0f0 !important;
 }
 
+.dark main,
 .dark section,
-.dark main {
+.dark article,
+.dark aside,
+.dark form {
   background-color: #000000 !important;
   color: #f0f0f0 !important;
 }
 
-.dark h1, .dark h2, .dark h3, .dark h4,
-.dark p, .dark li {
-  color: #f0f0f0 !important;
-}
-
-.dark span:not([class*="text-white"]):not([class*="bg-"]) {
-  color: #f0f0f0 !important;
-}
-
-.dark div[class*="bg-gray"],
-.dark div[class*="bg-slate"],
-.dark div[class*="bg-white"],
-.dark div[class*="bg-neutral"] {
+.dark :is(main, section, article, aside, form) [class*="bg-gray"],
+.dark :is(main, section, article, aside, form) [class*="bg-slate"],
+.dark :is(main, section, article, aside, form) [class*="bg-white"],
+.dark :is(main, section, article, aside, form) [class*="bg-neutral"],
+.dark body > div[class*="bg-white"] {
   background-color: #111111 !important;
   color: #f0f0f0 !important;
 }
 
+.dark :is(main, section, article, aside, form) [class*="bg-white"],
+.dark body > div[class*="bg-white"]
+  :is(a, h1, h2, h3, h4, h5, h6, p, span, li, label, button, input, textarea, select, small, strong, em, div, td, th) {
+  color: #f0f0f0 !important;
+}
+
+.dark :is(main, section, article, aside, form) [class*="bg-white"] a,
+.dark body > div[class*="bg-white"] a {
+  color: #f0f0f0 !important;
+  text-decoration-color: currentColor;
+}
+
+.dark :is(main, section, article, aside, form) [class*="bg-white"] input::placeholder,
+.dark :is(main, section, article, aside, form) [class*="bg-white"] textarea::placeholder,
+.dark body > div[class*="bg-white"] input::placeholder,
+.dark body > div[class*="bg-white"] textarea::placeholder {
+  color: rgba(240, 240, 240, 0.72) !important;
+}
+
+.dark :is(main, section, article, aside, form) [class*="bg-white"] input,
+.dark :is(main, section, article, aside, form) [class*="bg-white"] textarea,
+.dark :is(main, section, article, aside, form) [class*="bg-white"] select,
+.dark body > div[class*="bg-white"] input,
+.dark body > div[class*="bg-white"] textarea,
+.dark body > div[class*="bg-white"] select {
+  background-color: #111111 !important;
+  color: #f0f0f0 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.dark :is(main, section, article, aside, form) [class*="bg-white"] button,
+.dark body > div[class*="bg-white"] button {
+  color: #f0f0f0 !important;
+}
+
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FDF6E3]"],
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCEFB4]"],
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCECD4]"] {
+  background-color: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #f0f0f0 !important;
+}
+
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FDF6E3]"]:hover,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCEFB4]"]:hover,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCECD4]"]:hover {
+  background-color: #1a1a1a !important;
+}
+
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FDF6E3]"] span,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCEFB4]"] span,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCECD4]"] span,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FDF6E3]"] svg,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCEFB4]"] svg,
+.dark :is(main, section, article, aside, form) button[class*="bg-[#FCECD4]"] svg {
+  color: #f0f0f0 !important;
+}
+
+.dark .faq-card,
+.dark .faq-card * {
+  color: #f0f0f0 !important;
+}
+
 .dark a {
-  color: #9ec5ff !important;
+  color: inherit;
+}
+
+.dark header[data-site-header="true"],
+.dark header[data-site-header="true"] nav,
+.dark header[data-site-header="true"] [class*="bg-white"],
+.dark header[data-site-header="true"] [class*="bg-transparent"] {
+  background-color: #ffffff !important;
+}
+
+.dark header[data-site-header="true"] * {
+  color: #1C2E56 !important;
+}
+
+.dark header[data-site-header="true"] a,
+.dark header[data-site-header="true"] span,
+.dark header[data-site-header="true"] h1,
+.dark header[data-site-header="true"] h2,
+.dark header[data-site-header="true"] h3,
+.dark header[data-site-header="true"] h4,
+.dark header[data-site-header="true"] p,
+.dark header[data-site-header="true"] li,
+.dark header[data-site-header="true"] svg {
+  color: #1C2E56 !important;
+}
+
+.dark .balcao-shell [class*="bg-[#FDF6E3]"],
+.dark .balcao-shell [class*="bg-[#FCEFB4]"],
+.dark .balcao-shell [class*="bg-[#FCECD4]"],
+.dark .balcao-shell [class*="bg-white"],
+.dark .balcao-shell [class*="bg-gray-50"],
+.dark .balcao-shell [class*="bg-gray-100"],
+.dark .balcao-shell [class*="bg-amber-50"],
+.dark .balcao-shell [class*="bg-amber-100"] {
+  background-color: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #f0f0f0 !important;
+}
+
+.dark .balcao-shell [class*="bg-[#FDF6E3]"] *,
+.dark .balcao-shell [class*="bg-[#FCEFB4]"] *,
+.dark .balcao-shell [class*="bg-[#FCECD4]"] *,
+.dark .balcao-shell [class*="bg-white"] *,
+.dark .balcao-shell [class*="bg-amber-50"] *,
+.dark .balcao-shell [class*="bg-amber-100"] * {
+  color: #f0f0f0 !important;
 }

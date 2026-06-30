@@ -28,12 +28,12 @@ export default function FreguesiaPage() {
         </div>
 
         {/* Hero Content Layer */}
-        <section className="relative z-10 max-w-[1200px] mx-auto px-8 lg:px-16 pb-20 pt-10">
+        <section className="relative z-10 max-w-[1200px] mx-auto px-8 lg:px-16 pb-20 pt-10 dark:text-white">
           <div>
-            <h1 className="text-white text-[48px] lg:text-[56px] font-extrabold leading-none tracking-wide mb-2">
+            <h1 className="text-white dark:text-white text-[48px] lg:text-[56px] font-extrabold leading-none tracking-wide mb-2">
               Freguesia
             </h1>
-            <p className="text-white text-[24px] lg:text-[28px] font-bold tracking-wide">
+            <p className="text-white dark:text-white text-[24px] lg:text-[28px] font-bold tracking-wide">
               Comunidade & território
             </p>
           </div>

@@ -23,20 +23,20 @@ export default function FAQPage() {
     <div className="min-h-screen">
       <Header />
       <main>
-        <section className="section-padding bg-section-alt">
+        <section className="section-padding bg-section-alt dark:bg-black">
           <div className="container max-w-4xl mx-auto">
             <div className="text-center mb-10">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">Centro de Ajuda</h1>
-              <p className="text-muted-foreground mt-3">Encontre respostas às questões mais frequentes.</p>
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground dark:text-white">Centro de Ajuda</h1>
+              <p className="text-muted-foreground mt-3 dark:text-white/70">Encontre respostas às questões mais frequentes.</p>
             </div>
 
             <div className="relative max-w-md mx-auto mb-8">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground dark:text-white/60" />
               <Input
                 placeholder="Pesquisar perguntas..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
+                className="pl-10 dark:bg-black dark:text-white dark:border-white/20 dark:placeholder:text-white/50"
               />
             </div>
 
@@ -47,8 +47,8 @@ export default function FAQPage() {
                   onClick={() => { setActiveCategory(cat); setOpenId(null); }}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeCategory === cat
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card border text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border text-muted-foreground hover:text-foreground dark:bg-black dark:border-white/20 dark:text-white/70 dark:hover:text-white"
                   }`}
                 >
                   {cat}
@@ -63,7 +63,7 @@ export default function FAQPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className="border rounded-xl overflow-hidden bg-card"
+                  className="border rounded-xl overflow-hidden bg-card dark:bg-black dark:border-white/20"
                 >
                   <button
                     onClick={() => setOpenId(openId === item.id ? null : item.id)}
@@ -73,14 +73,14 @@ export default function FAQPage() {
                     <div className="flex items-center gap-3">
                       <HelpCircle className="w-5 h-5 text-accent flex-shrink-0" />
                       <div>
-                        <span className="font-medium text-foreground block">{item.question}</span>
-                        <span className="text-xs text-muted-foreground">{item.category}</span>
+                        <span className="font-medium text-foreground block dark:text-white">{item.question}</span>
+                        <span className="text-xs text-muted-foreground dark:text-white/60">{item.category}</span>
                       </div>
                     </div>
-                    <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform flex-shrink-0 ${openId === item.id ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`w-5 h-5 text-muted-foreground dark:text-white/60 transition-transform flex-shrink-0 ${openId === item.id ? "rotate-180" : ""}`} />
                   </button>
                   {openId === item.id && (
-                    <div className="px-5 pb-5 pl-13 text-sm text-muted-foreground leading-relaxed">
+                    <div className="px-5 pb-5 pl-13 text-sm text-muted-foreground dark:text-white/70 leading-relaxed">
                       {item.answer}
                     </div>
                   )}
@@ -89,7 +89,7 @@ export default function FAQPage() {
             </div>
 
             {filtered.length === 0 && (
-              <p className="text-center text-muted-foreground py-16">Nenhuma pergunta encontrada.</p>
+              <p className="text-center text-muted-foreground dark:text-white/70 py-16">Nenhuma pergunta encontrada.</p>
             )}
           </div>
         </section>
