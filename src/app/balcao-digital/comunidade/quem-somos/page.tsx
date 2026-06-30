@@ -29,7 +29,7 @@ function SidebarFaq() {
   const [open, setOpen] = useState(false);
   return (
     <div
-      className="border border-amber-200 rounded-md p-4 bg-amber-100 cursor-pointer text-sm text-[#1C2E56] shadow-sm"
+      className="border border-amber-200 dark:border-white/20 rounded-md p-4 bg-amber-100 dark:bg-black cursor-pointer text-sm text-[#1C2E56] dark:text-white shadow-sm"
       onClick={() => setOpen(!open)}
     >
       <div className="flex items-start justify-between font-medium gap-2">
@@ -38,7 +38,7 @@ function SidebarFaq() {
           className={`w-4 h-4 shrink-0 transition-transform mt-0.5 ${open ? "rotate-180" : ""}`}
         />
       </div>
-      {open && <p className="mt-2 text-xs text-gray-700">Deve tentar novamente :)</p>}
+      {open && <p className="mt-2 text-xs text-gray-700 dark:text-white/70">Deve tentar novamente :)</p>}
     </div>
   );
 }
@@ -97,8 +97,8 @@ export default function QuemSomosPage() {
       {/* Main Content Area */}
       <div className="flex-1 w-full max-w-[1400px] mx-auto flex flex-col md:flex-row">
         {/* Sidebar */}
-        <aside className="w-full md:w-[320px] lg:w-[400px] bg-[#F9FAFB] p-8 md:p-12 lg:p-16 border-r border-gray-200">
-          <h3 className="font-bold text-[#1C2E56] text-lg leading-snug mb-8">
+        <aside className="w-full md:w-[320px] lg:w-[400px] bg-[#F9FAFB] dark:bg-black p-8 md:p-12 lg:p-16 border-r border-gray-200 dark:border-white/10">
+          <h3 className="font-bold text-[#1C2E56] dark:text-white text-lg leading-snug mb-8">
             Regulamento <br />
             da plataforma <br />
             Balcão Digital Comunidade
@@ -116,7 +116,7 @@ export default function QuemSomosPage() {
             ))}
           </ul>
 
-          <h3 className="font-bold text-[#1C2E56] text-sm mb-4">Perguntas frequentes</h3>
+          <h3 className="font-bold text-[#1C2E56] dark:text-white text-sm mb-4">Perguntas frequentes</h3>
           <SidebarFaq />
         </aside>
 

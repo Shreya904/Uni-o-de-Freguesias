@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
@@ -19,6 +18,7 @@ import {
   LayoutGrid,
 } from "lucide-react";
 import { fetchPublishedDocuments, type CmsDocumentItem as DocItem } from "@/lib/cms";
+import NewsHighlightBox from "@/components/NewsHighlightBox";
 
 // --- UTILITY FUNCTIONS ---
 
@@ -304,7 +304,7 @@ export default function DocumentacaoPage() {
           <aside className="w-full lg:w-[300px] shrink-0">
             {/* Em Destaque */}
             <div className="mb-10">
-              <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
+              <h3 className="font-extrabold text-[#1c2841] dark:text-white mb-4 text-sm uppercase tracking-wide">
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
@@ -351,22 +351,22 @@ export default function DocumentacaoPage() {
               <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
                 Perguntas frequentes
               </h3>
-              <div className="bg-[#fef4d8] border border-[#f5e0a6] rounded-md overflow-hidden transition-all">
+              <div className="bg-[#fef4d8] dark:bg-black border border-[#f5e0a6] dark:border-white/20 rounded-md overflow-hidden transition-all">
                 <button
                   onClick={() => setFaqOpen(!faqOpen)}
-                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] transition-colors text-left"
+                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] dark:hover:bg-white/10 transition-colors text-left"
                 >
-                  <p className="text-sm font-bold text-[#1c2841] pr-4 leading-snug">
+                  <p className="text-sm font-bold text-[#1c2841] dark:text-white pr-4 leading-snug">
                     O que fazer se um ficheiro não abrir corretamente?
                   </p>
                   {faqOpen ? (
-                    <ChevronUp className="w-5 h-5 text-[#1c2841] shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-[#1c2841] dark:text-white shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-[#1c2841] shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-[#1c2841] dark:text-white shrink-0" />
                   )}
                 </button>
                 <div
-                  className={`px-4 text-sm text-[#1c2841]/80 font-medium transition-all duration-300 ease-in-out ${
+                  className={`px-4 text-sm text-[#1c2841]/80 dark:text-white/70 font-medium transition-all duration-300 ease-in-out ${
                     faqOpen ? "max-h-40 pb-4 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
@@ -379,21 +379,7 @@ export default function DocumentacaoPage() {
             </div>
 
             {/* Notícias Snippet */}
-            <div className="bg-[#e6f4fd] border border-[#cbe5f8] p-5 rounded-md mt-6">
-              <h3 className="font-extrabold text-[#1c2841] mb-3 text-sm uppercase tracking-wide">
-                Notícias
-              </h3>
-              <p className="text-xs text-gray-500 mb-2 font-medium">24 Abril, 2024</p>
-              <Link
-                href="#"
-                className="text-sm font-bold text-[#1c2841] hover:text-blue-800 transition-colors leading-snug block"
-              >
-                <span className="underline underline-offset-2 decoration-[#1c2841]/30">
-                  Novo acordo de parceria entre o Município de Aveiro e Instituições locais para
-                  reforçar a vitalidade, as artes e a cultura no concelho.
-                </span>
-              </Link>
-            </div>
+            <NewsHighlightBox />
           </aside>
 
           {/* RIGHT MAIN CONTENT */}
@@ -430,174 +416,148 @@ export default function DocumentacaoPage() {
             <div
               className={`flex ${viewMode === "list" ? "flex-col" : "flex-wrap grid grid-cols-1 md:grid-cols-2"} gap-5`}
             >
-              {filteredAndSortedDocs.map((doc, index) => {
+              {filteredAndSortedDocs.map((doc) => {
                 return (
-                  <div key={doc.id} className="contents">
-                    <div className="bg-white border-[1.5px] border-[#1c2841] rounded-xl p-6 flex flex-col hover:shadow-lg transition-shadow">
-                      {/* CARD HEADER */}
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-                        <div className="flex flex-wrap items-center gap-3 text-sm font-bold text-[#1c2841]">
-                          <span>{doc.type}</span>
-                          <span className="text-gray-400 font-medium">{doc.date}</span>
-                          <span className="text-gray-400 font-medium flex items-center gap-1">
-                            {doc.readTime} <Clock className="w-3.5 h-3.5" />
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {doc.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-xs font-semibold text-gray-500 hover:text-[#1c2841] cursor-pointer transition-colors"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* CARD BODY: PDF / Document */}
-                      {doc.format === "Documento" && (
-                        <div className="mb-6">
-                          <h2 className="text-[#1c2841] text-2xl font-extrabold leading-tight mb-2 hover:text-blue-900 cursor-pointer transition-colors">
-                            {doc.title}
-                          </h2>
-                          {doc.description && (
-                            <p className="text-sm text-[#4a5568] font-medium leading-relaxed">
-                              {doc.description}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* CARD BODY: Audio */}
-                      {doc.format === "Audio" && (
-                        <div className="flex flex-col sm:flex-row items-center gap-6 mb-4">
-                          <button className="w-32 h-32 shrink-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg flex flex-col items-center justify-center gap-2 border border-gray-200">
-                            <Volume2 className="w-8 h-8 text-[#1c2841]" />
-                            <span className="text-xs font-bold text-[#1c2841]">Ouvir episódio</span>
-                          </button>
-                          <div className="flex-1 w-full">
-                            <div className="flex items-center gap-1 h-12 mb-4 w-full opacity-60">
-                              {[...Array(30)].map((_, i) => (
-                                <div
-                                  key={i}
-                                  className="flex-1 bg-[#1c2841] rounded-full"
-                                  style={{ height: `${Math.max(20, Math.random() * 100)}%` }}
-                                />
-                              ))}
-                            </div>
-                            <h2 className="text-[#1c2841] text-[22px] font-extrabold leading-tight">
-                              {doc.title}
-                            </h2>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* CARD BODY: Video */}
-                      {doc.format === "Video" && (
-                        <div className="mb-4">
-                          <div className="relative w-full h-48 md:h-64 bg-gray-200 rounded-lg overflow-hidden mb-4 group cursor-pointer border border-gray-200">
-                            {doc.thumbnailUrl ? (
-                              <img
-                                src={doc.thumbnailUrl}
-                                alt="Video thumbnail"
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-blue-900 to-gray-800" />
-                            )}
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-                                <Play className="w-6 h-6 text-[#1c2841] ml-1" fill="currentColor" />
-                              </div>
-                            </div>
-                          </div>
-                          <h2 className="text-[#1c2841] text-2xl font-extrabold leading-tight mb-2 hover:text-blue-900 cursor-pointer transition-colors">
-                            {doc.title}
-                          </h2>
-                          {doc.description && (
-                            <p className="text-sm text-[#4a5568] font-medium leading-relaxed">
-                              {doc.description}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {/* CARD FOOTER */}
-                      <div className="mt-auto pt-4 border-t border-gray-200 flex flex-wrap items-center justify-between gap-4">
-                        <span className="text-sm font-extrabold text-[#1c2841]">
-                          {doc.fileTypeLabel}
+                  <div
+                    key={doc.id}
+                    className="bg-white border-[1.5px] border-[#1c2841] rounded-xl p-6 flex flex-col hover:shadow-lg transition-shadow"
+                  >
+                    {/* CARD HEADER */}
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                      <div className="flex flex-wrap items-center gap-3 text-sm font-bold text-[#1c2841]">
+                        <span>{doc.type}</span>
+                        <span className="text-gray-400 font-medium">{doc.date}</span>
+                        <span className="text-gray-400 font-medium flex items-center gap-1">
+                          {doc.readTime} <Clock className="w-3.5 h-3.5" />
                         </span>
-
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-bold text-gray-500">
-                          {doc.format === "Documento" && (
-                            <>
-                              {/* VIEW LOGIC */}
-                              <a
-                                href={doc.fileUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors cursor-pointer"
-                              >
-                                Visualizar <Eye className="w-4 h-4" />
-                              </a>
-                              <span className="text-gray-300 hidden sm:inline">|</span>
-
-                              {/* DOWNLOAD LOGIC */}
-                              <button
-                                onClick={() => handleDownload(doc.fileUrl, `${doc.title}.pdf`)}
-                                className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
-                              >
-                                Descarregar <Download className="w-4 h-4" />
-                              </button>
-                              <span className="text-gray-300 hidden sm:inline">|</span>
-
-                              {/* PRINT LOGIC */}
-                              <button
-                                onClick={() => handlePrint(doc.fileUrl)}
-                                className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
-                              >
-                                Imprimir <Printer className="w-4 h-4" />
-                              </button>
-                            </>
-                          )}
-
-                          {doc.format === "Video" && (
-                            <div className="flex items-center gap-2">
-                              <span>Legendas CC</span>
-                              <Subtitles className="w-5 h-5" />
-                            </div>
-                          )}
-                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {doc.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-xs font-semibold text-gray-500 hover:text-[#1c2841] cursor-pointer transition-colors"
+                          >
+                            {tag}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
-                    {/* MIDDLE BANNER */}
-                    {index === 2 && (
-                      <div className="relative my-4 rounded-xl overflow-hidden h-[220px] md:h-[260px] shadow-sm">
-                        <img
-                          src="/visitar-banner.jpg"
-                          alt="Precisa de ajuda"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/30" />
-
-                        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 bg-[#fef4d8] rounded-lg p-6 md:p-8 max-w-[320px] shadow-lg border border-[#f5e0a6]">
-                          <h3 className="text-[#1c2841] font-extrabold text-xl leading-snug mb-3">
-                            Precisa de ajuda na utilização deste site?
-                          </h3>
-                          <p className="text-sm text-[#1c2841] font-medium">
-                            Visite o{" "}
-                            <Link
-                              href="/ajuda"
-                              className="underline decoration-2 underline-offset-4 font-bold text-[#1c2841] hover:text-[#1c2841]/70 transition-colors"
-                            >
-                              Centro de Ajuda
-                            </Link>
+                    {/* CARD BODY: PDF / Document */}
+                    {doc.format === "Documento" && (
+                      <div className="mb-6">
+                        <h2 className="text-[#1c2841] text-2xl font-extrabold leading-tight mb-2 hover:text-blue-900 cursor-pointer transition-colors">
+                          {doc.title}
+                        </h2>
+                        {doc.description && (
+                          <p className="text-sm text-[#4a5568] font-medium leading-relaxed">
+                            {doc.description}
                           </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* CARD BODY: Audio */}
+                    {doc.format === "Audio" && (
+                      <div className="flex flex-col sm:flex-row items-center gap-6 mb-4">
+                        <button className="w-32 h-32 shrink-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg flex flex-col items-center justify-center gap-2 border border-gray-200">
+                          <Volume2 className="w-8 h-8 text-[#1c2841]" />
+                          <span className="text-xs font-bold text-[#1c2841]">Ouvir episódio</span>
+                        </button>
+                        <div className="flex-1 w-full">
+                          <div className="flex items-center gap-1 h-12 mb-4 w-full opacity-60">
+                            {[...Array(30)].map((_, i) => (
+                              <div
+                                key={i}
+                                className="flex-1 bg-[#1c2841] rounded-full"
+                                style={{ height: `${Math.max(20, Math.random() * 100)}%` }}
+                              />
+                            ))}
+                          </div>
+                          <h2 className="text-[#1c2841] text-[22px] font-extrabold leading-tight">
+                            {doc.title}
+                          </h2>
                         </div>
                       </div>
                     )}
+
+                    {/* CARD BODY: Video */}
+                    {doc.format === "Video" && (
+                      <div className="mb-4">
+                        <div className="relative w-full h-48 md:h-64 bg-gray-200 rounded-lg overflow-hidden mb-4 group cursor-pointer border border-gray-200">
+                          {doc.thumbnailUrl ? (
+                            <img
+                              src={doc.thumbnailUrl}
+                              alt="Video thumbnail"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-blue-900 to-gray-800" />
+                          )}
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                              <Play className="w-6 h-6 text-[#1c2841] ml-1" fill="currentColor" />
+                            </div>
+                          </div>
+                        </div>
+                        <h2 className="text-[#1c2841] text-2xl font-extrabold leading-tight mb-2 hover:text-blue-900 cursor-pointer transition-colors">
+                          {doc.title}
+                        </h2>
+                        {doc.description && (
+                          <p className="text-sm text-[#4a5568] font-medium leading-relaxed">
+                            {doc.description}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* CARD FOOTER */}
+                    <div className="mt-auto pt-4 border-t border-gray-200 flex flex-wrap items-center justify-between gap-4">
+                      <span className="text-sm font-extrabold text-[#1c2841]">
+                        {doc.fileTypeLabel}
+                      </span>
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-bold text-gray-500">
+                        {doc.format === "Documento" && (
+                          <>
+                            {/* VIEW LOGIC */}
+                            <a
+                              href={doc.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors cursor-pointer"
+                            >
+                              Visualizar <Eye className="w-4 h-4" />
+                            </a>
+                            <span className="text-gray-300 hidden sm:inline">|</span>
+
+                            {/* DOWNLOAD LOGIC */}
+                            <button
+                              onClick={() => handleDownload(doc.fileUrl, `${doc.title}.pdf`)}
+                              className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
+                            >
+                              Descarregar <Download className="w-4 h-4" />
+                            </button>
+                            <span className="text-gray-300 hidden sm:inline">|</span>
+
+                            {/* PRINT LOGIC */}
+                            <button
+                              onClick={() => handlePrint(doc.fileUrl)}
+                              className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
+                            >
+                              Imprimir <Printer className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
+
+                        {doc.format === "Video" && (
+                          <div className="flex items-center gap-2">
+                            <span>Legendas CC</span>
+                            <Subtitles className="w-5 h-5" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 );
               })}

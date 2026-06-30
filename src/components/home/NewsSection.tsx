@@ -39,7 +39,7 @@ const NewsSection = () => {
         {/* HEADER */}
         <div className="flex items-end justify-between mb-12">
           <div>
-            <span className="text-accent font-semibold text-sm uppercase tracking-wider">
+            <span className="text-foreground font-semibold text-sm uppercase tracking-wider">
               Atualidade
             </span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-2">

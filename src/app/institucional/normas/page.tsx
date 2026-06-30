@@ -73,12 +73,9 @@ export default function NormasPlaneamentoPage() {
                 <ul className="list-disc pl-6 space-y-4 marker:text-[#1C2E56]">
                   {normasERegulamentos.map((item, index) => (
                     <li key={index} className="pl-2">
-                      <Link
-                        href="#"
-                        className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors"
-                      >
+                      <span className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors">
                         {item}
-                      </Link>
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -98,12 +95,9 @@ export default function NormasPlaneamentoPage() {
                 <ul className="list-disc pl-6 space-y-4 marker:text-[#1C2E56]">
                   {planosEEstrategias.map((item, index) => (
                     <li key={index} className="pl-2">
-                      <Link
-                        href="#"
-                        className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors"
-                      >
+                      <span className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors">
                         {item}
-                      </Link>
+                      </span>
                     </li>
                   ))}
                 </ul>

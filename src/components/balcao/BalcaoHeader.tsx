@@ -42,8 +42,8 @@ export default function BalcaoHeader() {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="grid gap-5 md:grid-cols-[300px_1fr] md:items-end">
             <div>
-              <h1 className="font-display text-[40px] font-bold leading-tight">Balcão Digital</h1>
-              <p className="mt-1 text-lg font-semibold text-white">
+              <h1 className="font-display text-[40px] font-bold leading-tight text-white dark:text-white">Balcão Digital</h1>
+              <p className="mt-1 text-lg font-semibold text-white dark:text-white">
                 {isComunidade ? "Comunidade" : "Serviços online"}
               </p>
             </div>
@@ -89,9 +89,9 @@ export default function BalcaoHeader() {
               </div>
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80 dark:text-white">
                 <span className="font-semibold text-white dark:text-white">Termos Populares:</span>
-                <Link href="/balcao-digital/atestados/residencia" className="underline">Atestado de residência</Link>
-                <Link href="/balcao-digital/cemiterios" className="underline">Cemitério</Link>
-                <Link href="/balcao-digital/declaracoes" className="underline">União de facto</Link>
+                <Link href="/balcao-digital/atestados/residencia" className="underline dark:text-white">Atestado de residência</Link>
+                <Link href="/balcao-digital/cemiterios" className="underline dark:text-white">Cemitério</Link>
+                <Link href="/balcao-digital/declaracoes" className="underline dark:text-white">União de facto</Link>
               </div>
             </div>
           </div>

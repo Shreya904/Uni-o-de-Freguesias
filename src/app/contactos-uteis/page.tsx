@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HelpDeskBanner from "@/components/home/helpDeskbanner";
@@ -170,8 +169,6 @@ export default function ContactosUteisPage() {
             <Header />
           </div>
 
-          {/* FIX: Swapped fixed 'h-[...]' for 'min-h-[...]' and added 'pt-[180px] md:pt-[160px]' 
-              to ensure the wrapped header doesn't obscure the content below it. */}
           <section className="relative w-full min-h-[450px] md:min-h-[500px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
@@ -228,7 +225,7 @@ export default function ContactosUteisPage() {
           <aside className="w-full lg:w-[300px] shrink-0">
             {/* Em Destaque */}
             <div className="mb-10">
-              <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
+              <h3 className="font-extrabold text-[#1c2841] dark:text-white mb-4 text-sm uppercase tracking-wide">
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
@@ -274,22 +271,22 @@ export default function ContactosUteisPage() {
               <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
                 Perguntas frequentes
               </h3>
-              <div className="bg-[#fef4d8] border border-[#f5e0a6] rounded-md overflow-hidden transition-all">
+              <div className="bg-[#fef4d8] dark:bg-black border border-[#f5e0a6] dark:border-white/20 rounded-md overflow-hidden transition-all">
                 <button
                   onClick={() => setFaqOpen(!faqOpen)}
-                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] transition-colors text-left"
+                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] dark:hover:bg-white/10 transition-colors text-left"
                 >
-                  <p className="text-sm font-bold text-[#1c2841] pr-4 leading-snug">
+                  <p className="text-sm font-bold text-[#1c2841] dark:text-white pr-4 leading-snug">
                     O que fazer se um ficheiro não abrir corretamente?
                   </p>
                   {faqOpen ? (
-                    <ChevronUp className="w-5 h-5 text-[#1c2841] shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-[#1c2841] dark:text-white shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-[#1c2841] shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-[#1c2841] dark:text-white shrink-0" />
                   )}
                 </button>
                 <div
-                  className={`px-4 text-sm text-[#1c2841]/80 font-medium transition-all duration-300 ease-in-out ${
+                  className={`px-4 text-sm text-[#1c2841]/80 dark:text-white/70 font-medium transition-all duration-300 ease-in-out ${
                     faqOpen ? "max-h-40 pb-4 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
@@ -320,74 +317,46 @@ export default function ContactosUteisPage() {
 
             {/* Grid Map from CMS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 auto-rows-max">
-              {filteredAndSortedContacts.map((contact, index) => {
-                return (
-                  <div key={contact.id || index} className="contents">
-                    {/* ACCURATE CARD DESIGN */}
-                    <div className="bg-white border-2 border-[#1c2841] rounded-xl p-6 flex flex-col justify-between h-full hover:shadow-lg transition-shadow">
-                      <div>
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-sm font-bold text-[#1c2841]">
-                            {contact.categoryTop}{" "}
-                            <span className="opacity-80">
-                              {" "}
-                              {contact.categoryTop && contact.categorySub ? "/" : ""}{" "}
-                              {contact.categorySub}
-                            </span>
-                          </span>
-                          {contact.websiteUrl && (
-                            <a
-                              href={contact.websiteUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-[#1c2841] hover:text-[#1c2841]/70 text-sm flex items-center gap-1.5 font-medium transition-colors"
-                            >
-                              Website <ExternalLink className="w-4 h-4" />
-                            </a>
-                          )}
-                        </div>
-                        <h2 className="text-[#1c2841] text-[22px] md:text-2xl font-extrabold leading-tight mt-3 mb-4">
-                          {contact.title}
-                        </h2>
-
-                        <div className="text-[#1c2841] text-base font-medium flex flex-col gap-1.5">
-                          {contact.address && <p>{contact.address}</p>}
-                          {contact.phone && <p>Tel. {contact.phone}</p>}
-                          {contact.email && <p>{contact.email}</p>}
-                          {contact.schedule && <p>{contact.schedule}</p>}
-                        </div>
-                      </div>
+              {filteredAndSortedContacts.map((contact, index) => (
+                <div
+                  key={contact.id || index}
+                  className="bg-white border-2 border-[#1c2841] rounded-xl p-6 flex flex-col justify-between h-full hover:shadow-lg transition-shadow"
+                >
+                  {/* ACCURATE CARD DESIGN */}
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-bold text-[#1c2841]">
+                        {contact.categoryTop}{" "}
+                        <span className="opacity-80">
+                          {" "}
+                          {contact.categoryTop && contact.categorySub ? "/" : ""}{" "}
+                          {contact.categorySub}
+                        </span>
+                      </span>
+                      {contact.websiteUrl && (
+                        <a
+                          href={contact.websiteUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[#1c2841] hover:text-[#1c2841]/70 text-sm flex items-center gap-1.5 font-medium transition-colors"
+                        >
+                          Website <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
                     </div>
+                    <h2 className="text-[#1c2841] text-[22px] md:text-2xl font-extrabold leading-tight mt-3 mb-4">
+                      {contact.title}
+                    </h2>
 
-                    {/* NEW MIDDLE BANNER */}
-                    {index === 5 && (
-                      <div className="col-span-1 md:col-span-2 relative my-2 rounded-xl overflow-hidden h-[260px] shadow-sm">
-                        <img
-                          src="/visitar-banner.jpg"
-                          alt="Precisa de ajuda"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/30" />
-
-                        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 bg-[#fef4d8] rounded-lg p-6 md:p-8 max-w-[320px] shadow-lg border border-[#f5e0a6]">
-                          <h3 className="text-[#1c2841] font-extrabold text-xl leading-snug mb-3">
-                            Precisa de ajuda na utilização deste site?
-                          </h3>
-                          <p className="text-sm text-[#1c2841] font-medium">
-                            Visite o{" "}
-                            <Link
-                              href="/ajuda"
-                              className="underline decoration-2 underline-offset-4 font-bold text-[#1c2841] hover:text-[#1c2841]/70 transition-colors"
-                            >
-                              Centro de Ajuda
-                            </Link>
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                    <div className="text-[#1c2841] text-base font-medium flex flex-col gap-1.5">
+                      {contact.address && <p>{contact.address}</p>}
+                      {contact.phone && <p>Tel. {contact.phone}</p>}
+                      {contact.email && <p>{contact.email}</p>}
+                      {contact.schedule && <p>{contact.schedule}</p>}
+                    </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
 
               {/* BOTTOM BANNER */}
               <div className="col-span-1 md:col-span-2 mt-4 rounded-xl overflow-hidden">

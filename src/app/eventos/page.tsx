@@ -277,7 +277,7 @@ export default function EventsPage() {
 
             {/* Em Destaque */}
             <div className="mb-10">
-              <h3 className="font-extrabold text-[#253e6b] mb-4 text-sm uppercase tracking-wide">
+              <h3 className="font-extrabold text-[#253e6b] dark:text-white mb-4 text-sm uppercase tracking-wide">
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
@@ -323,22 +323,22 @@ export default function EventsPage() {
               <h3 className="font-extrabold text-[#253e6b] mb-4 text-sm uppercase tracking-wide">
                 Perguntas frequentes
               </h3>
-              <div className="bg-[#fef4d8] border border-[#f5e0a6] rounded-md overflow-hidden transition-all">
+              <div className="bg-[#fef4d8] dark:bg-black border border-[#f5e0a6] dark:border-white/20 rounded-md overflow-hidden transition-all">
                 <button
                   onClick={() => setFaqOpen(!faqOpen)}
-                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] transition-colors text-left"
+                  className="w-full p-4 flex justify-between items-center cursor-pointer hover:bg-[#fde9af] dark:hover:bg-white/10 transition-colors text-left"
                 >
-                  <p className="text-sm font-bold text-[#253e6b] pr-4 leading-snug">
+                  <p className="text-sm font-bold text-[#253e6b] dark:text-white pr-4 leading-snug">
                     O que fazer se um ficheiro não abrir corretamente?
                   </p>
                   {faqOpen ? (
-                    <ChevronUp className="w-5 h-5 text-[#253e6b] shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-[#253e6b] dark:text-white shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-[#253e6b] shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-[#253e6b] dark:text-white shrink-0" />
                   )}
                 </button>
                 <div
-                  className={`px-4 text-sm text-[#253e6b]/80 font-medium transition-all duration-300 ease-in-out ${
+                  className={`px-4 text-sm text-[#253e6b]/80 dark:text-white/70 font-medium transition-all duration-300 ease-in-out ${
                     faqOpen ? "max-h-40 pb-4 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
