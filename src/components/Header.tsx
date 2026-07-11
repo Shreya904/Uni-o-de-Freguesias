@@ -175,13 +175,11 @@ const Header = () => {
         >
           <Link
             href={item.href || "#"}
-            className={`text-[16px] transition-all text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white ${
+            className={`text-[16px] whitespace-nowrap transition-all text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white ${
               isActive(item)
                 ? "font-extrabold"
                 : `font-medium hover:underline hover:decoration-2 hover:underline-offset-8 ${
-                    openDropdown === item.label
-                      ? "underline decoration-2 underline-offset-8"
-                      : ""
+                    openDropdown === item.label ? "underline decoration-2 underline-offset-8" : ""
                   }`
             }`}
           >
@@ -189,7 +187,7 @@ const Header = () => {
           </Link>
 
           {openDropdown === item.label && (
-            <div className="absolute left-0 w-full top-[96px] z-50 px-8">
+            <div className="absolute left-0 w-full top-[96px] z-50">
               <div className="border-t-2 border-[#DE092D] rounded-b-2xl shadow-[0px_12px_24px_rgba(0,0,0,0.12)] overflow-hidden bg-white dark:bg-black">
                 <div className="flex p-8 lg:p-10 gap-6 lg:gap-8 justify-between flex-wrap">
                   {item.megaMenu.map((section) => (
@@ -216,7 +214,9 @@ const Header = () => {
                               <ChevronRight className="w-5 h-5 stroke-[2.5] transition-transform group-hover:translate-x-1 text-[#1C2E56] dark:text-white" />
                               <span
                                 className={`text-[16px] transition-colors text-[#1C2E56] dark:text-white ${
-                                  pathname === link.href ? "font-bold" : "font-medium group-hover:opacity-75"
+                                  pathname === link.href
+                                    ? "font-bold"
+                                    : "font-medium group-hover:opacity-75"
                                 }`}
                               >
                                 {link.label}
@@ -250,7 +250,7 @@ const Header = () => {
       <Link
         key={item.href}
         href={item.href!}
-        className={`text-[16px] transition-all text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white ${
+        className={`text-[16px] whitespace-nowrap transition-all text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white ${
           isActive(item)
             ? "font-extrabold"
             : "font-medium hover:underline hover:decoration-2 hover:underline-offset-8"
@@ -273,9 +273,11 @@ const Header = () => {
           openDropdown ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"
         }`}
       >
-        <div className="h-[96px] px-8 flex items-center justify-between gap-6 lg:gap-8">
+        {/* Adjusted padding and gap slightly for the mid-range screens */}
+        <div className="h-[96px] px-4 xl:px-8 flex items-center justify-between gap-4 xl:gap-8">
           {/* LEFT: Logo, Partition Line, and Começar */}
-          <div className="flex items-center gap-6 xl:gap-8 h-full">
+          {/* Adjusted gap down to 4 for smaller desktops, back to 8 for large (xl) */}
+          <div className="flex items-center gap-4 xl:gap-8 h-full">
             <Link href="/" className="flex items-center">
               <Image
                 src="/header logo1.png"
@@ -295,8 +297,9 @@ const Header = () => {
           </div>
 
           {/* RIGHT: Remaining Nav Items, Partition Line, and Actions */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8 h-full">
-            <div className="flex items-center gap-6 xl:gap-8 h-full">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-8 h-full">
+            {/* Adjusted gap down to 4 for smaller desktops, back to 8 for large (xl) */}
+            <div className="flex items-center gap-4 xl:gap-8 h-full">
               {navItems.slice(1).map(renderDesktopNavItem)}
             </div>
 
@@ -304,14 +307,14 @@ const Header = () => {
 
             <Link
               href="/balcao-digital"
-              className="h-[44px] px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
+              className="h-[44px] px-4 xl:px-5 rounded-lg border-2 border-[#DE092D] text-[#DE092D] font-bold text-[15px] xl:text-[16px] flex items-center justify-center hover:bg-[#DE092D] hover:text-white transition-colors whitespace-nowrap"
             >
               Balcão Digital
             </Link>
 
             <button
               onClick={openAjudaSidebar}
-              className="flex items-center gap-1 ml-2 text-[16px] font-medium hover:underline hover:decoration-2 hover:underline-offset-8 transition text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white"
+              className="flex items-center gap-1 ml-1 xl:ml-2 text-[15px] xl:text-[16px] font-medium hover:underline hover:decoration-2 hover:underline-offset-8 transition text-[#1C2E56] dark:text-white decoration-[#1C2E56] dark:decoration-white whitespace-nowrap"
             >
               Ajuda
               <ChevronLeft className="w-[18px] h-[18px] stroke-[2]" />
@@ -338,7 +341,9 @@ const Header = () => {
                       <Link
                         href={item.href}
                         className={`flex-grow py-3 transition ${
-                          isActive(item) || mobileExpanded === item.label ? "font-extrabold" : "font-medium"
+                          isActive(item) || mobileExpanded === item.label
+                            ? "font-extrabold"
+                            : "font-medium"
                         }`}
                       >
                         {item.label}
@@ -346,7 +351,9 @@ const Header = () => {
                     ) : (
                       <span
                         className={`flex-grow py-3 transition ${
-                          isActive(item) || mobileExpanded === item.label ? "font-extrabold" : "font-medium"
+                          isActive(item) || mobileExpanded === item.label
+                            ? "font-extrabold"
+                            : "font-medium"
                         }`}
                       >
                         {item.label}
@@ -395,7 +402,9 @@ const Header = () => {
                                   aria-disabled="true"
                                 >
                                   <ChevronRight className="w-[18px] h-[18px] stroke-[2.5] text-gray-400 dark:text-gray-600" />
-                                  <span className="font-medium text-gray-400 dark:text-gray-600">{link.label}</span>
+                                  <span className="font-medium text-gray-400 dark:text-gray-600">
+                                    {link.label}
+                                  </span>
                                 </span>
                               ),
                             )}
