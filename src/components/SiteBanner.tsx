@@ -165,6 +165,8 @@ export default function SiteBanner({ bannerId }: SiteBannerProps) {
 
   const safeBanner: SiteBannerContent = banner || {
     identifier: bannerId,
+    pageId: "",
+    slotId: "",
     variant: isHelpdesk ? "helpdesk" : isSticky ? "sticky" : "feature",
     imageSrc: isHelpdesk ? "/help-desk.jpg" : "/farmacia-banner.jpg",
     imageAlt: "Banner",

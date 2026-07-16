@@ -21,10 +21,14 @@ const formatEventDate = (dateString: string) => {
 };
 
 export async function generateStaticParams() {
-  const events = await fetchPublishedEvents();
-  return events.map((event: { slug: string }) => ({
-    slug: event.slug,
-  }));
+  try {
+    const events = await fetchPublishedEvents();
+    return events.map((event: { slug: string }) => ({
+      slug: event.slug,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -35,7 +39,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
   if (!eventItem) notFound();
 
-  const otherEvents = allEvents.filter((e: any) => e.id !== eventItem.id).slice(0, 3);
+  const otherEvents = allEvents.filter((e) => e.id !== eventItem.id).slice(0, 3);
   const finalDisplayDate =
     eventItem.displayDate || (eventItem.date ? formatEventDate(eventItem.date) : "");
 
@@ -158,7 +162,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   Outros Eventos
                 </h3>
                 <div className="space-y-8">
-                  {otherEvents.map((item: any) => (
+                  {otherEvents.map((item) => (
                     <Link key={item.id} href={`/eventos/${item.slug}`} className="block group">
                       <article className="flex flex-col gap-3">
                         {item.mainImage && (

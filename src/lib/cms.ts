@@ -118,7 +118,7 @@ export type CmsExecutivoItem = {
   image?: string;
   order: number;
 };
-function mapExecutivo(e: any): CmsExecutivoItem {
+function mapExecutivo(e: Record<string, unknown>): CmsExecutivoItem {
   return {
     id: String(e.id),
     name: asText(e.name),
@@ -162,31 +162,6 @@ async function cmsFetch<T>(path: string, query?: Record<string, string | number>
 function asText(v: unknown): string {
   if (typeof v === "string") return v;
   if (typeof v === "number") return String(v);
-  return "";
-}
-
-function lexicalToText(value: unknown): string {
-  if (typeof value !== "object" || value === null) return "";
-
-  const val = value as Record<string, unknown>;
-  const root = val.root as Record<string, unknown> | undefined;
-
-  if (!root?.children) return "";
-
-  const walk = (nodes: unknown[]): string =>
-    nodes
-      .map((n) => {
-        if (typeof n !== "object" || n === null) return "";
-        const node = n as Record<string, unknown>;
-        if (typeof node.text === "string") return node.text;
-        if (Array.isArray(node.children)) return walk(node.children);
-        return "";
-      })
-      .join(" ");
-
-  if (Array.isArray(root.children)) {
-    return walk(root.children).trim();
-  }
   return "";
 }
 
@@ -370,8 +345,7 @@ export async function fetchPlaces(limit = 100): Promise<CmsPlaceItem[]> {
   return (data.docs ?? []).map(mapPlace);
 }
 export async function fetchExecutivo(limit = 100): Promise<CmsExecutivoItem[]> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data = await cmsFetch<any>("/api/executivo", {
+  const data = await cmsFetch<Record<string, unknown>>("/api/executivo", {
     sort: "order", // Ensures they are returned in the exact order you set in the CMS
     depth: "1", // Needed to resolve the image URL
     limit,

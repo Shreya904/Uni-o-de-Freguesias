@@ -18,11 +18,15 @@ const formatNewsDate = (dateString: string) => {
 };
 
 export async function generateStaticParams() {
-  const newsItems = await fetchPublishedNews();
+  try {
+    const newsItems = await fetchPublishedNews();
 
-  return newsItems.map((news) => ({
-    slug: news.slug,
-  }));
+    return newsItems.map((news) => ({
+      slug: news.slug,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
