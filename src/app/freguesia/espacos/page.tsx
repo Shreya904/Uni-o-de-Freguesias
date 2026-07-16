@@ -3,10 +3,11 @@
 import { useState, useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import HelpDeskBanner from "@/components/home/helpDeskbanner";
+import SiteBanner from "@/components/SiteBanner";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
 import { fetchPlaces } from "@/lib/cms"; // Added import from your CMS lib
+import { siteBannerIds } from "@/lib/siteBanners";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 interface PlaceItem {
@@ -367,7 +368,7 @@ export default function EspacosPublicosPage() {
 
               {/* BOTTOM BANNER */}
               <div className="col-span-1 md:col-span-2 mt-4 rounded-xl overflow-hidden">
-                <HelpDeskBanner />
+                <SiteBanner bannerId={siteBannerIds.freguesiaEspacosHelpdesk} />
               </div>
             </div>
           </div>

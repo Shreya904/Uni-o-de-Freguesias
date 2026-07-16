@@ -3,8 +3,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
+import SiteBanner from "@/components/SiteBanner";
 import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 export default function OrganismoPage() {
   return (
@@ -169,29 +171,7 @@ export default function OrganismoPage() {
               </div>
 
               {/* FEATURE BANNER (Similar to Ajuda page) */}
-              <div className="relative rounded-xl overflow-hidden shadow-sm mb-12">
-                <img
-                  src="/comunidade-banner.jpg"
-                  alt="Membros da comunidade a sorrir"
-                  className="w-full h-[350px] object-cover bg-gray-200"
-                />
-
-                <div className="absolute left-5 bottom-5 bg-[#B4142F] text-white rounded-[4px] p-8 max-w-[340px] border-2 border-white">
-                  <h3 className="font-bold text-[22px] mb-3 leading-tight">
-                    Quer participar nas construção da nossa freguesia?
-                  </h3>
-
-                  <p className="text-[14px]">
-                    Visite o{" "}
-                    <Link
-                      href="/balcao-digital/comunidade"
-                      className="underline underline-offset-4 hover:text-gray-200 transition-colors"
-                    >
-                      Espaço Comunidade
-                    </Link>
-                  </p>
-                </div>
-              </div>
+              <SiteBanner bannerId={siteBannerIds.institucionalFeature} />
 
               {/* BOTTOM TEXT (Repeated in mockup, kept for fidelity) */}
               <div className="space-y-6 text-[15px] leading-relaxed">

@@ -5,8 +5,10 @@ import { Calendar, Clock, MapPin, FileEdit } from "lucide-react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import EventGallery from "@/components/EventGallery"; // <-- Imported the new component
+import SiteBanner from "@/components/SiteBanner";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import { fetchEventBySlug, fetchPublishedEvents } from "@/lib/cms";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 // --- HELPER: FORMAT DATES ---
 const formatEventDate = (dateString: string) => {
@@ -188,32 +190,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               </div>
 
               {/* SMALL RIGHT BANNER - Placed immediately beneath the events, sticking on scroll */}
-              <div className="sticky top-8 mt-4">
-                <div className="relative w-full h-[320px] overflow-hidden rounded-md border border-gray-300 dark:border-gray-800">
-                  <img
-                    src="/farmacia-banner.jpg"
-                    alt="Procura uma farmácia?"
-                    className="absolute inset-0 w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <div className="bg-[#46782a] px-5 py-5 rounded-md shadow-xl border border-white/20 w-full">
-                      <h2 className="text-white font-extrabold text-[19px] leading-snug mb-2">
-                        Procura uma farmácia?
-                      </h2>
-                      <p className="text-white/90 text-sm font-medium">
-                        Visite a{" "}
-                        <Link
-                          href="/contactos-uteis"
-                          className="underline decoration-2 underline-offset-4 hover:text-white transition-colors font-bold text-white"
-                        >
-                          Lista pública
-                        </Link>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SiteBanner bannerId={siteBannerIds.eventosSlugPharmacy} />
             </aside>
           </div>
         </div>

@@ -8,7 +8,8 @@ import PresidentSection from "@/components/home/PresidentSection";
 import NewsSection from "@/components/home/NewsSection";
 import DocumentsSection from "@/components/home/DocumentsSection";
 import InfoCardsSection from "@/components/home/linkCards";
-import HelpDeskBanner from "@/components/home/helpDeskbanner";
+import SiteBanner from "@/components/SiteBanner";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 export default function Home() {
   return (
@@ -33,7 +34,7 @@ export default function Home() {
         {/* <MapSection /> */}
 
         {/* New Help Desk Banner directly above Footer */}
-        <HelpDeskBanner />
+        <SiteBanner bannerId={siteBannerIds.homeHelpdesk} />
       </main>
       <Footer />
     </div>

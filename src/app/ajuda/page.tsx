@@ -5,6 +5,8 @@ import { ChevronDown, ChevronUp, Search, ArrowDownUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
+import SiteBanner from "@/components/SiteBanner";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 const sidebarSections = [
   {
@@ -281,26 +283,7 @@ export default function CentroAjudaPage() {
             </div>
 
             {/* FEATURE BANNER */}
-            <div className="relative mt-8 rounded-xl overflow-hidden shadow-sm h-[320px]">
-              <img
-                src="/help-banner.jpg"
-                alt="Procura um documento?"
-                className="w-full h-full object-cover dark:opacity-90"
-              />
-
-              <div className="absolute right-6 bottom-6 bg-[#1C2E56] dark:bg-[#1C2E56]/90 dark:backdrop-blur-sm text-white rounded-xl p-6 lg:p-7 max-w-[340px] shadow-lg">
-                <h3 className="font-bold text-[22px] leading-tight mb-2">Procura um documento?</h3>
-                <p className="text-[15px]">
-                  Visite o{" "}
-                  <a
-                    href="#"
-                    className="font-bold underline underline-offset-4 decoration-2 hover:text-[#F8C127] transition-colors"
-                  >
-                    Centro de Documentação
-                  </a>
-                </p>
-              </div>
-            </div>
+            <SiteBanner bannerId={siteBannerIds.ajudaFeature} />
 
             {/* OTHER TOPICS */}
             <div className="mt-12 mb-20">

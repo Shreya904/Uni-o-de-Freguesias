@@ -3,8 +3,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
+import SiteBanner from "@/components/SiteBanner";
 import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 export default function FreguesiaPage() {
   return (
@@ -145,30 +147,7 @@ export default function FreguesiaPage() {
               </div>
 
               {/* FEATURE BANNER (Green right-aligned box) */}
-              <div className="relative rounded-xl overflow-hidden shadow-sm mb-12">
-                <img
-                  src="/farmacia-banner.jpg"
-                  alt="Procura uma farmácia?"
-                  className="w-full h-[350px] object-cover bg-gray-200"
-                />
-
-                {/* Right aligned, green background */}
-                <div className="absolute right-5 bottom-5 bg-[#4A773C] text-white rounded-[4px] p-8 max-w-[340px] border-2 border-white">
-                  <h3 className="font-bold text-[22px] mb-3 leading-tight">
-                    Procura uma farmácia?
-                  </h3>
-
-                  <p className="text-[14px]">
-                    Visite a{" "}
-                    <Link
-                      href="/contactos-uteis"
-                      className="underline underline-offset-4 hover:text-gray-200 transition-colors"
-                    >
-                      Lista pública
-                    </Link>
-                  </p>
-                </div>
-              </div>
+              <SiteBanner bannerId={siteBannerIds.freguesiaFeature} />
 
               {/* BOTTOM TEXT */}
               <div className="space-y-6 text-[15px] leading-relaxed">

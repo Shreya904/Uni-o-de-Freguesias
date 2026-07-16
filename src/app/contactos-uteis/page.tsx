@@ -3,10 +3,11 @@
 import { useState, useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import HelpDeskBanner from "@/components/home/helpDeskbanner";
+import SiteBanner from "@/components/SiteBanner";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
 import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
 import { fetchUsefulContacts } from "@/lib/cms";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
 interface ContactItem {
@@ -364,7 +365,7 @@ export default function ContactosUteisPage() {
 
               {/* BOTTOM BANNER */}
               <div className="col-span-1 md:col-span-2 mt-4 rounded-xl overflow-hidden">
-                <HelpDeskBanner />
+                <SiteBanner bannerId={siteBannerIds.contactosUteisHelpdesk} />
               </div>
             </div>
           </div>

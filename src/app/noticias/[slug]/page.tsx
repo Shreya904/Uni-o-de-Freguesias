@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import RichTextRenderer from "@/components/RichTextRenderer";
+import SiteBanner from "@/components/SiteBanner";
 import { fetchNewsBySlug, fetchPublishedNews } from "@/lib/cms";
+import { siteBannerIds } from "@/lib/siteBanners";
 
 const formatNewsDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -74,63 +76,41 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                   />
                 </div>
               )}
-
-              <div className="mt-12">
-                <div className="relative w-full h-[220px] md:h-[280px] overflow-hidden rounded-md border border-gray-300">
-                  <img
-                    src="/farmacia-banner.jpg"
-                    alt="Procura uma farmácia?"
-                    className="absolute inset-0 w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8">
-                    <div className="bg-[#46782a] px-6 py-5 rounded-md shadow-xl border border-white/20 max-w-[280px]">
-                      <h2 className="text-white font-extrabold text-xl leading-snug mb-2">
-                        Procura uma farmácia?
-                      </h2>
-                      <p className="text-white/90 text-sm font-medium">
-                        Visite a{" "}
-                        <Link
-                          href="/contactos-uteis"
-                          className="underline decoration-1 underline-offset-4 hover:text-white transition-colors"
-                        >
-                          Lista pública
-                        </Link>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <aside className="lg:col-span-4 mt-12 lg:mt-0">
-              <h3 className="font-extrabold text-[#253e6b] text-sm uppercase tracking-wide mb-8">
-                Outras notícias
-              </h3>
+            <aside className="lg:col-span-4 mt-12 lg:mt-0 flex flex-col">
+              <div className="mb-10">
+                <h3 className="font-extrabold text-[#253e6b] text-sm uppercase tracking-wide mb-8">
+                  Outras notícias
+                </h3>
 
-              <div className="space-y-10">
-                {latestNews.map((item) => (
-                  <Link key={item.id} href={`/noticias/${item.slug}`} className="block group">
-                    <article className="flex flex-col gap-3">
-                      {item.mainImage && (
-                        <div className="w-full">
-                          <img
-                            src={item.mainImage}
-                            alt={item.title}
-                            className="w-full h-auto block"
-                          />
-                        </div>
-                      )}
-                      <h4 className="text-[#253e6b] text-[20px] font-extrabold leading-tight underline decoration-2 underline-offset-[5px] group-hover:text-blue-800 transition-colors">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs text-gray-500 font-semibold">
-                        {item.date && formatNewsDate(item.date)}
-                      </p>
-                    </article>
-                  </Link>
-                ))}
+                <div className="space-y-10">
+                  {latestNews.map((item) => (
+                    <Link key={item.id} href={`/noticias/${item.slug}`} className="block group">
+                      <article className="flex flex-col gap-3">
+                        {item.mainImage && (
+                          <div className="w-full">
+                            <img
+                              src={item.mainImage}
+                              alt={item.title}
+                              className="w-full h-auto block"
+                            />
+                          </div>
+                        )}
+                        <h4 className="text-[#253e6b] text-[20px] font-extrabold leading-tight underline decoration-2 underline-offset-[5px] group-hover:text-blue-800 transition-colors">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 font-semibold">
+                          {item.date && formatNewsDate(item.date)}
+                        </p>
+                      </article>
+                    </Link>
+                  ))}
+                </div>
               </div>
+
+              {/* SMALL RIGHT BANNER - Placed immediately beneath the news, sticking on scroll */}
+              <SiteBanner bannerId={siteBannerIds.noticiasSlugPharmacy} />
             </aside>
           </div>
         </div>
