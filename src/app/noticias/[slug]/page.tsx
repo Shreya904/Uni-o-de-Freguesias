@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import RichTextRenderer from "@/components/RichTextRenderer";
 import { fetchNewsBySlug, fetchPublishedNews } from "@/lib/cms";
 
-// Helper to format date exactly like "19 Dezembro 2025"
 const formatNewsDate = (dateString: string) => {
   const date = new Date(dateString);
   const day = date.getDate();
@@ -16,7 +16,6 @@ const formatNewsDate = (dateString: string) => {
 };
 
 export async function generateStaticParams() {
-  // Fetch all news to generate static paths
   const newsItems = await fetchPublishedNews();
 
   return newsItems.map((news) => ({
@@ -24,9 +23,7 @@ export async function generateStaticParams() {
   }));
 }
 
-// 1. UPDATED: Wrap the params type in a Promise
 export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  // 2. UPDATED: Await the params object before destructuring
   const { slug } = await params;
 
   const newsItem = await fetchNewsBySlug(slug);
@@ -35,30 +32,25 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
   if (!newsItem) notFound();
 
   const latestNews = allLatestNews.filter((n) => n.id !== newsItem.id).slice(0, 3);
-  const descriptionBlocks = newsItem.description ? newsItem.description.split("\n") : [];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 1. WRAPPED HEADER & BLUE BAR */}
       <div className="relative z-50">
-        {/* We keep the header and blue bar together in one block */}
         <div className="bg-[#253e6b]">
           <Header />
-          <div className="border-t border-white/10" /> {/* Subtle line between header and bar */}
-          {/* TOP BLUE NAVIGATION BAR - Blends into header */}
-          <div className="container max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-2 text-sm font-semibold text-white">
-            <Link href="/noticias" className="hover:text-blue-200 transition-colors">
-              {"<"}
-            </Link>
+          <Link
+            href="/noticias"
+            className="container max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-2 text-sm font-semibold text-white hover:text-blue-200 transition-colors"
+          >
+            <span>{"<"}</span>
             <span>Notícias</span>
-          </div>
+          </Link>
         </div>
       </div>
 
       <main className="py-12">
         <div className="container max-w-[1400px] mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-            {/* LEFT MAIN ARTICLE */}
             <div className="lg:col-span-8">
               <p className="text-xs font-semibold text-gray-500 mb-4">
                 {newsItem.date && formatNewsDate(newsItem.date)}
@@ -68,15 +60,11 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                 {newsItem.title}
               </h1>
 
-              {descriptionBlocks.length > 0 && (
-                <div className="space-y-6 text-[16px] md:text-[18px] leading-8 text-[#1c2841]/90 font-medium">
-                  {descriptionBlocks.map((para, i) => (
-                    <p key={i}>{para}</p>
-                  ))}
-                </div>
-              )}
+              <RichTextRenderer
+                content={newsItem.description}
+                className="text-[16px] md:text-[18px]"
+              />
 
-              {/* IMAGE RENDERING (Natural CMS aspect ratio) */}
               {newsItem.mainImage && (
                 <div className="mt-10 w-full">
                   <img
@@ -87,7 +75,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                 </div>
               )}
 
-              {/* BOTTOM BANNER */}
               <div className="mt-12">
                 <div className="relative w-full h-[220px] md:h-[280px] overflow-hidden rounded-md border border-gray-300">
                   <img
@@ -116,7 +103,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
               </div>
             </div>
 
-            {/* RIGHT SIDEBAR */}
             <aside className="lg:col-span-4 mt-12 lg:mt-0">
               <h3 className="font-extrabold text-[#253e6b] text-sm uppercase tracking-wide mb-8">
                 Outras notícias

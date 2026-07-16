@@ -4,6 +4,12 @@ import { ChevronRight, ChevronDown } from "lucide-react";
 
 type InscricaoType = "passeios" | "almosos" | "hidroginastica";
 
+const dateLabels: Record<InscricaoType, string> = {
+  passeios: "Data do passeio",
+  almosos: "Data do Almoço",
+  hidroginastica: "Data da Aula",
+};
+
 const titles: Record<InscricaoType, string> = {
   passeios: "Inscrição em passeios",
   almosos: "Inscrição em almoços",
@@ -178,7 +184,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
           })}
         </div>
 
-        {step === 1 && <StepDados onContinue={next} />}
+        {step === 1 && <StepDados active={active} onContinue={next} />}
         {step === 2 && <StepPagamento onContinue={next} />}
         {step === 3 && <StepConfirmacao />}
 
@@ -191,7 +197,7 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
   );
 }
 
-function StepDados({ onContinue }: { onContinue: () => void }) {
+function StepDados({ active, onContinue }: { active: InscricaoType; onContinue: () => void }) {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">1 — Os seus dados pessoais</p>
@@ -222,7 +228,7 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
-            Data do passeio
+            {dateLabels[active]}
           </label>
           <select className="w-full border dark:border-white/20 rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70 dark:bg-black">
             <option>— Selecione</option>

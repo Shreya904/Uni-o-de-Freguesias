@@ -2,12 +2,52 @@ type PayloadList<T> = {
   docs: T[];
 };
 
+export type RichTextTextNode = {
+  type?: "text";
+  text: string;
+  format?: number;
+  detail?: number;
+  mode?: string;
+  style?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strikethrough?: boolean;
+  code?: boolean;
+  children?: never;
+};
+
+export type RichTextElementNode = {
+  type: string;
+  children?: RichTextNode[];
+  direction?: "ltr" | "rtl" | null;
+  format?: string;
+  indent?: number;
+  version?: number;
+  tag?: string;
+  fields?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+export type RichTextNode = RichTextTextNode | RichTextElementNode;
+
+export type RichTextContent = {
+  root?: {
+    type?: string;
+    version?: number;
+    format?: string;
+    indent?: number;
+    direction?: "ltr" | "rtl" | null;
+    children?: RichTextNode[];
+  };
+};
+
 export type CmsNewsItem = {
   id: string;
   slug: string;
   title: string;
   excerpt: string;
-  description: string;
+  description: RichTextContent | string;
   date: string;
   mainImage?: string;
   galleryImages: string[];
@@ -37,7 +77,7 @@ export type CmsEventItem = {
   priceType: string;
   title: string;
   excerpt: string;
-  description: string;
+  description: RichTextContent | string;
   date: string;
   displayDate: string;
   time: string;
@@ -70,7 +110,24 @@ export type CmsPlaceItem = {
   schedule?: string;
   websiteUrl?: string;
 };
-
+export type CmsExecutivoItem = {
+  id: string;
+  name: string;
+  role: string;
+  responsibilities: string;
+  image?: string;
+  order: number;
+};
+function mapExecutivo(e: any): CmsExecutivoItem {
+  return {
+    id: String(e.id),
+    name: asText(e.name),
+    role: asText(e.role),
+    responsibilities: asText(e.responsibilities),
+    image: media(e.image),
+    order: Number(e.order) || 0,
+  };
+}
 const CMS_URL =
   process.env.NEXT_PUBLIC_PAYLOAD_URL || process.env.NEXT_PUBLIC_API_URL || process.env.PAYLOAD_URL;
 
@@ -155,7 +212,7 @@ function mapNews(n: Record<string, unknown>): CmsNewsItem {
     slug: asText(n.slug),
     title: asText(n.title),
     excerpt: asText(n.excerpt),
-    description: typeof n.description === "string" ? n.description : lexicalToText(n.description),
+    description: (n.description as RichTextContent | string | undefined) ?? "",
     date: asText(n.date),
     mainImage: media(n.mainImage),
     // Fixed: explicit type guard for string filtering
@@ -201,7 +258,7 @@ function mapEvent(e: Record<string, unknown>): CmsEventItem {
     priceType: asText(e.priceType) || "Gratuito",
     title: asText(e.title),
     excerpt: asText(e.excerpt),
-    description: typeof e.description === "string" ? e.description : lexicalToText(e.description),
+    description: (e.description as RichTextContent | string | undefined) ?? "",
     date: asText(e.date),
     displayDate: asText(e.displayDate),
     time: asText(e.time),
@@ -311,4 +368,13 @@ export async function fetchPlaces(limit = 100): Promise<CmsPlaceItem[]> {
     limit,
   });
   return (data.docs ?? []).map(mapPlace);
+}
+export async function fetchExecutivo(limit = 100): Promise<CmsExecutivoItem[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data = await cmsFetch<any>("/api/executivo", {
+    sort: "order", // Ensures they are returned in the exact order you set in the CMS
+    depth: "1", // Needed to resolve the image URL
+    limit,
+  });
+  return (data.docs ?? []).map(mapExecutivo);
 }

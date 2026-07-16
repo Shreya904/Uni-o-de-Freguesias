@@ -304,15 +304,19 @@ export default function ContactosUteisPage() {
           {/* RIGHT MAIN CONTENT */}
           <div className="flex-1">
             {/* Header & Sorting */}
-            <div className="flex items-center mb-6 text-sm text-gray-500 font-semibold">
-              <span className="mr-3">Ordenar</span>
-              <button
-                onClick={() => setSortAsc(!sortAsc)}
-                className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 text-[#1c2841] transition-colors"
-              >
-                Nome
-                <ArrowDownUp className="w-4 h-4 text-gray-400" />
-              </button>
+            <div className="flex items-center justify-end mb-6 text-sm text-gray-500 font-semibold">
+              <div className="flex items-center gap-3">
+                <span className="mr-3">Ordenar</span>
+                <button
+                  onClick={() => setSortAsc(!sortAsc)}
+                  className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 text-[#1c2841] transition-colors"
+                >
+                  Nome
+                  <ArrowDownUp
+                    className={`w-4 h-4 transition-transform ${sortAsc ? "rotate-0 text-gray-400" : "rotate-180 text-[#1c2841]"}`}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Grid Map from CMS */}

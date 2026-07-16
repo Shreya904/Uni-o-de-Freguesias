@@ -386,17 +386,19 @@ export default function DocumentacaoPage() {
           <div className="flex-1">
             {/* Header & Sorting / Views */}
             <div className="flex items-center justify-between mb-6 text-sm text-gray-500 font-semibold">
-              <div className="flex items-center">
+              <div className="flex items-center gap-3">
                 <span className="mr-3">Ordenar</span>
                 <button
                   onClick={() => setSortAsc(!sortAsc)}
                   className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 text-[#1c2841] transition-colors"
                 >
                   Nome
-                  <ArrowDownUp className="w-4 h-4 text-gray-400" />
+                  <ArrowDownUp
+                    className={`w-4 h-4 transition-transform ${sortAsc ? "rotate-0 text-gray-400" : "rotate-180 text-[#1c2841]"}`}
+                  />
                 </button>
               </div>
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-2 ml-auto">
                 <button
                   onClick={() => setViewMode("list")}
                   className={`p-2 rounded-md transition-colors ${viewMode === "list" ? "bg-gray-200 text-[#1c2841]" : "text-gray-400 hover:bg-gray-100"}`}

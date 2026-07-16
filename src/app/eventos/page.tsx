@@ -5,7 +5,16 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
-import { ChevronUp, ChevronDown, ArrowDownUp, FileEdit } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ArrowDownUp,
+  FileEdit,
+  Calendar,
+  LayoutGrid,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { fetchPublishedEvents } from "@/lib/cms";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
@@ -22,9 +31,10 @@ export interface EventItem {
   location: string;
   mainImage: string;
   registrationLink: string;
+  rawDate?: string; // Added to easily match events to calendar grid cells
 }
 
-// Helper to determine time-based categories (Hoje, Esta semana, Este mês) dynamically
+// Helper to determine time-based categories dynamically (Updated for "Amanhã")
 const getCategorySub = (eventDateStr: string): string => {
   if (!eventDateStr) return "Futuro";
 
@@ -40,10 +50,11 @@ const getCategorySub = (eventDateStr: string): string => {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return "Hoje";
-  if (diffDays > 0 && diffDays <= 7) return "Esta semana";
+  if (diffDays === 1) return "Amanhã";
+  if (diffDays >= 0 && diffDays <= 7) return "Esta semana";
   if (diffDays > 7 && diffDays <= 31) return "Este mês";
 
-  return "Futuro"; // For events beyond this month
+  return "Futuro";
 };
 
 // --- FALLBACK DATA ---
@@ -61,6 +72,7 @@ const fallbackEvents: EventItem[] = [
     location: "Polo Glória e Polo Vera Cruz",
     mainImage: "/evento-ginastica.jpg",
     registrationLink: "/inscricoes",
+    rawDate: "2025-09-01T10:00:00Z",
   },
   {
     id: "2",
@@ -79,6 +91,130 @@ const fallbackEvents: EventItem[] = [
   },
 ];
 
+// --- CALENDAR COMPONENT ---
+const CalendarView = ({ events }: { events: EventItem[] }) => {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const nextMonth = () =>
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  const prevMonth = () =>
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+
+  const daysInMonth = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth() + 1,
+    0,
+  ).getDate();
+  let firstDayIndex = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay() - 1;
+  if (firstDayIndex === -1) firstDayIndex = 6; // Adjust so Monday is 0, Sunday is 6
+
+  // Create an array of 42 cells (6 weeks) to maintain a perfect grid
+  const days = Array.from({ length: 42 }, (_, i) => {
+    const dayNumber = i - firstDayIndex + 1;
+    if (dayNumber > 0 && dayNumber <= daysInMonth) {
+      return new Date(currentMonth.getFullYear(), currentMonth.getMonth(), dayNumber);
+    }
+    return null;
+  });
+
+  // Drop the last row if it's completely empty
+  if (days.slice(35).every((d) => d === null)) {
+    days.splice(35);
+  }
+
+  const monthNames = [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro",
+  ];
+
+  return (
+    <div className="w-full bg-white animate-in fade-in duration-300">
+      {/* Month Navigation */}
+      <div className="flex items-center justify-center gap-12 py-6 mb-4">
+        <button onClick={prevMonth} className="text-[#253e6b] hover:text-black transition-colors">
+          <ChevronLeft className="w-6 h-6 stroke-[3]" />
+        </button>
+        <h2 className="text-2xl font-extrabold text-[#253e6b]">
+          {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+        </h2>
+        <button onClick={nextMonth} className="text-[#253e6b] hover:text-black transition-colors">
+          <ChevronRight className="w-6 h-6 stroke-[3]" />
+        </button>
+      </div>
+
+      {/* Responsive Grid Wrapper */}
+      <div className="w-full overflow-x-auto pb-4">
+        <div className="min-w-[900px] border border-gray-200">
+          <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50/50">
+            {["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"].map((day) => (
+              <div
+                key={day}
+                className="p-3 text-sm font-medium text-gray-500 border-r border-gray-200 last:border-r-0"
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7">
+            {days.map((date, i) => {
+              if (!date) {
+                return (
+                  <div
+                    key={i}
+                    className="min-h-[140px] border-b border-r border-gray-100 bg-gray-50/30"
+                  ></div>
+                );
+              }
+
+              const isToday = new Date().toDateString() === date.toDateString();
+              const dayEvents = events.filter(
+                (e) => e.rawDate && new Date(e.rawDate).toDateString() === date.toDateString(),
+              );
+
+              return (
+                <div
+                  key={i}
+                  className={`min-h-[140px] p-3 border-b border-r border-gray-200 transition-colors 
+                    ${isToday ? "border-2 border-[#1c2841] bg-[#f9fafb]" : ""}
+                  `}
+                >
+                  <span
+                    className={`block font-extrabold text-xl mb-3 ${isToday ? "text-[#1c2841]" : "text-[#253e6b]"}`}
+                  >
+                    {date.getDate()} {isToday && "- Hoje"}
+                  </span>
+
+                  <div className="flex flex-col gap-2">
+                    {dayEvents.map((e) => (
+                      <Link key={e.id} href={`/eventos/${e.slug}`}>
+                        <div className="bg-[#1c2841] text-white p-2 rounded text-xs leading-snug hover:bg-blue-800 transition-colors cursor-pointer">
+                          <div className="font-bold mb-1 truncate">{e.title}</div>
+                          <div className="text-white/80">{e.timeStr}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function EventsPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -86,12 +222,22 @@ export default function EventsPage() {
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
 
+  // NEW: State to toggle between grid cards and the calendar widget
+  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
+
+  // Dynamic Dates for Sidebar Headers
+  const todayDate = new Date();
+  const tomorrowDate = new Date(todayDate);
+  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+
+  const formatShortDate = (d: Date) =>
+    `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+
+  const hojeLabel = formatShortDate(todayDate);
+  const amanhaLabel = formatShortDate(tomorrowDate);
+
   // Filter Categories
   const filterCategories = [
-    {
-      title: "Formato (todos)",
-      options: ["Hoje", "Esta semana", "Este mês"],
-    },
     {
       title: "Tipo (todos)",
       options: ["Exposições", "Atividades ao ar livre", "Mercados"],
@@ -102,7 +248,6 @@ export default function EventsPage() {
     },
   ];
 
-  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let mounted = true;
 
@@ -112,9 +257,7 @@ export default function EventsPage() {
 
         if (mounted) {
           if (cmsData && cmsData.length > 0) {
-            // Map the CMS data into the local EventItem format
             const mappedEvents: EventItem[] = cmsData.map((doc) => {
-              // Format the exact date fallback if displayDate isn't provided
               const fallbackFormattedDate = doc.date
                 ? new Date(doc.date).toLocaleDateString("pt-PT", {
                     day: "numeric",
@@ -136,6 +279,7 @@ export default function EventsPage() {
                 location: doc.location || "",
                 mainImage: doc.mainImage || "",
                 registrationLink: doc.registrationLink || "/inscricoes",
+                rawDate: doc.date || "", // Capture raw date for calendar
               };
             });
             setEvents(mappedEvents);
@@ -150,7 +294,6 @@ export default function EventsPage() {
     };
 
     loadEvents();
-
     return () => {
       mounted = false;
     };
@@ -163,9 +306,8 @@ export default function EventsPage() {
   };
 
   const filteredAndSortedEvents = useMemo(() => {
-    let result = [...events]; // Always start with the current state
+    let result = [...events];
 
-    // Search Query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -173,17 +315,28 @@ export default function EventsPage() {
       );
     }
 
-    // Sidebar Filters
     if (selectedFilters.length > 0) {
-      result = result.filter(
-        (e) =>
-          selectedFilters.includes(e.categoryTop) ||
-          selectedFilters.includes(e.categorySub) ||
-          selectedFilters.includes(e.priceType),
-      );
+      result = result.filter((e) => {
+        // Direct matches for Top Categories and Price
+        if (selectedFilters.includes(e.categoryTop) || selectedFilters.includes(e.priceType))
+          return true;
+
+        // Intelligent Date Matching
+        if (selectedFilters.includes("Hoje") && e.categorySub === "Hoje") return true;
+        if (selectedFilters.includes("Amanhã") && e.categorySub === "Amanhã") return true;
+
+        // "Esta semana" should include today, tomorrow, and the rest of the week
+        if (
+          selectedFilters.includes("Esta semana") &&
+          ["Hoje", "Amanhã", "Esta semana"].includes(e.categorySub)
+        ) {
+          return true;
+        }
+
+        return false;
+      });
     }
 
-    // Sort A-Z
     result.sort((a, b) => {
       if (sortAsc) return a.title.localeCompare(b.title);
       return b.title.localeCompare(a.title);
@@ -195,14 +348,12 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-white">
       <main>
-        {/* HERO SECTION WITH WRAPPED HEADER */}
+        {/* HERO SECTION */}
         <div className="relative">
           <div className="absolute top-0 left-0 right-0 z-50">
             <Header />
           </div>
 
-          {/* FIX: Swapped fixed 'h-[...]' for 'min-h-[...]' and added 'pt-[180px] md:pt-[160px]' 
-              to ensure the wrapped header doesn't obscure the content below it. */}
           <section className="relative w-full min-h-[400px] md:min-h-[450px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
@@ -252,26 +403,55 @@ export default function EventsPage() {
         {/* MAIN LAYOUT: SIDEBAR + CONTENT */}
         <section className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
           {/* LEFT SIDEBAR */}
-          <aside className="w-full lg:w-[300px] shrink-0">
-            {/* Quick Date Filters Container */}
-            <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-hide">
+          <aside className="w-full lg:w-[320px] shrink-0">
+            {/* UPDATED: Grouped Date Filters based on image aesthetic */}
+            <div className="flex w-full border border-gray-300 rounded-md overflow-hidden mb-10">
               <button
                 onClick={() => toggleFilter("Hoje")}
-                className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Hoje") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
+                className={`flex-1 py-2 px-1 text-center border-r border-gray-300 transition-colors ${
+                  selectedFilters.includes("Hoje")
+                    ? "bg-[#1c2841] text-white"
+                    : "bg-white text-[#253e6b] hover:bg-gray-50"
+                }`}
               >
-                Hoje
+                <span
+                  className={`block text-xs font-medium mb-0.5 ${selectedFilters.includes("Hoje") ? "text-white/80" : "text-[#253e6b]/70"}`}
+                >
+                  Hoje
+                </span>
+                <span className="block text-sm font-extrabold leading-none">{hojeLabel}</span>
               </button>
+
+              <button
+                onClick={() => toggleFilter("Amanhã")}
+                className={`flex-1 py-2 px-1 text-center border-r border-gray-300 transition-colors ${
+                  selectedFilters.includes("Amanhã")
+                    ? "bg-[#1c2841] text-white"
+                    : "bg-white text-[#253e6b] hover:bg-gray-50"
+                }`}
+              >
+                <span
+                  className={`block text-xs font-medium mb-0.5 ${selectedFilters.includes("Amanhã") ? "text-white/80" : "text-[#253e6b]/70"}`}
+                >
+                  Amanhã
+                </span>
+                <span className="block text-sm font-extrabold leading-none">{amanhaLabel}</span>
+              </button>
+
               <button
                 onClick={() => toggleFilter("Esta semana")}
-                className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Esta semana") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
+                className={`flex-1 py-2 px-1 text-center transition-colors ${
+                  selectedFilters.includes("Esta semana")
+                    ? "bg-[#1c2841] text-white"
+                    : "bg-white text-[#253e6b] hover:bg-gray-50"
+                }`}
               >
-                Esta Semana
-              </button>
-              <button
-                onClick={() => toggleFilter("Este mês")}
-                className={`border rounded-md py-2 px-4 text-xs font-bold text-center min-w-[80px] transition-colors ${selectedFilters.includes("Este mês") ? "border-[#253e6b] bg-[#253e6b] text-white" : "border-gray-300 text-[#253e6b] hover:border-[#253e6b]"}`}
-              >
-                Este Mês
+                <span
+                  className={`block text-xs font-medium mb-0.5 ${selectedFilters.includes("Esta semana") ? "text-white/80" : "text-[#253e6b]/70"}`}
+                >
+                  Esta
+                </span>
+                <span className="block text-sm font-extrabold leading-none">Semana</span>
               </button>
             </div>
 
@@ -318,7 +498,7 @@ export default function EventsPage() {
 
             <hr className="border-gray-200 my-8" />
 
-            {/* Perguntas Frequentes Accordion */}
+            {/* FAQ Accordion */}
             <div className="mb-8">
               <h3 className="font-extrabold text-[#253e6b] mb-4 text-sm uppercase tracking-wide">
                 Perguntas frequentes
@@ -354,105 +534,99 @@ export default function EventsPage() {
           </aside>
 
           {/* RIGHT MAIN CONTENT */}
-          <div className="flex-1">
-            {/* Header & Sorting */}
-            <div className="flex items-center justify-between mb-8 text-sm text-gray-500 font-semibold border-b border-gray-200 pb-4">
-              <div className="flex items-center">
-                <span className="mr-3">Ordenar</span>
-                <button
-                  onClick={() => setSortAsc(!sortAsc)}
-                  className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 text-[#253e6b] transition-colors"
-                >
-                  Nome
-                  <ArrowDownUp className="w-4 h-4 text-gray-400" />
-                </button>
-              </div>
-              <div>
-                <button className="p-2 bg-gray-100 rounded-md text-[#253e6b] hover:bg-gray-200 transition-colors">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+          <div className="flex-1 w-full min-w-0">
+            {/* Header, Sorting & View Toggle */}
+            <div className="flex items-center justify-between mb-8 text-sm text-[#253e6b] font-semibold border-b border-gray-200 pb-4">
+              <div />
+              <div className="flex items-center gap-4 ml-auto">
+                <div className="flex items-center gap-3">
+                  <span className="hidden sm:block">Ordenar</span>
+                  <button
+                    onClick={() => setSortAsc(!sortAsc)}
+                    className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 transition-colors"
                   >
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
+                    Nome
+                    <ArrowDownUp
+                      className={`w-4 h-4 transition-transform ${sortAsc ? "rotate-0 text-gray-400" : "rotate-180"}`}
+                    />
+                  </button>
+                </div>
+
+                {/* View Mode Toggle */}
+                <button
+                  onClick={() => setViewMode((prev) => (prev === "grid" ? "calendar" : "grid"))}
+                  className="p-2 bg-[#1c2841] text-white rounded-md hover:bg-[#253e6b] transition-colors shadow-sm"
+                  title={`Mudar para ${viewMode === "grid" ? "Calendário" : "Grelha"}`}
+                >
+                  {viewMode === "grid" ? (
+                    <Calendar className="w-5 h-5" />
+                  ) : (
+                    <LayoutGrid className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
 
-            {/* Grid Map from CMS */}
-            <div className="columns-1 md:columns-2 gap-8 [column-gap:2rem]">
-              {filteredAndSortedEvents.map((event) => (
-                <div key={event.id} className="break-inside-avoid mb-8">
-                  {/* ACCURATE CARD DESIGN */}
-                  <div className="bg-white border border-[#253e6b] rounded-md p-5 flex flex-col hover:shadow-lg transition-shadow h-full">
-                    {/* Image - contained within padding, rounded corners */}
-                    {event.mainImage && (
-                      <div className="w-full mb-4">
-                        <img
-                          src={event.mainImage}
-                          alt={event.title}
-                          className="w-full h-auto object-cover rounded-sm block"
-                        />
-                      </div>
-                    )}
-
-                    <div className="flex flex-col flex-1">
-                      {/* Non-clickable Title */}
-                      <h2 className="text-[#253e6b] text-[22px] font-extrabold leading-tight mb-3 transition-colors">
-                        {event.title}
-                      </h2>
-
-                      <p className="text-[15px] text-[#253e6b]/80 font-medium leading-relaxed mb-6">
-                        {event.description}
-                      </p>
-
-                      {/* Event Details Grid - Accurate Spacing & Labels */}
-                      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[15px] text-[#253e6b]/90 mb-6">
-                        <span className="font-extrabold text-[#253e6b]">Data:</span>
-                        <span className="font-medium">{event.dateStr}</span>
-
-                        <span className="font-extrabold text-[#253e6b]">Hora:</span>
-                        <span className="font-medium">{event.timeStr}</span>
-
-                        <span className="font-extrabold text-[#253e6b]">Local de início:</span>
-                        <span className="font-medium">{event.location}</span>
-                      </div>
-
-                      {/* Footer (Price & CTA) */}
-                      <div className="mt-auto pt-4 border-t border-gray-200 flex items-center text-[15px]">
-                        <span className="font-extrabold text-[#253e6b]">{event.priceType}</span>
-
-                        {/* Vertical Divider */}
-                        <div className="w-px h-4 bg-gray-300 mx-3"></div>
-
-                        {/* ONLY this section is clickable and darkens on hover */}
-                        <Link
-                          href={event.registrationLink || "/inscricoes"}
-                          className="flex items-center gap-1.5 text-[#253e6b]/80 font-medium hover:text-[#1c2841] transition-colors cursor-pointer group"
-                        >
-                          <span className="group-hover:text-[#1c2841]">Inscrição</span>
-                          <FileEdit className="w-4 h-4 group-hover:text-[#1c2841]" />
+            {/* Conditionally Render View */}
+            {viewMode === "calendar" ? (
+              <CalendarView events={filteredAndSortedEvents} />
+            ) : (
+              <div className="columns-1 md:columns-2 gap-8 [column-gap:2rem] animate-in fade-in duration-300">
+                {filteredAndSortedEvents.map((event) => (
+                  <div key={event.id} className="break-inside-avoid mb-8">
+                    <div className="bg-white border border-[#253e6b] rounded-md p-5 flex flex-col hover:shadow-lg transition-shadow h-full">
+                      {event.mainImage && (
+                        <Link href={`/eventos/${event.slug}`} className="w-full mb-4 block">
+                          <img
+                            src={event.mainImage}
+                            alt={event.title}
+                            className="w-full h-auto object-cover rounded-sm block hover:opacity-90 transition-opacity"
+                          />
                         </Link>
+                      )}
+
+                      <div className="flex flex-col flex-1">
+                        <Link href={`/eventos/${event.slug}`}>
+                          <h2 className="text-[#253e6b] text-[22px] font-extrabold leading-tight mb-3 hover:text-blue-800 hover:underline decoration-2 underline-offset-4 transition-colors cursor-pointer">
+                            {event.title}
+                          </h2>
+                        </Link>
+
+                        <p className="text-[15px] text-[#253e6b]/80 font-medium leading-relaxed mb-6">
+                          {event.description}
+                        </p>
+
+                        <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[15px] text-[#253e6b]/90 mb-6">
+                          <span className="font-extrabold text-[#253e6b]">Data:</span>
+                          <span className="font-medium">{event.dateStr}</span>
+
+                          <span className="font-extrabold text-[#253e6b]">Hora:</span>
+                          <span className="font-medium">{event.timeStr}</span>
+
+                          <span className="font-extrabold text-[#253e6b]">Local:</span>
+                          <span className="font-medium">{event.location}</span>
+                        </div>
+
+                        <div className="mt-auto pt-4 border-t border-gray-200 flex items-center text-[15px]">
+                          <span className="font-extrabold text-[#253e6b]">{event.priceType}</span>
+                          <div className="w-px h-4 bg-gray-300 mx-3"></div>
+                          <Link
+                            href={event.registrationLink || "/inscricoes"}
+                            className="flex items-center gap-1.5 text-[#253e6b]/80 font-medium hover:text-[#1c2841] transition-colors group"
+                          >
+                            <span className="group-hover:text-[#1c2841]">Inscrição</span>
+                            <FileEdit className="w-4 h-4 group-hover:text-[#1c2841]" />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   );
