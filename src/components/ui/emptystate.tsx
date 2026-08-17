@@ -1,5 +1,55 @@
-import Link from "next/link";
+import React from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+const EmptyDataMotif = () => (
+  <svg
+    viewBox="0 0 240 240"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-full h-full max-w-[180px] md:max-w-[200px] mx-auto mb-6 drop-shadow-sm"
+  >
+    {/* Abstract Background Grid */}
+    <path
+      d="M20 20h200v200H20z"
+      stroke="#CBD5E1"
+      strokeWidth="2"
+      strokeDasharray="6 6"
+      opacity="0.6"
+    />
+
+    {/* Empty Document / File */}
+    <rect
+      x="60"
+      y="50"
+      width="120"
+      height="140"
+      rx="8"
+      fill="#ffffff"
+      stroke="#1c2841"
+      strokeWidth="4"
+    />
+
+    {/* Ghosted Document Lines */}
+    <path d="M84 84h72M84 110h48" stroke="#CBD5E1" strokeWidth="4" strokeLinecap="round" />
+
+    {/* Magnifying Glass */}
+    <circle cx="140" cy="150" r="32" fill="#f8fafc" stroke="#b81d34" strokeWidth="4" />
+    <path d="M162 172l24 24" stroke="#b81d34" strokeWidth="6" strokeLinecap="round" />
+
+    {/* Fixed Question Mark inside the glass */}
+    <path
+      // Notice the positive 5.5 and 8 in the first 'c' command to curve right
+      // and the negative -8 in the second 'c' command to curve back to center
+      d="M140 134c5.5 0 8 3.5 8 7c0 6-8 7.5-8 13v2"
+      stroke="#b81d34"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="140" cy="164" r="2.5" fill="#b81d34" />
+  </svg>
+);
 
 type ActionProps = {
   label: string;
@@ -15,82 +65,45 @@ type EmptyStateProps = {
 };
 
 export default function EmptyState({
-  title = "Nada por aqui ainda",
-  description = "Ainda não existem dados disponíveis nesta secção.",
+  title = "Sem resultados",
+  description = "Ainda não existem conteúdos publicados nesta secção.",
   primaryAction,
   secondaryAction,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-12 px-4">
-      {/* 🎨 UPDATED GENERIC EMPTY STATE ILLUSTRATION */}
-      <div className="w-32 mb-4">
-        <svg viewBox="0 0 120 120" className="w-full h-auto" fill="none">
-          {/* soft outer ring */}
-          <circle
-            cx="60"
-            cy="60"
-            r="48"
-            className="stroke-[hsl(var(--primary))]/20"
-            strokeWidth="2"
-          />
+    <div className="w-full bg-[#f8fafc] border-2 border-[#1c2841] border-dashed rounded-xl p-8 md:p-12 flex flex-col items-center justify-center text-center my-8">
+      <EmptyDataMotif />
 
-          {/* broken arc (missing data metaphor) */}
-          <path
-            d="M32 60a28 28 0 0 1 56 0"
-            className="stroke-[hsl(var(--primary))]"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
+      <h3 className="text-[#1c2841] text-2xl md:text-3xl font-extrabold mb-3">{title}</h3>
+      <p className="text-[15px] md:text-base font-medium text-[#4a5568] max-w-sm mx-auto leading-relaxed">
+        {description}
+      </p>
 
-          {/* center anchor */}
-          <circle cx="60" cy="60" r="6" className="fill-[hsl(var(--primary))]" />
-
-          {/* floating data fragments */}
-          <circle cx="42" cy="44" r="3" className="fill-muted-foreground/20" />
-          <circle cx="78" cy="46" r="2.5" className="fill-muted-foreground/20" />
-          <circle cx="40" cy="78" r="2.5" className="fill-muted-foreground/15" />
-          <circle cx="82" cy="78" r="3" className="fill-muted-foreground/20" />
-        </svg>
-      </div>
-
-      {/* TEXT */}
-      <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground mb-1">
-        {title}
-      </h3>
-
-      <p className="text-sm text-muted-foreground max-w-sm mb-5">{description}</p>
-
-      {/* ACTIONS */}
       {(primaryAction || secondaryAction) && (
-        <div className="flex flex-col sm:flex-row gap-2">
-          {/* Primary Action Logic */}
+        <div className="flex flex-col sm:flex-row gap-2 mt-6">
           {primaryAction &&
             (primaryAction.href ? (
-              <Button asChild className="bg-foreground text-white hover:bg-foreground/90">
+              <Button asChild className="bg-[#1c2841] text-white hover:bg-[#1c2841]/90">
                 <Link href={primaryAction.href}>{primaryAction.label}</Link>
               </Button>
             ) : (
               <Button
                 onClick={primaryAction.onClick}
-                className="bg-foreground text-white hover:bg-foreground/90"
+                className="bg-[#1c2841] text-white hover:bg-[#1c2841]/90"
               >
                 {primaryAction.label}
               </Button>
             ))}
 
-          {/* Secondary Action Logic */}
           {secondaryAction &&
             (secondaryAction.href ? (
-              <Button
-                asChild
-                className="bg-[hsl(var(--sidebar-ring))] text-white hover:bg-[hsl(var(--sidebar-ring))/90]"
-              >
+              <Button asChild className="bg-[#b81d34] text-white hover:bg-[#9a182b]">
                 <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
               </Button>
             ) : (
               <Button
                 onClick={secondaryAction.onClick}
-                className="bg-[hsl(var(--sidebar-ring))] text-white hover:bg-[hsl(var(--sidebar-ring))/90]"
+                className="bg-[#b81d34] text-white hover:bg-[#9a182b]"
               >
                 {secondaryAction.label}
               </Button>

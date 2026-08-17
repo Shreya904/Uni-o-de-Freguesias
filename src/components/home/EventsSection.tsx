@@ -140,7 +140,7 @@ const EventsSection = () => {
           <div className="flex-1 w-full flex lg:justify-end">
             {isLoading ? (
               <div className="w-full max-w-[420px] lg:ml-auto h-[500px] animate-pulse bg-slate-100 rounded-lg border border-slate-200" />
-            ) : showEmptyState ? (
+             ) : isEmpty ? (
               <EmptyState
                 title="Sem eventos agendados"
                 description="Fique atento — novos eventos serão adicionados em breve."
@@ -159,8 +159,8 @@ const EventsSection = () => {
                 {/* Image */}
                 <div className="w-full h-[220px] mb-5 overflow-hidden border border-slate-100">
                   <img
-                    src={displayEvent.imageUrl}
-                    alt={displayEvent.title.replace("\n", " ")}
+                    src={latestEvent.imageUrl}
+                    alt={latestEvent.title.replace("\n", " ")}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -168,25 +168,25 @@ const EventsSection = () => {
                 {/* Body */}
                 <div>
                   <h4 className="text-[22px] font-bold text-[#1e3050] whitespace-pre-line leading-tight mb-3">
-                    {displayEvent.title}
+                    {latestEvent.title}
                   </h4>
                   <p className="text-[15px] font-medium text-[#1e3050] leading-relaxed mb-6">
-                    {displayEvent.description}
+                    {latestEvent.description}
                   </p>
 
                   {/* Details */}
                   <div className="space-y-2 text-[15px] mb-6">
                     <p className="text-[#1e3050]">
                       <span className="font-bold">Data:</span>{" "}
-                      <span className="font-medium">{displayEvent.dateStr}</span>
+                      <span className="font-medium">{latestEvent.dateStr}</span>
                     </p>
                     <p className="text-[#1e3050]">
                       <span className="font-bold">Hora:</span>{" "}
-                      <span className="font-medium">{displayEvent.time}</span>
+                      <span className="font-medium">{latestEvent.time}</span>
                     </p>
                     <p className="text-[#1e3050]">
                       <span className="font-bold">Local:</span>{" "}
-                      <span className="font-medium">{displayEvent.location}</span>
+                      <span className="font-medium">{latestEvent.location}</span>
                     </p>
                   </div>
 
@@ -194,11 +194,11 @@ const EventsSection = () => {
 
                   {/* Footer Elements (Link) */}
                   <Link
-                    href={displayEvent.registrationLink}
+                    href={latestEvent.registrationLink}
                     className="inline-flex items-center gap-4 text-[#1e3050] hover:opacity-75 transition-opacity"
                   >
-                    <span className="font-bold text-[16px]">{displayEvent.price}</span>
-                    {displayEvent.hasRegistration && (
+                    <span className="font-bold text-[16px]">{latestEvent.price}</span>
+                    {latestEvent.hasRegistration && (
                       <>
                         <span className="w-0.5 h-5 bg-[#1e3050]/30"></span>
                         <span className="flex items-center gap-1.5 text-[16px] font-bold">
@@ -218,3 +218,4 @@ const EventsSection = () => {
 };
 
 export default EventsSection;
+

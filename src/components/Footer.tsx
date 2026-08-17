@@ -60,7 +60,7 @@ const Footer = () => (
           <h4 className="font-bold mb-6 text-[17px]">Principais</h4>
           <ul className="space-y-4 text-[15px]">
             {[
-              { label: "Começar", href: "/" },
+              { label: "Começar", href: "/comecar" },
               { label: "Notícias", href: "/noticias" },
               { label: "Balcão digital", href: "/balcao-digital" },
               { label: "Ajuda", href: "/ajuda" },
@@ -207,3 +207,4 @@ const Footer = () => (
 );
 
 export default Footer;
+
