@@ -61,6 +61,7 @@ export type CmsDocumentItem = {
   type: string;
   topic: string;
   date: string;
+  rawDate?: string;
   readTime: string;
   tags: string[];
   title: string;
@@ -109,7 +110,10 @@ export type CmsPlaceItem = {
   phone?: string;
   schedule?: string;
   websiteUrl?: string;
+  locationUrl?: string; // 🔹 Added map link
+  image?: string; // 🔹 Added optional image
 };
+
 export type CmsExecutivoItem = {
   id: string;
   name: string;
@@ -118,16 +122,21 @@ export type CmsExecutivoItem = {
   image?: string;
   order: number;
 };
-function mapExecutivo(e: Record<string, unknown>): CmsExecutivoItem {
-  return {
-    id: String(e.id),
-    name: asText(e.name),
-    role: asText(e.role),
-    responsibilities: asText(e.responsibilities),
-    image: media(e.image),
-    order: Number(e.order) || 0,
-  };
+
+export type CmsMesaItem = {
+  id: string;
+  name: string;
+  role: string;
+  responsibilities?: string;
+  image?: string;
+  order: number;
+};
+
+export interface ReunioesPageData {
+  introText: RichTextContent | string;
+  documents: CmsDocumentItem[];
 }
+
 const CMS_URL =
   process.env.NEXT_PUBLIC_PAYLOAD_URL || process.env.NEXT_PUBLIC_API_URL || process.env.PAYLOAD_URL;
 
@@ -137,6 +146,7 @@ if (!CMS_URL) {
 
 /* ---------------- FETCH ---------------- */
 
+// For standard Collections (returns { docs: [] })
 async function cmsFetch<T>(path: string, query?: Record<string, string | number>) {
   const url = new URL(`${CMS_URL}${path}`);
 
@@ -155,6 +165,27 @@ async function cmsFetch<T>(path: string, query?: Record<string, string | number>
   }
 
   return (await res.json()) as PayloadList<T>;
+}
+
+// For Globals/Singletons (returns the object directly)
+async function cmsFetchGlobal<T>(path: string, query?: Record<string, string | number>) {
+  const url = new URL(`${CMS_URL}${path}`);
+
+  if (query) {
+    Object.entries(query).forEach(([k, v]) => {
+      if (v !== undefined && v !== null) {
+        url.searchParams.append(k, String(v));
+      }
+    });
+  }
+
+  const res = await fetch(url.toString(), { next: { revalidate: 60 } });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  return (await res.json()) as T;
 }
 
 /* ---------------- SAFE HELPERS ---------------- */
@@ -190,7 +221,6 @@ function mapNews(n: Record<string, unknown>): CmsNewsItem {
     description: (n.description as RichTextContent | string | undefined) ?? "",
     date: asText(n.date),
     mainImage: media(n.mainImage),
-    // Fixed: explicit type guard for string filtering
     galleryImages: Array.isArray(n.galleryImages)
       ? n.galleryImages.map(media).filter((img): img is string => typeof img === "string")
       : [],
@@ -212,8 +242,8 @@ function mapDocument(d: Record<string, unknown>): CmsDocumentItem {
     type: asText(d.type) || "Avisos",
     topic: asText(d.topic) || "Administrativo",
     date: formattedDate,
+    rawDate: dateStr,
     readTime: asText(d.readTime) || "5min",
-    // Fixed: safer type casting inside map loop for tags
     tags: Array.isArray(d.tags)
       ? d.tags.map((t) => asText((t as Record<string, unknown>)?.tag)).filter(Boolean)
       : [],
@@ -241,7 +271,6 @@ function mapEvent(e: Record<string, unknown>): CmsEventItem {
     registrationLink: asText(e.registrationLink) || "/balcao-digital/inscricoes",
     isPast: Boolean(e.isPast),
     mainImage: media(e.mainImage),
-    // Fixed: explicit type guard for string filtering
     galleryImages: Array.isArray(e.galleryImages)
       ? e.galleryImages.map(media).filter((img): img is string => typeof img === "string")
       : [],
@@ -272,6 +301,30 @@ function mapPlace(p: Record<string, unknown>): CmsPlaceItem {
     phone: p.phone ? asText(p.phone) : undefined,
     schedule: p.schedule ? asText(p.schedule) : undefined,
     websiteUrl: p.websiteUrl ? asText(p.websiteUrl) : undefined,
+    locationUrl: p.locationUrl ? asText(p.locationUrl) : undefined,
+    image: media(p.image),
+  };
+}
+
+function mapExecutivo(e: Record<string, unknown>): CmsExecutivoItem {
+  return {
+    id: String(e.id),
+    name: asText(e.name),
+    role: asText(e.role),
+    responsibilities: asText(e.responsibilities),
+    image: media(e.image),
+    order: Number(e.order) || 0,
+  };
+}
+
+function mapMesa(m: Record<string, unknown>): CmsMesaItem {
+  return {
+    id: String(m.id),
+    name: asText(m.name),
+    role: asText(m.role),
+    responsibilities: m.responsibilities ? asText(m.responsibilities) : undefined,
+    image: media(m.image),
+    order: Number(m.order) || 0,
   };
 }
 
@@ -303,6 +356,17 @@ export async function fetchPublishedDocuments(limit = 50): Promise<CmsDocumentIt
     "where[isPublished][equals]": "true",
     sort: "-date",
     depth: "1", // Needed to resolve file media URLs
+    limit,
+  });
+  return (data.docs ?? []).map(mapDocument);
+}
+
+export async function fetchEditaisDocuments(limit = 50): Promise<CmsDocumentItem[]> {
+  const data = await cmsFetch<Record<string, unknown>>("/api/documents", {
+    "where[isPublished][equals]": "true",
+    "where[type][equals]": "Editais", // Exact match for your Editais page
+    sort: "-date",
+    depth: "1",
     limit,
   });
   return (data.docs ?? []).map(mapDocument);
@@ -340,15 +404,64 @@ export async function fetchUsefulContacts(limit = 100): Promise<CmsUsefulContact
 export async function fetchPlaces(limit = 100): Promise<CmsPlaceItem[]> {
   const data = await cmsFetch<Record<string, unknown>>("/api/places", {
     "where[isPublished][equals]": "true",
+    depth: "1",
     limit,
   });
   return (data.docs ?? []).map(mapPlace);
 }
+
 export async function fetchExecutivo(limit = 100): Promise<CmsExecutivoItem[]> {
   const data = await cmsFetch<Record<string, unknown>>("/api/executivo", {
-    sort: "order", // Ensures they are returned in the exact order you set in the CMS
-    depth: "1", // Needed to resolve the image URL
+    sort: "order",
+    depth: "1",
     limit,
   });
   return (data.docs ?? []).map(mapExecutivo);
+}
+
+export async function fetchMesaAssembleia(limit = 100): Promise<CmsMesaItem[]> {
+  const data = await cmsFetch<Record<string, unknown>>("/api/mesa-assembleia", {
+    sort: "order",
+    depth: "1",
+    limit,
+  });
+  return (data.docs ?? []).map(mapMesa);
+}
+
+export async function fetchReunioesExecutivo(): Promise<ReunioesPageData | null> {
+  try {
+    const data = await cmsFetchGlobal<Record<string, unknown>>("/api/globals/reunioes-executivo", {
+      depth: 1,
+    });
+    if (!data) return null;
+
+    return {
+      introText: (data.introText as RichTextContent | string) || "",
+      documents: Array.isArray(data.documents)
+        ? data.documents.map((d) => mapDocument(d as Record<string, unknown>))
+        : [],
+    };
+  } catch (error) {
+    console.error("Error fetching Reunioes Executivo:", error);
+    return null;
+  }
+}
+
+export async function fetchReunioesAssembleia(): Promise<ReunioesPageData | null> {
+  try {
+    const data = await cmsFetchGlobal<Record<string, unknown>>("/api/globals/reunioes-assembleia", {
+      depth: 1,
+    });
+    if (!data) return null;
+
+    return {
+      introText: (data.introText as RichTextContent | string) || "",
+      documents: Array.isArray(data.documents)
+        ? data.documents.map((d) => mapDocument(d as Record<string, unknown>))
+        : [],
+    };
+  } catch (error) {
+    console.error("Error fetching Reunioes Assembleia:", error);
+    return null;
+  }
 }

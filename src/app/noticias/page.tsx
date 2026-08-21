@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { fetchPublishedNews, type CmsNewsItem } from "@/lib/cms";
 import EmptyState from "@/components/ui/emptystate";
+import { ArrowDownUp } from "lucide-react";
 
 // Helper to format date exactly like "26 Janeiro 2026"
 const formatNewsDate = (dateString: string) => {
@@ -21,6 +22,9 @@ const formatNewsDate = (dateString: string) => {
 export default function NoticiasPage() {
   const [newsItems, setNewsItems] = useState<CmsNewsItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "name">("date");
+  const [sortAsc, setSortAsc] = useState(false);
+  const [sortTouched, setSortTouched] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,28 +43,42 @@ export default function NoticiasPage() {
   }, []);
 
   const filteredNews = useMemo(() => {
-    if (!searchQuery.trim()) return newsItems;
-    const query = searchQuery.toLowerCase();
-    return newsItems.filter(
-      (item) =>
-        item.title.toLowerCase().includes(query) ||
-        (item.excerpt && item.excerpt.toLowerCase().includes(query)),
-    );
-  }, [newsItems, searchQuery]);
+    let result = [...newsItems];
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query) ||
+          (item.excerpt && item.excerpt.toLowerCase().includes(query)),
+      );
+    }
+
+    result.sort((a, b) => {
+      if (sortBy === "date") {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        if (dateA === dateB) return a.title.localeCompare(b.title);
+        return sortAsc ? dateA - dateB : dateB - dateA;
+      }
+
+      if (sortAsc) return a.title.localeCompare(b.title);
+      return b.title.localeCompare(a.title);
+    });
+
+    return result;
+  }, [newsItems, searchQuery, sortBy, sortAsc]);
 
   const isEmpty = filteredNews.length === 0;
 
   return (
     <div className="min-h-screen bg-white">
       <main>
-        {/* HERO SECTION WITH WRAPPED HEADER */}
         <div className="relative">
           <div className="absolute top-0 left-0 right-0 z-50">
             <Header />
           </div>
 
-          {/* FIX: Swapped fixed 'h-[...]' for 'min-h-[...]' and added 'pt-[180px] md:pt-[160px]' 
-              to ensure the wrapped header doesn't obscure the content below it. */}
           <section className="relative w-full min-h-[400px] md:min-h-[450px] overflow-hidden flex items-end pb-12 pt-[180px] md:pt-[160px]">
             <div className="absolute inset-0">
               <img
@@ -96,9 +114,47 @@ export default function NoticiasPage() {
           </section>
         </div>
 
-        {/* MAIN CONTENT: MASONRY GRID */}
+        {/* MAIN CONTENT: GRID (Row by Row) */}
         <section className="py-12 md:py-16">
           <div className="container max-w-[1400px] mx-auto px-6 md:px-12">
+            <div className="flex items-center justify-between mb-6 text-sm text-[#253e6b] font-semibold">
+              <div className="flex items-center gap-3">
+                <span className="hidden sm:block">Ordenar</span>
+                <div className="flex items-center rounded-md border-[1.5px] border-gray-300 bg-white overflow-hidden">
+                  <button
+                    onClick={() => {
+                        setSortBy("date");
+                        setSortAsc(false);
+                      }}
+                    className={`px-3 py-1.5 transition-colors ${sortBy === "date" ? "bg-[#253e6b] text-white" : "text-[#253e6b] hover:bg-gray-50"}`}
+                  >
+                    Data
+                  </button>
+                  <button
+                    onClick={() => {
+                        setSortBy("name");
+                        setSortAsc(true);
+                      }}
+                    className={`px-3 py-1.5 border-l border-gray-200 transition-colors ${sortBy === "name" ? "bg-[#253e6b] text-white" : "text-[#253e6b] hover:bg-gray-50"}`}
+                  >
+                    Nome
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortTouched(true);
+                      setSortAsc((prev) => !prev);
+                    }}
+                    className={`flex items-center gap-2 px-3 py-1.5 border-l border-gray-200 transition-colors ${sortTouched ? "text-[#253e6b] hover:bg-gray-50" : "text-gray-400 hover:bg-gray-50"}`}
+                    title={sortAsc ? "Mais antigos primeiro" : "Mais recentes primeiro"}
+                  >
+                    <ArrowDownUp
+                      className={`w-4 h-4 transition-transform ${sortTouched ? (sortAsc ? "rotate-180 text-[#253e6b]" : "rotate-0 text-[#253e6b]") : "rotate-0 text-gray-400"}`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {isEmpty ? (
               <div className="py-12">
                 <EmptyState
@@ -108,7 +164,8 @@ export default function NoticiasPage() {
                 />
               </div>
             ) : (
-              <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 md:gap-14 [column-gap:3.5rem]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 md:gap-x-14 md:gap-y-16">
+                {/* 🔹 Changed from 'columns' to 'grid' layout here */}
                 {filteredNews.map((item) => {
                   const image =
                     typeof item.mainImage === "string" && item.mainImage.trim()
@@ -119,9 +176,9 @@ export default function NoticiasPage() {
                     <Link
                       key={item.id}
                       href={`/noticias/${item.slug}`}
-                      className="block break-inside-avoid mb-12 md:mb-16 group"
+                      className="flex flex-col group"
                     >
-                      <article className="flex flex-col">
+                      <article className="flex flex-col h-full">
                         {image && (
                           <div className="relative w-full aspect-[4/3] md:aspect-[3/2] overflow-hidden bg-gray-100 mb-5">
                             <Image

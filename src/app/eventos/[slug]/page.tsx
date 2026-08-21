@@ -10,6 +10,8 @@ import RichTextRenderer from "@/components/RichTextRenderer";
 import { fetchEventBySlug, fetchPublishedEvents } from "@/lib/cms";
 import { siteBannerIds } from "@/lib/siteBanners";
 
+export const revalidate = 60;
+
 // --- HELPER: FORMAT DATES ---
 const formatEventDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -18,6 +20,12 @@ const formatEventDate = (dateString: string) => {
   const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
   const year = date.getFullYear();
   return `${day} ${capitalizedMonth} ${year}`;
+};
+
+// Helper to normalize legacy DB categories for the frontend
+const normalizeCategory = (category?: string): string => {
+  if (category === "Mercados") return "Feiras e Mercados";
+  return category || "Outros";
 };
 
 export async function generateStaticParams() {
@@ -64,9 +72,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
             {/* LEFT MAIN ARTICLE */}
             <div className="lg:col-span-8">
-              {/* Category Tag */}
+              {/* Category Tag (Normalized) */}
               <div className="mb-4 inline-block bg-gray-100 dark:bg-gray-800 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#253e6b] dark:text-blue-300 rounded-sm">
-                {eventItem.categoryTop}
+                {normalizeCategory(eventItem.categoryTop)}
               </div>
 
               {/* Title */}

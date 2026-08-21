@@ -111,6 +111,10 @@ export default function ContactosUteisPage() {
       title: "Associações",
       options: ["Cultura", "Desporto", "Comercial"],
     },
+    {
+      title: "Social",
+      options: ["Social", "Linhas de Apoio", "IPSS", "Transportes"],
+    },
   ];
 
   useEffect(() => {
@@ -139,6 +143,19 @@ export default function ContactosUteisPage() {
     setSelectedFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
     );
+
+    // Scroll to the top of the content area smoothly
+    setTimeout(() => {
+      const contentSection = document.getElementById("content-top");
+      if (contentSection) {
+        // Adjusts scroll position to account for any fixed headers (100px offset)
+        const yOffset = -100;
+        const y = contentSection.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 50); // slight delay to allow state update to start
   };
 
   const filteredAndSortedContacts = useMemo(() => {
@@ -221,7 +238,10 @@ export default function ContactosUteisPage() {
         </div>
 
         {/* MAIN LAYOUT: SIDEBAR + CONTENT */}
-        <section className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
+        <section
+          id="content-top"
+          className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12"
+        >
           {/* LEFT SIDEBAR */}
           <aside className="w-full lg:w-[300px] shrink-0">
             {/* Em Destaque */}

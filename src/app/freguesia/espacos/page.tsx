@@ -5,8 +5,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteBanner from "@/components/SiteBanner";
 import NewsHighlightBox from "@/components/NewsHighlightBox";
-import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp } from "lucide-react";
-import { fetchPlaces } from "@/lib/cms"; // Added import from your CMS lib
+import { ExternalLink, ChevronUp, ChevronDown, ArrowDownUp, MapPin } from "lucide-react";
+import { fetchPlaces } from "@/lib/cms";
 import { siteBannerIds } from "@/lib/siteBanners";
 
 // --- TYPES FOR CMS ARCHITECTURE ---
@@ -19,6 +19,8 @@ interface PlaceItem {
   phone?: string;
   schedule?: string;
   websiteUrl?: string;
+  locationUrl?: string; // 🔹 Added locationUrl
+  image?: string; // 🔹 Added optional image
 }
 
 // --- FALLBACK DATA ---
@@ -31,6 +33,8 @@ const fallbackPlaces: PlaceItem[] = [
     address: "Rua João Mendonça, 8, 3800-200 Aveiro",
     phone: "234 420 760",
     websiteUrl: "https://turismodocentro.pt",
+    locationUrl: "https://maps.google.com",
+    image: "/visitar-hero.jpg", // Mock image to showcase the layout
   },
   {
     id: "2",
@@ -104,7 +108,6 @@ export default function EspacosPublicosPage() {
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
 
-  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let isMounted = true;
 
@@ -131,6 +134,18 @@ export default function EspacosPublicosPage() {
     setSelectedFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
     );
+
+    // Smooth scroll to top of content area when filters change
+    setTimeout(() => {
+      const contentSection = document.getElementById("content-top");
+      if (contentSection) {
+        const yOffset = -100; // Account for fixed header height
+        const y = contentSection.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 50);
   };
 
   const filteredAndSortedPlaces = useMemo(() => {
@@ -213,7 +228,10 @@ export default function EspacosPublicosPage() {
         </div>
 
         {/* MAIN LAYOUT: SIDEBAR + CONTENT */}
-        <section className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
+        <section
+          id="content-top"
+          className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12"
+        >
           {/* LEFT SIDEBAR */}
           <aside className="w-full lg:w-[300px] shrink-0">
             {/* Em Destaque */}
@@ -331,33 +349,59 @@ export default function EspacosPublicosPage() {
             </div>
 
             {/* Grid Map from CMS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 auto-rows-max">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-max">
               {filteredAndSortedPlaces.map((place) => (
                 <div
                   key={place.id}
-                  className="bg-white border-2 border-[#1c2841] rounded-xl p-6 flex flex-col justify-between h-full hover:shadow-lg transition-shadow"
+                  className="bg-white border-2 border-[#1c2841] rounded-xl flex flex-col justify-between h-full hover:shadow-lg transition-shadow overflow-hidden"
                 >
-                  <div>
-                    <div className="flex justify-between items-start mb-2">
+                  {/* Optional Image */}
+                  {place.image && (
+                    <div className="relative w-full h-48 sm:h-56 shrink-0 border-b-2 border-[#1c2841] bg-gray-100">
+                      <img
+                        src={place.image}
+                        alt={place.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex justify-between items-start mb-2 gap-4">
                       <span className="text-sm font-bold text-[#1c2841]">
                         {place.categoryTop} / {place.categorySub}
                       </span>
-                      {place.websiteUrl && (
-                        <a
-                          href={place.websiteUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-[#1c2841] hover:text-[#1c2841]/70 text-sm flex items-center gap-1.5 font-medium transition-colors"
-                        >
-                          Website <ExternalLink className="w-4 h-4" />
-                        </a>
-                      )}
+
+                      {/* Optional Links: Map & Website */}
+                      <div className="flex items-center gap-3 shrink-0">
+                        {place.locationUrl && (
+                          <a
+                            href={place.locationUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[#1c2841] hover:text-[#1c2841]/70 text-sm flex items-center gap-1.5 font-medium transition-colors"
+                          >
+                            Mapa <MapPin className="w-4 h-4" />
+                          </a>
+                        )}
+                        {place.websiteUrl && (
+                          <a
+                            href={place.websiteUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[#1c2841] hover:text-[#1c2841]/70 text-sm flex items-center gap-1.5 font-medium transition-colors"
+                          >
+                            Website <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
                     </div>
+
                     <h2 className="text-[#1c2841] text-[22px] md:text-2xl font-extrabold leading-tight mt-3 mb-4">
                       {place.title}
                     </h2>
 
-                    <div className="text-[#1c2841] text-base font-medium flex flex-col gap-1.5">
+                    <div className="text-[#1c2841] text-base font-medium flex flex-col gap-1.5 mt-auto">
                       <p>{place.address}</p>
                       {place.phone && <p>Tel. {place.phone}</p>}
                       {place.schedule && <p>{place.schedule}</p>}

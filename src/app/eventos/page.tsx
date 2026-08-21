@@ -34,6 +34,10 @@ export interface EventItem {
   rawDate?: string; // Added to easily match events to calendar grid cells
 }
 
+const isExternalRegistrationLink = (url?: string | null) => {
+  return typeof url === "string" && url.startsWith("http");
+};
+
 // Helper to determine time-based categories dynamically (Updated for "Amanhã")
 const getCategorySub = (eventDateStr: string): string => {
   if (!eventDateStr) return "Futuro";
@@ -55,6 +59,12 @@ const getCategorySub = (eventDateStr: string): string => {
   if (diffDays > 7 && diffDays <= 31) return "Este mês";
 
   return "Futuro";
+};
+
+// Helper to normalize legacy DB categories for the frontend
+const normalizeCategory = (category?: string): string => {
+  if (category === "Mercados") return "Feiras e Mercados";
+  return category || "Outros";
 };
 
 // --- FALLBACK DATA ---
@@ -219,7 +229,9 @@ export default function EventsPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortBy, setSortBy] = useState<"name" | "date">("date");
+  const [sortAsc, setSortAsc] = useState(false);
+  const [sortTouched, setSortTouched] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
 
   // NEW: State to toggle between grid cards and the calendar widget
@@ -240,7 +252,17 @@ export default function EventsPage() {
   const filterCategories = [
     {
       title: "Tipo (todos)",
-      options: ["Exposições", "Atividades ao ar livre", "Mercados"],
+      options: [
+        "Exposições",
+        "Atividades ao ar livre",
+        "Feiras e Mercados",
+        "Música e Espetáculos",
+        "Desporto",
+        "Cultura e Património",
+        "Educação e Ciência",
+        "Solidariedade",
+        "Religião e Tradições",
+      ],
     },
     {
       title: "Preço",
@@ -269,7 +291,7 @@ export default function EventsPage() {
               return {
                 id: doc.id,
                 slug: doc.slug,
-                categoryTop: doc.categoryTop || "Outros",
+                categoryTop: normalizeCategory(doc.categoryTop),
                 categorySub: getCategorySub(doc.date),
                 priceType: doc.priceType || "Gratuito",
                 title: doc.title,
@@ -278,7 +300,7 @@ export default function EventsPage() {
                 timeStr: doc.time || "",
                 location: doc.location || "",
                 mainImage: doc.mainImage || "",
-                registrationLink: doc.registrationLink || "/inscricoes",
+                registrationLink: doc.registrationLink || "",
                 rawDate: doc.date || "", // Capture raw date for calendar
               };
             });
@@ -338,12 +360,20 @@ export default function EventsPage() {
     }
 
     result.sort((a, b) => {
+      if (sortBy === "date") {
+        const dateA = a.rawDate ? new Date(a.rawDate).getTime() : 0;
+        const dateB = b.rawDate ? new Date(b.rawDate).getTime() : 0;
+
+        if (dateA === dateB) return a.title.localeCompare(b.title);
+        return sortAsc ? dateA - dateB : dateB - dateA;
+      }
+
       if (sortAsc) return a.title.localeCompare(b.title);
       return b.title.localeCompare(a.title);
     });
 
     return result;
-  }, [events, searchQuery, selectedFilters, sortAsc]);
+  }, [events, searchQuery, selectedFilters, sortBy, sortAsc]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -541,15 +571,38 @@ export default function EventsPage() {
               <div className="flex items-center gap-4 ml-auto">
                 <div className="flex items-center gap-3">
                   <span className="hidden sm:block">Ordenar</span>
-                  <button
-                    onClick={() => setSortAsc(!sortAsc)}
-                    className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 transition-colors"
-                  >
-                    Nome
-                    <ArrowDownUp
-                      className={`w-4 h-4 transition-transform ${sortAsc ? "rotate-0 text-gray-400" : "rotate-180"}`}
-                    />
-                  </button>
+                  <div className="flex items-center rounded-md border-[1.5px] border-gray-300 bg-white overflow-hidden">
+                    <button
+                      onClick={() => {
+                        setSortBy("date");
+                        setSortAsc(false);
+                      }}
+                      className={`px-3 py-1.5 transition-colors ${sortBy === "date" ? "bg-[#1c2841] text-white" : "text-[#253e6b] hover:bg-gray-50"}`}
+                    >
+                      Data
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy("name");
+                        setSortAsc(true);
+                      }}
+                      className={`px-3 py-1.5 border-l border-gray-200 transition-colors ${sortBy === "name" ? "bg-[#1c2841] text-white" : "text-[#253e6b] hover:bg-gray-50"}`}
+                    >
+                      Nome
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortTouched(true);
+                        setSortAsc((prev) => !prev);
+                      }}
+                      className={`flex items-center gap-2 px-3 py-1.5 border-l border-gray-200 transition-colors ${sortTouched ? "text-[#253e6b] hover:bg-gray-50" : "text-gray-400 hover:bg-gray-50"}`}
+                      title={sortAsc ? "Mais antigos primeiro" : "Mais recentes primeiro"}
+                    >
+                      <ArrowDownUp
+                        className={`w-4 h-4 transition-transform ${sortTouched ? (sortAsc ? "rotate-180 text-[#253e6b]" : "rotate-0 text-[#253e6b]") : "rotate-0 text-gray-400"}`}
+                      />
+                    </button>
+                  </div>
                 </div>
 
                 {/* View Mode Toggle */}
@@ -610,13 +663,17 @@ export default function EventsPage() {
                         <div className="mt-auto pt-4 border-t border-gray-200 flex items-center text-[15px]">
                           <span className="font-extrabold text-[#253e6b]">{event.priceType}</span>
                           <div className="w-px h-4 bg-gray-300 mx-3"></div>
-                          <Link
-                            href={event.registrationLink || "/inscricoes"}
-                            className="flex items-center gap-1.5 text-[#253e6b]/80 font-medium hover:text-[#1c2841] transition-colors group"
-                          >
-                            <span className="group-hover:text-[#1c2841]">Inscrição</span>
-                            <FileEdit className="w-4 h-4 group-hover:text-[#1c2841]" />
-                          </Link>
+                          {isExternalRegistrationLink(event.registrationLink) && (
+                            <Link
+                              href={event.registrationLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-[#253e6b]/80 font-medium hover:text-[#1c2841] transition-colors group"
+                            >
+                              <span className="group-hover:text-[#1c2841]">Mais informações</span>
+                              <FileEdit className="w-4 h-4 group-hover:text-[#1c2841]" />
+                            </Link>
+                          )}
                         </div>
                       </div>
                     </div>

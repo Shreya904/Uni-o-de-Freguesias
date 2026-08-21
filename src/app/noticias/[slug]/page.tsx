@@ -8,6 +8,8 @@ import SiteBanner from "@/components/SiteBanner";
 import { fetchNewsBySlug, fetchPublishedNews } from "@/lib/cms";
 import { siteBannerIds } from "@/lib/siteBanners";
 
+export const revalidate = 60;
+
 const formatNewsDate = (dateString: string) => {
   const date = new Date(dateString);
   const day = date.getDate();

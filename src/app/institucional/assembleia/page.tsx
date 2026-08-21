@@ -1,23 +1,40 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { fetchMesaAssembleia, CmsMesaItem } from "@/lib/cms"; // <-- Make sure to export the function and type
+import EmptyState from "@/components/ui/emptystate";
 
-// Dados estruturados para facilitar a manutenção
-const mesaDaAssembleia = [
+// Mock Data (Fallback / Placeholder) if CMS is empty or fails
+const fallbackMesa: CmsMesaItem[] = [
   {
+    id: "m-1",
     name: "Maria Glória Oliveira Gomes Neto Leite",
     role: "Presidente da Assembleia",
+    responsibilities:
+      "Coordenação da mesa, direção dos trabalhos e representação oficial da Assembleia de Freguesia.",
+    image: "/presidente-assembleia.jpg",
+    order: 1,
   },
   {
+    id: "m-2",
     name: "Sofia Carlos Areias Teles",
     role: "Primeiro Secretário",
+    responsibilities:
+      "Substituição da Presidente nas suas faltas, secretariado e organização das sessões.",
+    order: 2,
   },
   {
+    id: "m-3",
     name: "Fernando José Peixoto Cerqueira",
     role: "Segundo Secretário",
+    responsibilities:
+      "Apoio secretarial, elaboração de atas e acompanhamento do escrutínio de votações.",
+    order: 3,
   },
 ];
 
@@ -35,6 +52,61 @@ const membrosDaAssembleia = [
 ];
 
 export default function AssembleiaPage() {
+  const [mesaDaAssembleia, setMesaDaAssembleia] = useState<CmsMesaItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadData = async () => {
+      try {
+        const data = await fetchMesaAssembleia();
+
+        if (isMounted) {
+          // If we got valid data from the CMS, sort it just in case and slice to 3
+          if (data && data.length > 0) {
+            const sortedData = data.sort((a, b) => a.order - b.order).slice(0, 3);
+            setMesaDaAssembleia(sortedData);
+          } else {
+            // Use fallback if CMS returned empty
+            const sortedFallback = fallbackMesa.sort((a, b) => a.order - b.order).slice(0, 3);
+            setMesaDaAssembleia(sortedFallback);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch mesa from CMS:", error);
+        if (isMounted) {
+          // Fallback in case of error
+          const sortedFallback = fallbackMesa.sort((a, b) => a.order - b.order).slice(0, 3);
+          setMesaDaAssembleia(sortedFallback);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Helper to extract image URL safely from Payload CMS relationship object or string
+  const getImageUrl = (imageField: unknown) => {
+    if (!imageField) return null;
+    if (typeof imageField === "string") return imageField;
+    if (
+      typeof imageField === "object" &&
+      imageField !== null &&
+      "url" in imageField &&
+      typeof (imageField as { url?: unknown }).url === "string"
+    ) {
+      return (imageField as { url: string }).url;
+    }
+    return null;
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
       {/* HEADER & SUB-HEADER WRAPPER */}
@@ -67,21 +139,66 @@ export default function AssembleiaPage() {
             </h1>
 
             {/* TOP CARDS: Mesa da Assembleia */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              {mesaDaAssembleia.map((membro, index) => (
-                <div
-                  key={index}
-                  className="border-2 border-[#1C2E56] rounded-[4px] p-6 bg-white flex flex-col h-full"
-                >
-                  <h2 className="text-[#1C2E56] text-[20px] font-extrabold mb-6 leading-snug">
-                    {membro.name}
-                  </h2>
-                  <p className="text-[#1C2E56] text-[13px] font-extrabold mt-auto tracking-wide">
-                    {membro.role}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {isLoading ? (
+              // Loading Skeleton
+              <div className="flex flex-col gap-6 mb-10">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-[220px] w-full bg-slate-100 animate-pulse rounded-[4px] border-2 border-slate-200"
+                  />
+                ))}
+              </div>
+            ) : mesaDaAssembleia.length > 0 ? (
+              <div className="flex flex-col gap-6 mb-10">
+                {mesaDaAssembleia.map((membro) => {
+                  const imageUrl = getImageUrl(membro.image);
+
+                  return (
+                    <div
+                      key={membro.id}
+                      className="border-2 border-[#1C2E56] rounded-[4px] p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 bg-white"
+                    >
+                      {/* Renderiza a imagem apenas se ela existir nos dados */}
+                      {imageUrl && (
+                        <div className="relative w-full md:w-[220px] h-[260px] md:h-[220px] rounded-[4px] overflow-hidden shrink-0 bg-gray-100">
+                          <Image
+                            src={imageUrl}
+                            alt={`Fotografia de ${membro.name}`}
+                            fill
+                            className="object-cover object-top"
+                          />
+                        </div>
+                      )}
+
+                      {/* Informações do Membro */}
+                      <div className="flex flex-col justify-center text-[#1C2E56]">
+                        <h2 className="text-[20px] md:text-[22px] font-extrabold mb-2">
+                          {membro.name}
+                        </h2>
+
+                        <p className="text-[14px] font-extrabold mb-6">{membro.role}</p>
+
+                        {membro.responsibilities && (
+                          <p className="text-[14px] md:text-[15px] leading-relaxed opacity-90">
+                            {membro.responsibilities}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+
+            {!isLoading && mesaDaAssembleia.length === 0 && (
+              <div className="mb-10">
+                <EmptyState
+                  title="Sem conteúdo disponível"
+                  description="Não existem elementos publicados para a mesa da Assembleia neste momento."
+                />
+              </div>
+            )}
 
             {/* MAIN CONTENT CARD */}
             <div className="border-2 border-[#1C2E56] rounded-[4px] p-8 md:p-12 bg-white text-[#1C2E56]">

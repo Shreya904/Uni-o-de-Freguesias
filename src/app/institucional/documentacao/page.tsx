@@ -22,7 +22,6 @@ import NewsHighlightBox from "@/components/NewsHighlightBox";
 
 // --- UTILITY FUNCTIONS ---
 
-// Helper to force download cross-origin files
 const handleDownload = async (url: string, filename: string) => {
   if (!url || url === "#") return;
   try {
@@ -40,53 +39,48 @@ const handleDownload = async (url: string, filename: string) => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error("Download failed:", error);
-    // Fallback: just open in new tab if fetch fails due to CORS
     window.open(url, "_blank");
   }
 };
 
-// Helper to silently print a PDF (Bypasses Cross-Origin iframe blocks)
 const handlePrint = async (url: string) => {
   if (!url || url === "#") return;
 
   try {
-    // 1. Fetch the document as a Blob
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch document for printing");
 
     const blob = await response.blob();
-
-    // 2. Create a local Object URL (Same-Origin)
     const blobUrl = window.URL.createObjectURL(blob);
-
-    // 3. Create the iframe
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.src = blobUrl;
 
     document.body.appendChild(iframe);
-
-    // 4. Print once loaded
     iframe.onload = () => {
       setTimeout(() => {
         iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
 
-        // 5. Cleanup memory and DOM after a slight delay
         setTimeout(() => {
           if (document.body.contains(iframe)) {
             document.body.removeChild(iframe);
           }
           window.URL.revokeObjectURL(blobUrl);
-        }, 5000); // Gives the print dialog time to open before cleanup
+        }, 5000);
       }, 500);
     };
   } catch (error) {
     console.error("Print failed (likely CORS issue). Falling back to new tab.", error);
-    // Fallback: If the fetch fails due to strict CORS rules on your media bucket,
-    // gracefully degrade by opening the PDF in a new tab so the user can print it manually.
     window.open(url, "_blank");
   }
+};
+
+// HELPER: Checks if URL is valid and prevents IDs from rendering as hrefs
+const isValidFileUrl = (url?: string | null) => {
+  if (!url || url === "#") return false;
+  if (!url.includes("/") && !url.includes(".")) return false;
+  return true;
 };
 
 // --- FALLBACK DATA ---
@@ -117,7 +111,7 @@ const fallbackDocs: DocItem[] = [
     description:
       "Regulamento que estabelece as taxas, licenças e demais valores aplicáveis aos serviços, atos administrativos e utilizações sob gestão da junta de freguesia.",
     fileTypeLabel: "Formato PDF",
-    fileUrl: "#",
+    fileUrl: "64bcdef123...", // Sample invalid ID fallback to test functionality
   },
   {
     id: "3",
@@ -131,7 +125,7 @@ const fallbackDocs: DocItem[] = [
     description:
       "Regulamento que estabelece as taxas, licenças e demais valores aplicáveis aos serviços, atos administrativos e utilizações sob gestão da junta de freguesia.",
     fileTypeLabel: "Formato PDF",
-    fileUrl: "#",
+    fileUrl: "/docs/relatorio-contas-2026.pdf", // Valid mock URL
   },
   {
     id: "4",
@@ -166,7 +160,9 @@ export default function DocumentacaoPage() {
   const [documents, setDocuments] = useState<DocItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortBy, setSortBy] = useState<"name" | "date">("date");
+  const [sortAsc, setSortAsc] = useState(false);
+  const [sortTouched, setSortTouched] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
@@ -185,14 +181,12 @@ export default function DocumentacaoPage() {
     },
   ];
 
-  // UPDATED: Using the helper from lib/cms.ts
   useEffect(() => {
     let isMounted = true;
     const loadDocs = async () => {
       try {
         const cmsData = await fetchPublishedDocuments(100);
         if (isMounted) {
-          // Use CMS data if available, otherwise use fallback
           setDocuments(cmsData && cmsData.length > 0 ? cmsData : fallbackDocs);
         }
       } catch (error) {
@@ -234,17 +228,24 @@ export default function DocumentacaoPage() {
     }
 
     result.sort((a, b) => {
+      if (sortBy === "date") {
+        const dateA = new Date(a.rawDate || a.date).getTime();
+        const dateB = new Date(b.rawDate || b.date).getTime();
+
+        if (dateA === dateB) return a.title.localeCompare(b.title);
+        return sortAsc ? dateA - dateB : dateB - dateA;
+      }
+
       if (sortAsc) return a.title.localeCompare(b.title);
       return b.title.localeCompare(a.title);
     });
 
     return result;
-  }, [documents, searchQuery, selectedFilters, sortAsc]);
+  }, [documents, searchQuery, selectedFilters, sortBy, sortAsc]);
 
   return (
     <div className="min-h-screen bg-white">
       <main>
-        {/* HERO SECTION WITH WRAPPED HEADER */}
         <div className="relative">
           <div className="absolute top-0 left-0 right-0 z-50">
             <Header />
@@ -298,11 +299,8 @@ export default function DocumentacaoPage() {
           </section>
         </div>
 
-        {/* MAIN LAYOUT: SIDEBAR + CONTENT */}
         <section className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
-          {/* LEFT SIDEBAR */}
           <aside className="w-full lg:w-[300px] shrink-0">
-            {/* Em Destaque */}
             <div className="mb-10">
               <h3 className="font-extrabold text-[#1c2841] dark:text-white mb-4 text-sm uppercase tracking-wide">
                 Em destaque
@@ -317,7 +315,6 @@ export default function DocumentacaoPage() {
               </div>
             </div>
 
-            {/* Dynamic Filters from Array */}
             {filterCategories.map((category, index) => (
               <div key={category.title} className="mb-8">
                 <div className="flex items-center justify-between mb-4 cursor-pointer text-[#1c2841]">
@@ -339,14 +336,12 @@ export default function DocumentacaoPage() {
                     </label>
                   ))}
                 </div>
-                {/* Render divider unless it's the last category */}
                 {index !== filterCategories.length - 1 && <hr className="border-gray-200 my-8" />}
               </div>
             ))}
 
             <hr className="border-gray-200 my-8" />
 
-            {/* Perguntas Frequentes Accordion */}
             <div className="mb-8">
               <h3 className="font-extrabold text-[#1c2841] mb-4 text-sm uppercase tracking-wide">
                 Perguntas frequentes
@@ -378,25 +373,45 @@ export default function DocumentacaoPage() {
               </div>
             </div>
 
-            {/* Notícias Snippet */}
             <NewsHighlightBox />
           </aside>
 
-          {/* RIGHT MAIN CONTENT */}
           <div className="flex-1">
-            {/* Header & Sorting / Views */}
             <div className="flex items-center justify-between mb-6 text-sm text-gray-500 font-semibold">
               <div className="flex items-center gap-3">
                 <span className="mr-3">Ordenar</span>
-                <button
-                  onClick={() => setSortAsc(!sortAsc)}
-                  className="flex items-center gap-2 border-[1.5px] border-gray-300 rounded-md px-3 py-1.5 bg-white hover:bg-gray-50 text-[#1c2841] transition-colors"
-                >
-                  Nome
-                  <ArrowDownUp
-                    className={`w-4 h-4 transition-transform ${sortAsc ? "rotate-0 text-gray-400" : "rotate-180 text-[#1c2841]"}`}
-                  />
-                </button>
+                <div className="flex items-center rounded-md border-[1.5px] border-gray-300 bg-white overflow-hidden">
+                  <button
+                    onClick={() => {
+                        setSortBy("date");
+                        setSortAsc(false);
+                      }}
+                    className={`px-3 py-1.5 transition-colors ${sortBy === "date" ? "bg-[#1c2841] text-white" : "text-[#1c2841] hover:bg-gray-50"}`}
+                  >
+                    Data
+                  </button>
+                  <button
+                    onClick={() => {
+                        setSortBy("name");
+                        setSortAsc(true);
+                      }}
+                    className={`px-3 py-1.5 border-l border-gray-200 transition-colors ${sortBy === "name" ? "bg-[#1c2841] text-white" : "text-[#1c2841] hover:bg-gray-50"}`}
+                  >
+                    Nome
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortTouched(true);
+                      setSortAsc((prev) => !prev);
+                    }}
+                    className={`flex items-center gap-2 px-3 py-1.5 border-l border-gray-200 transition-colors ${sortTouched ? "text-[#1c2841] hover:bg-gray-50" : "text-gray-400 hover:bg-gray-50"}`}
+                    title={sortAsc ? "Mais antigos primeiro" : "Mais recentes primeiro"}
+                  >
+                    <ArrowDownUp
+                      className={`w-4 h-4 transition-transform ${sortTouched ? (sortAsc ? "rotate-180 text-[#1c2841]" : "rotate-0 text-[#1c2841]") : "rotate-0 text-gray-400"}`}
+                    />
+                  </button>
+                </div>
               </div>
               <div className="hidden md:flex items-center gap-2 ml-auto">
                 <button
@@ -414,17 +429,17 @@ export default function DocumentacaoPage() {
               </div>
             </div>
 
-            {/* Content List/Grid */}
             <div
               className={`flex ${viewMode === "list" ? "flex-col" : "flex-wrap grid grid-cols-1 md:grid-cols-2"} gap-5`}
             >
               {filteredAndSortedDocs.map((doc) => {
+                const hasValidUrl = isValidFileUrl(doc.fileUrl);
+
                 return (
                   <div
                     key={doc.id}
                     className="bg-white border-[1.5px] border-[#1c2841] rounded-xl p-6 flex flex-col hover:shadow-lg transition-shadow"
                   >
-                    {/* CARD HEADER */}
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                       <div className="flex flex-wrap items-center gap-3 text-sm font-bold text-[#1c2841]">
                         <span>{doc.type}</span>
@@ -445,7 +460,6 @@ export default function DocumentacaoPage() {
                       </div>
                     </div>
 
-                    {/* CARD BODY: PDF / Document */}
                     {doc.format === "Documento" && (
                       <div className="mb-6">
                         <h2 className="text-[#1c2841] text-2xl font-extrabold leading-tight mb-2 hover:text-blue-900 cursor-pointer transition-colors">
@@ -459,7 +473,6 @@ export default function DocumentacaoPage() {
                       </div>
                     )}
 
-                    {/* CARD BODY: Audio */}
                     {doc.format === "Audio" && (
                       <div className="flex flex-col sm:flex-row items-center gap-6 mb-4">
                         <button className="w-32 h-32 shrink-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg flex flex-col items-center justify-center gap-2 border border-gray-200">
@@ -483,7 +496,6 @@ export default function DocumentacaoPage() {
                       </div>
                     )}
 
-                    {/* CARD BODY: Video */}
                     {doc.format === "Video" && (
                       <div className="mb-4">
                         <div className="relative w-full h-48 md:h-64 bg-gray-200 rounded-lg overflow-hidden mb-4 group cursor-pointer border border-gray-200">
@@ -513,16 +525,14 @@ export default function DocumentacaoPage() {
                       </div>
                     )}
 
-                    {/* CARD FOOTER */}
                     <div className="mt-auto pt-4 border-t border-gray-200 flex flex-wrap items-center justify-between gap-4">
                       <span className="text-sm font-extrabold text-[#1c2841]">
                         {doc.fileTypeLabel}
                       </span>
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-bold text-gray-500">
-                        {doc.format === "Documento" && (
+                        {doc.format === "Documento" && hasValidUrl && (
                           <>
-                            {/* VIEW LOGIC */}
                             <a
                               href={doc.fileUrl}
                               target="_blank"
@@ -533,7 +543,6 @@ export default function DocumentacaoPage() {
                             </a>
                             <span className="text-gray-300 hidden sm:inline">|</span>
 
-                            {/* DOWNLOAD LOGIC */}
                             <button
                               onClick={() => handleDownload(doc.fileUrl, `${doc.title}.pdf`)}
                               className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
@@ -542,7 +551,6 @@ export default function DocumentacaoPage() {
                             </button>
                             <span className="text-gray-300 hidden sm:inline">|</span>
 
-                            {/* PRINT LOGIC */}
                             <button
                               onClick={() => handlePrint(doc.fileUrl)}
                               className="flex items-center gap-1.5 hover:text-[#1c2841] transition-colors"
