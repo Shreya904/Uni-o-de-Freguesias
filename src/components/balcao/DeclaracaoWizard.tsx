@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
@@ -212,9 +212,9 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
                       active === "uniao"
                         ? "declaracao_uniao_de_facto"
                         : "declaracao_comunhao",
-                    formTitle: active === "uniao" ? "Uni�o de facto" : "Comunh�o de mesa e habita��o",
+                    formTitle: active === "uniao" ? "União de facto" : "Comunhão de mesa e habitação",
                   });
-                  toast.success("Declara��o submetida com sucesso!");
+                  toast.success("Declaração submetida com sucesso!");
                   resetWizard();
                 }}
               />
@@ -395,10 +395,10 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
         <br />
         Tipos permitidos: gif, jpg, jpeg, png, txt, pdf, doc, docx, ppt, pptx, xls, xlsx.
       </p>
-      {["1º Proponente", "2º Proponente"].map((label, idx) => (
+      {['1º Proponente', '2º Proponente'].map((label, idx) => (
         <div key={idx} className="mb-8">
           <p className="font-semibold text-foreground dark:text-white mb-4">
-            2{idx === 0 ? "A" : "B"} — Documentos do {label}
+            2{idx === 0 ? 'A' : 'B'} — Documentos do {label}
           </p>
           <div className="space-y-3 max-w-xl">
             <div className="flex items-center gap-3">
@@ -512,4 +512,3 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
     </div>
   );
 }
-
