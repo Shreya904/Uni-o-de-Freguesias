@@ -20,6 +20,7 @@ interface ContactItem {
   schedule?: string;
   websiteUrl?: string;
   email?: string;
+  isFeatured?: boolean;
 }
 
 // --- FALLBACK DATA ---
@@ -93,6 +94,13 @@ export default function ContactosUteisPage() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
+  const featuredContacts = useMemo(
+    () => {
+      const selected = contacts.filter((contact) => contact.isFeatured);
+      return (selected.length > 0 ? selected : contacts).slice(0, 2);
+    },
+    [contacts],
+  );
 
   const filterCategories = [
     {
@@ -250,12 +258,32 @@ export default function ContactosUteisPage() {
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
-                <button className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
-                  Hospital de Aveiro
-                </button>
-                <button className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
-                  Universidade de Aveiro
-                </button>
+                {featuredContacts.map((contact) => {
+                  const href =
+                    contact.websiteUrl ||
+                    (contact.email ? `mailto:${contact.email}` : undefined) ||
+                    (contact.phone ? `tel:${contact.phone.replace(/\s+/g, "")}` : undefined);
+                  const isExternal = Boolean(href && href.startsWith("http"));
+
+                  return href ? (
+                    <a
+                      key={contact.id}
+                      href={href}
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noreferrer" : undefined}
+                      className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors block"
+                    >
+                      {contact.title}
+                    </a>
+                  ) : (
+                    <div
+                      key={contact.id}
+                      className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors block"
+                    >
+                      {contact.title}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

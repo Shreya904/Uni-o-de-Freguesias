@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 
 type InscricaoType = "passeios" | "almosos" | "hidroginastica";
 
@@ -123,10 +124,11 @@ function MainFaqs() {
 
 export default function InscricaoWizard({ active }: { active: InscricaoType }) {
   const [step, setStep] = useState(1);
+  const rootRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 3));
 
   return (
-    <div className="balcao-shell">
+    <div className="balcao-shell" ref={rootRef}>
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">
           Em que atividades se quer inscrever?
@@ -186,7 +188,23 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
 
         {step === 1 && <StepDados active={active} onContinue={next} />}
         {step === 2 && <StepPagamento onContinue={next} />}
-        {step === 3 && <StepConfirmacao />}
+        {step === 3 && (
+          <StepConfirmacao
+            onSubmit={async () => {
+              if (!rootRef.current) return;
+              await submitBalcaoForm({
+                root: rootRef.current,
+                formKey:
+                  active === "passeios"
+                    ? "inscricao_passeios"
+                    : active === "almosos"
+                      ? "inscricao_almocos"
+                      : "inscricao_hidroginastica",
+                formTitle: titles[active],
+              });
+            }}
+          />
+        )}
 
         <p className="balcao-section-title mb-3 mt-12 text-foreground dark:text-white">
           Outros assuntos populares
@@ -230,9 +248,10 @@ function StepDados({ active, onContinue }: { active: InscricaoType; onContinue: 
           <label className="text-sm text-muted-foreground dark:text-white/80">
             {dateLabels[active]}
           </label>
-          <select className="w-full border dark:border-white/20 rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70 dark:bg-black">
-            <option>— Selecione</option>
-          </select>
+          <input
+            type="date"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div />
         <div>
@@ -288,7 +307,7 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
   );
 }
 
-function StepConfirmacao() {
+function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">3 — Confirmação</p>
@@ -323,7 +342,10 @@ function StepConfirmacao() {
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
-      <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
+      <button
+        onClick={onSubmit}
+        className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+      >
         Continuar <ChevronRight className="w-4 h-4" />
       </button>
     </div>

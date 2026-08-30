@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 
 type CemiterioType = "concessao" | "atualizacao" | "licenca" | "requerimento";
 
@@ -88,11 +89,12 @@ function MainFaqs() {
 
 export default function CemiterioWizard({ active }: { active: CemiterioType }) {
   const [step, setStep] = useState(1);
+  const rootRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 4));
   const { title, description } = config[active];
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
+    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10" ref={rootRef}>
       <aside className="hidden md:block w-72 shrink-0 text-sm">
         <p className="font-bold text-foreground mb-3 dark:text-white">O que precisa?</p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 dark:text-white/70">
@@ -128,7 +130,25 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
         {step === 1 && <StepRequerente onContinue={next} />}
         {step === 2 && <StepObjeto onContinue={next} />}
         {step === 3 && <StepDocumentos onContinue={next} />}
-        {step === 4 && <StepConfirmacao />}
+        {step === 4 && (
+          <StepConfirmacao
+            onSubmit={async () => {
+              if (!rootRef.current) return;
+              await submitBalcaoForm({
+                root: rootRef.current,
+                formKey:
+                  active === "concessao"
+                    ? "cemiterio_concessao"
+                    : active === "atualizacao"
+                      ? "cemiterio_atualizacao"
+                      : active === "licenca"
+                        ? "cemiterio_licenca"
+                        : "cemiterio_requerimento",
+                formTitle: title,
+              });
+            }}
+          />
+        )}
 
         <p className="font-bold text-foreground dark:text-white mb-3 mt-12">Outros assuntos populares</p>
         <MainFaqs />
@@ -253,7 +273,7 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
   );
 }
 
-function StepConfirmacao() {
+function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
@@ -275,7 +295,12 @@ function StepConfirmacao() {
         <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24" />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Tudo preenchido e pronto a enviar! Resta clicar no botão ao lado para confirmar o envio do seu pedido.</p>
-      <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Confirmar <ChevronRight className="w-4 h-4" /></button>
+      <button
+        onClick={onSubmit}
+        className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+      >
+        Confirmar <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }

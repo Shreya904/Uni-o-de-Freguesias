@@ -165,6 +165,13 @@ export default function DocumentacaoPage() {
   const [sortTouched, setSortTouched] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const featuredDocuments = useMemo(
+    () => {
+      const selected = documents.filter((doc) => doc.isFeatured);
+      return (selected.length > 0 ? selected : documents).slice(0, 2);
+    },
+    [documents],
+  );
 
   const filterCategories = [
     {
@@ -306,12 +313,17 @@ export default function DocumentacaoPage() {
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
-                <button className="w-full text-left px-5 py-3 border-[1.5px] border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
-                  Ata da Assembleia Março 2026
-                </button>
-                <button className="w-full text-left px-5 py-3 border-[1.5px] border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
-                  Relatório de contas 2025
-                </button>
+                {featuredDocuments.map((doc) => (
+                  <a
+                    key={doc.id}
+                    href={doc.fileUrl}
+                    target={isValidFileUrl(doc.fileUrl) ? "_blank" : undefined}
+                    rel={isValidFileUrl(doc.fileUrl) ? "noreferrer" : undefined}
+                    className="w-full text-left px-5 py-3 border-[1.5px] border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors"
+                  >
+                    {doc.title}
+                  </a>
+                ))}
               </div>
             </div>
 

@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BalcaoHeader from "@/components/balcao/BalcaoHeader";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 
 const faqAnswer =
   "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
@@ -48,8 +49,9 @@ function MainFaqs() {
 
 export default function ReclamacoesPage() {
   const [step, setStep] = useState(1);
+  const rootRef = useRef<HTMLDivElement>(null);
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" ref={rootRef}>
       <Header />
       <BalcaoHeader />
       <main className="container max-w-2xl mx-auto px-4 py-12">
@@ -139,7 +141,17 @@ export default function ReclamacoesPage() {
           <div>
             <h2 className="font-bold text-foreground mb-4">2 — Confirmação</h2>
             <p className="text-sm text-muted-foreground mb-6">A sua reclamação será analisada e receberá resposta por email.</p>
-            <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
+            <button
+              onClick={async () => {
+                if (!rootRef.current) return;
+                await submitBalcaoForm({
+                  root: rootRef.current,
+                  formKey: "reclamacao",
+                  formTitle: "Reclamações e Sugestões",
+                });
+              }}
+              className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+            >
               Submeter <ChevronRight className="w-4 h-4" />
             </button>
           </div>

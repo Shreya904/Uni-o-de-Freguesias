@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 
 type DeclaracaoType = "comunhao" | "uniao";
 
@@ -95,10 +96,11 @@ function MainFaqs() {
 
 export default function DeclaracaoWizard({ active }: { active: DeclaracaoType }) {
   const [step, setStep] = useState(1);
+  const rootRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 4));
 
   return (
-    <div className="balcao-shell">
+    <div className="balcao-shell" ref={rootRef}>
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">Que declaração precisa?</p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
@@ -178,7 +180,21 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
             {step === 1 && <StepProponentes onContinue={next} />}
             {step === 2 && <StepDocumentos onContinue={next} />}
             {step === 3 && <StepPagamento onContinue={next} />}
-            {step === 4 && <StepConfirmacao />}
+            {step === 4 && (
+              <StepConfirmacao
+                onSubmit={async () => {
+                  if (!rootRef.current) return;
+                  await submitBalcaoForm({
+                    root: rootRef.current,
+                    formKey:
+                      active === "uniao"
+                        ? "declaracao_uniao_de_facto"
+                        : "declaracao_comunhao",
+                    formTitle: active === "uniao" ? "União de facto" : "Comunhão de mesa e habitação",
+                  });
+                }}
+              />
+            )}
           </>
         )}
 
@@ -423,7 +439,7 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
   );
 }
 
-function StepConfirmacao() {
+function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
     <div>
       <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
@@ -463,7 +479,10 @@ function StepConfirmacao() {
         Tudo preenchido e pronto a enviar! Resta clicar no botão ao lado para confirmar o envio do
         seu pedido.
       </p>
-      <button className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">
+      <button
+        onClick={onSubmit}
+        className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+      >
         Confirmar <ChevronRight className="w-4 h-4" />
       </button>
     </div>

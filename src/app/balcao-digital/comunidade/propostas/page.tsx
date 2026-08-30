@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronDown, Plus, ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BalcaoHeader from "@/components/balcao/BalcaoHeader";
+import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 
 const proposals = [
   {
@@ -89,9 +90,10 @@ function MainFaqs() {
 export default function PropostasPage() {
   const [openCard, setOpenCard] = useState<number | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" ref={rootRef}>
       <Header />
       <BalcaoHeader />
       <main className="container max-w-3xl mx-auto px-4 py-10">
@@ -225,7 +227,17 @@ export default function PropostasPage() {
                 <br />
                 Clique no botão ao lado para continuar.
               </p>
-              <button className="flex items-center justify-center gap-2 border-2 border-[#BE1E2D] text-[#BE1E2D] dark:border-red-500 dark:text-red-500 px-6 py-2.5 rounded-md font-bold hover:bg-[#BE1E2D] hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors w-full md:w-auto whitespace-nowrap">
+              <button
+                onClick={async () => {
+                  if (!rootRef.current) return;
+                  await submitBalcaoForm({
+                    root: rootRef.current,
+                    formKey: "proposta",
+                    formTitle: "Proposta",
+                  });
+                }}
+                className="flex items-center justify-center gap-2 border-2 border-[#BE1E2D] text-[#BE1E2D] dark:border-red-500 dark:text-red-500 px-6 py-2.5 rounded-md font-bold hover:bg-[#BE1E2D] hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors w-full md:w-auto whitespace-nowrap"
+              >
                 Submeter <ChevronRight className="w-5 h-5" />
               </button>
             </div>

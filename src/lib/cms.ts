@@ -51,6 +51,7 @@ export type CmsNewsItem = {
   date: string;
   mainImage?: string;
   galleryImages: string[];
+  isFeatured?: boolean;
 };
 
 // --- UPDATED TYPES ---
@@ -69,6 +70,7 @@ export type CmsDocumentItem = {
   fileTypeLabel: string;
   fileUrl: string;
   thumbnailUrl?: string;
+  isFeatured?: boolean;
 };
 
 export type CmsEventItem = {
@@ -87,6 +89,7 @@ export type CmsEventItem = {
   isPast: boolean;
   mainImage?: string;
   galleryImages: string[];
+  isFeatured?: boolean;
 };
 
 export type CmsUsefulContactItem = {
@@ -99,6 +102,7 @@ export type CmsUsefulContactItem = {
   schedule?: string;
   websiteUrl?: string;
   email?: string;
+  isFeatured?: boolean;
 };
 
 export type CmsPlaceItem = {
@@ -110,8 +114,9 @@ export type CmsPlaceItem = {
   phone?: string;
   schedule?: string;
   websiteUrl?: string;
-  locationUrl?: string; // 🔹 Added map link
-  image?: string; // 🔹 Added optional image
+  locationUrl?: string;
+  image?: string;
+  isFeatured?: boolean;
 };
 
 export type CmsExecutivoItem = {
@@ -196,6 +201,10 @@ function asText(v: unknown): string {
   return "";
 }
 
+function asBoolean(v: unknown): boolean {
+  return v === true || v === "true" || v === 1 || v === "1";
+}
+
 function media(v: unknown): string | undefined {
   if (!v) return undefined;
   if (typeof v === "string") return v;
@@ -224,6 +233,7 @@ function mapNews(n: Record<string, unknown>): CmsNewsItem {
     galleryImages: Array.isArray(n.galleryImages)
       ? n.galleryImages.map(media).filter((img): img is string => typeof img === "string")
       : [],
+    isFeatured: asBoolean(n.isFeatured ?? n.featured),
   };
 }
 
@@ -252,6 +262,7 @@ function mapDocument(d: Record<string, unknown>): CmsDocumentItem {
     fileTypeLabel: asText(d.fileTypeLabel),
     fileUrl: media(d.file) || asText(d.sourceUrl) || "#",
     thumbnailUrl: media(d.thumbnail),
+    isFeatured: asBoolean(d.isFeatured ?? d.featured),
   };
 }
 
@@ -274,6 +285,7 @@ function mapEvent(e: Record<string, unknown>): CmsEventItem {
     galleryImages: Array.isArray(e.galleryImages)
       ? e.galleryImages.map(media).filter((img): img is string => typeof img === "string")
       : [],
+    isFeatured: asBoolean(e.isFeatured ?? e.featured),
   };
 }
 
@@ -288,6 +300,7 @@ function mapUsefulContact(c: Record<string, unknown>): CmsUsefulContactItem {
     schedule: c.schedule ? asText(c.schedule) : undefined,
     websiteUrl: c.websiteUrl ? asText(c.websiteUrl) : undefined,
     email: c.email ? asText(c.email) : undefined,
+    isFeatured: asBoolean(c.isFeatured ?? c.featured),
   };
 }
 
@@ -303,6 +316,7 @@ function mapPlace(p: Record<string, unknown>): CmsPlaceItem {
     websiteUrl: p.websiteUrl ? asText(p.websiteUrl) : undefined,
     locationUrl: p.locationUrl ? asText(p.locationUrl) : undefined,
     image: media(p.image),
+    isFeatured: asBoolean(p.isFeatured ?? p.featured),
   };
 }
 

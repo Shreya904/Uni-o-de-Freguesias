@@ -21,6 +21,7 @@ interface PlaceItem {
   websiteUrl?: string;
   locationUrl?: string; // 🔹 Added locationUrl
   image?: string; // 🔹 Added optional image
+  isFeatured?: boolean;
 }
 
 // --- FALLBACK DATA ---
@@ -107,6 +108,13 @@ export default function EspacosPublicosPage() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortAsc, setSortAsc] = useState(true);
   const [faqOpen, setFaqOpen] = useState(false);
+  const featuredPlaces = useMemo(
+    () => {
+      const selected = places.filter((place) => place.isFeatured);
+      return (selected.length > 0 ? selected : places).slice(0, 2);
+    },
+    [places],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -240,12 +248,29 @@ export default function EspacosPublicosPage() {
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
-                <button className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
-                  Museu de Aveiro
-                </button>
-                <button className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors">
-                  Parque da Cidade
-                </button>
+                {featuredPlaces.map((place) => {
+                  const href = place.websiteUrl || place.locationUrl;
+                  const isExternal = Boolean(href && href.startsWith("http"));
+
+                  return href ? (
+                    <a
+                      key={place.id}
+                      href={href}
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noreferrer" : undefined}
+                      className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors block"
+                    >
+                      {place.title}
+                    </a>
+                  ) : (
+                    <div
+                      key={place.id}
+                      className="w-full text-left px-5 py-3 border-2 border-[#1c2841] text-[#1c2841] rounded-md hover:bg-[#1c2841] hover:text-white font-bold transition-colors block"
+                    >
+                      {place.title}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

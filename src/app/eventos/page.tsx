@@ -32,6 +32,7 @@ export interface EventItem {
   mainImage: string;
   registrationLink: string;
   rawDate?: string; // Added to easily match events to calendar grid cells
+  isFeatured?: boolean;
 }
 
 const isExternalRegistrationLink = (url?: string | null) => {
@@ -247,6 +248,13 @@ export default function EventsPage() {
 
   const hojeLabel = formatShortDate(todayDate);
   const amanhaLabel = formatShortDate(tomorrowDate);
+  const featuredEvents = useMemo(
+    () => {
+      const selected = events.filter((event) => event.isFeatured);
+      return (selected.length > 0 ? selected : events).slice(0, 2);
+    },
+    [events],
+  );
 
   // Filter Categories
   const filterCategories = [
@@ -491,12 +499,15 @@ export default function EventsPage() {
                 Em destaque
               </h3>
               <div className="flex flex-col gap-3">
-                <button className="w-full text-left px-5 py-3 border-[1.5px] border-[#253e6b] text-[#253e6b] rounded-md hover:bg-[#253e6b] hover:text-white font-bold transition-colors">
-                  Passeio na Ria
-                </button>
-                <button className="w-full text-left px-5 py-3 border-[1.5px] border-[#253e6b] text-[#253e6b] rounded-md hover:bg-[#253e6b] hover:text-white font-bold transition-colors">
-                  Feira de Março 2027
-                </button>
+                {featuredEvents.map((event) => (
+                  <Link
+                    key={event.id}
+                    href={`/eventos/${event.slug}`}
+                    className="w-full text-left px-5 py-3 border-[1.5px] border-[#253e6b] text-[#253e6b] rounded-md hover:bg-[#253e6b] hover:text-white font-bold transition-colors"
+                  >
+                    {event.title}
+                  </Link>
+                ))}
               </div>
             </div>
 
