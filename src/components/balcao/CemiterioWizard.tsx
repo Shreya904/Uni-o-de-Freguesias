@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
+import { toast } from "sonner";
 
 type CemiterioType = "concessao" | "atualizacao" | "licenca" | "requerimento";
 
@@ -92,6 +93,27 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 4));
   const { title, description } = config[active];
+  const resetWizard = () => {
+    if (!rootRef.current) return;
+    rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+      if (control instanceof HTMLInputElement) {
+        if (control.type === "checkbox" || control.type === "radio") {
+          control.checked = false;
+        } else if (control.type !== "file") {
+          control.value = "";
+        }
+        return;
+      }
+      if (control instanceof HTMLTextAreaElement) {
+        control.value = "";
+        return;
+      }
+      if (control instanceof HTMLSelectElement) {
+        control.selectedIndex = 0;
+      }
+    });
+    setStep(1);
+  };
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10" ref={rootRef}>
@@ -141,11 +163,13 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
                     ? "cemiterio_concessao"
                     : active === "atualizacao"
                       ? "cemiterio_atualizacao"
-                      : active === "licenca"
-                        ? "cemiterio_licenca"
-                        : "cemiterio_requerimento",
+                    : active === "licenca"
+                      ? "cemiterio_licenca"
+                      : "cemiterio_requerimento",
                 formTitle: title,
               });
+              toast.success("Pedido submetido com sucesso!");
+              resetWizard();
             }}
           />
         )}

@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
+import { toast } from "sonner";
 
 type DeclaracaoType = "comunhao" | "uniao";
 
@@ -98,6 +99,27 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
   const [step, setStep] = useState(1);
   const rootRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 4));
+  const resetWizard = () => {
+    if (!rootRef.current) return;
+    rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+      if (control instanceof HTMLInputElement) {
+        if (control.type === "checkbox" || control.type === "radio") {
+          control.checked = false;
+        } else if (control.type !== "file") {
+          control.value = "";
+        }
+        return;
+      }
+      if (control instanceof HTMLTextAreaElement) {
+        control.value = "";
+        return;
+      }
+      if (control instanceof HTMLSelectElement) {
+        control.selectedIndex = 0;
+      }
+    });
+    setStep(1);
+  };
 
   return (
     <div className="balcao-shell" ref={rootRef}>
@@ -190,8 +212,10 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
                       active === "uniao"
                         ? "declaracao_uniao_de_facto"
                         : "declaracao_comunhao",
-                    formTitle: active === "uniao" ? "UniÃ£o de facto" : "ComunhÃ£o de mesa e habitaÃ§Ã£o",
+                    formTitle: active === "uniao" ? "União de facto" : "Comunhão de mesa e habitação",
                   });
+                  toast.success("Declaração submetida com sucesso!");
+                  resetWizard();
                 }}
               />
             )}
@@ -488,3 +512,4 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
     </div>
   );
 }
+

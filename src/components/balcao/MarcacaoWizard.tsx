@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
+import { toast } from "sonner";
 
 type AppointmentType = "presidente" | "cemiterio";
 
@@ -112,6 +113,28 @@ export default function MarcacaoWizard() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   const next = () => setStep((s) => Math.min(s + 1, 3));
+  const resetWizard = () => {
+    if (!rootRef.current) return;
+    rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+      if (control instanceof HTMLInputElement) {
+        if (control.type === "checkbox" || control.type === "radio") {
+          control.checked = false;
+        } else if (control.type !== "file") {
+          control.value = "";
+        }
+        return;
+      }
+      if (control instanceof HTMLTextAreaElement) {
+        control.value = "";
+        return;
+      }
+      if (control instanceof HTMLSelectElement) {
+        control.selectedIndex = 0;
+      }
+    });
+    setType("presidente");
+    setStep(1);
+  };
 
   return (
     <div className="balcao-shell" ref={rootRef}>
@@ -208,16 +231,18 @@ export default function MarcacaoWizard() {
         {step === 1 && <StepMarcacao onContinue={next} />}
         {step === 2 && <StepDados onContinue={next} />}
         {step === 3 && (
-          <StepConfirmacao
-            onSubmit={async () => {
-              if (!rootRef.current) return;
-              await submitBalcaoForm({
-                root: rootRef.current,
-                formKey: "marcacao",
-                formTitle: `Agendamento - ${titles[type]}`,
-              });
-            }}
-          />
+            <StepConfirmacao
+              onSubmit={async () => {
+                if (!rootRef.current) return;
+                await submitBalcaoForm({
+                  root: rootRef.current,
+                  formKey: "marcacao",
+                  formTitle: `Agendamento - ${titles[type]}`,
+                });
+                toast.success("MarcaÃ§Ã£o submetida com sucesso!");
+                resetWizard();
+              }}
+            />
         )}
 
         <p className="balcao-section-title mb-3 mt-12 text-foreground dark:text-white">

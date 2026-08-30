@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
+import { toast } from "sonner";
 
 type InscricaoType = "passeios" | "almosos" | "hidroginastica";
 
@@ -197,11 +198,30 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
                 formKey:
                   active === "passeios"
                     ? "inscricao_passeios"
-                    : active === "almosos"
+                  : active === "almosos"
                       ? "inscricao_almocos"
                       : "inscricao_hidroginastica",
                 formTitle: titles[active],
               });
+              toast.success("Inscrição submetida com sucesso!");
+              rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+                if (control instanceof HTMLInputElement) {
+                  if (control.type === "checkbox" || control.type === "radio") {
+                    control.checked = false;
+                  } else if (control.type !== "file") {
+                    control.value = "";
+                  }
+                  return;
+                }
+                if (control instanceof HTMLTextAreaElement) {
+                  control.value = "";
+                  return;
+                }
+                if (control instanceof HTMLSelectElement) {
+                  control.selectedIndex = 0;
+                }
+              });
+              setStep(1);
             }}
           />
         )}
