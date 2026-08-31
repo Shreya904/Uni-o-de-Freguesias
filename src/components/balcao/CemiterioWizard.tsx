@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
+import AttachmentField from "@/components/balcao/AttachmentField";
 
 type CemiterioType = "concessao" | "atualizacao" | "licenca" | "requerimento";
 
@@ -281,14 +282,12 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
         Tipos permitidos: gif, jpg, jpeg, png, txt, pdf, doc, docx, ppt, pptx, xls, xlsx.
       </p>
       <div className="space-y-4 max-w-xl mb-6">
-        {["Carregar a fotocópia do Cartão de Cidadão", "Carregar a fotocópia do Cartão de Contribuinte", "Carregar certidão de óbito"].map((label, i) => (
-          <div key={i} className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground dark:text-white/70 w-64 shrink-0">{label}</span>
-            <label className="flex items-center gap-2 border rounded-md px-3 py-2 text-sm cursor-pointer hover:bg-muted">
-              <input type="file" className="hidden" />Escolher ficheiro
-            </label>
-            <span className="text-xs text-muted-foreground dark:text-white/70">Nenhum ficheiro selecionado</span>
-          </div>
+        {[
+          "Carregar a fotocópia do Cartão de Cidadão",
+          "Carregar a fotocópia do Cartão de Contribuinte",
+          "Carregar certidão de óbito",
+        ].map((label, i) => (
+          <AttachmentField key={i} label={label} />
         ))}
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta confirmar, está quase.</p>

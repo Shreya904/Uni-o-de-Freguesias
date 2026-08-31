@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
+import AttachmentField from "@/components/balcao/AttachmentField";
 
 type DeclaracaoType = "comunhao" | "uniao";
 
@@ -395,32 +396,14 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
         <br />
         Tipos permitidos: gif, jpg, jpeg, png, txt, pdf, doc, docx, ppt, pptx, xls, xlsx.
       </p>
-      {['1º Proponente', '2º Proponente'].map((label, idx) => (
+      {["1º Proponente", "2º Proponente"].map((label, idx) => (
         <div key={idx} className="mb-8">
           <p className="font-semibold text-foreground dark:text-white mb-4">
-            2{idx === 0 ? 'A' : 'B'} — Documentos do {label}
+            2{idx === 0 ? "A" : "B"} — Documentos do {label}
           </p>
           <div className="space-y-3 max-w-xl">
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground dark:text-white/80 w-56">
-                Carregar a fotocópia do Cartão de Cidadão
-              </span>
-              <label className="flex items-center gap-2 border dark:border-white/20 rounded-md px-3 py-2 text-sm cursor-pointer hover:bg-muted dark:hover:bg-white/10 dark:text-white">
-                <input type="file" className="hidden" />
-                Escolher ficheiro
-              </label>
-              <span className="text-xs text-muted-foreground dark:text-white/70">
-                Nenhum ficheiro selecionado
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground dark:text-white/80 w-56">
-                Carregar a fotocópia do Cartão de Contribuinte
-              </span>
-              <div className="flex items-center gap-2 border border-green-500 dark:border-green-500/50 rounded-md px-3 py-2 text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30">
-                ✓ manuelabreu-11770041-3zx2.pdf
-              </div>
-            </div>
+            <AttachmentField label="Carregar a fotocópia do Cartão de Cidadão" />
+            <AttachmentField label="Carregar a fotocópia do Cartão de Contribuinte" />
           </div>
         </div>
       ))}
