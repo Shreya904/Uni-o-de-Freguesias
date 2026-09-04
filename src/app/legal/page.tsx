@@ -34,7 +34,7 @@ export default function LegalPage() {
                   <Search className="w-5 h-5" />
                 </button>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 text-[13px]">
+              {/* <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 text-[13px]">
                 <span className="font-bold text-white">Termos Populares</span>
                 <Link
                   href="#"
@@ -54,7 +54,7 @@ export default function LegalPage() {
                 >
                   Legislação
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

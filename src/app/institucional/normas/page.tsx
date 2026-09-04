@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { fetchPublishedDocuments, type CmsDocumentItem } from "@/lib/cms";
 
 const normasERegulamentos = [
   "Regulamento de Apoio Social",
@@ -19,7 +21,53 @@ const planosEEstrategias = [
   "Estratégias de Sustentabilidade e Ambiente",
 ];
 
+const normasDocumentSlugs: Array<string | undefined> = [
+  "regulamento-apoio-social",
+  "regulamento-espacos-2019",
+  "regulamento-cedencia-equipamentos",
+  "informacao-servicosadministrativos",
+];
+
+const planosDocumentSlugs: Array<string | undefined> = [
+  "gop-orcamento-2018",
+  "relatorio-atividades",
+  "plano-desenvolvimento-local",
+  "estrategias-sustentabilidade-ambiente",
+];
+
+const normalizeDocumentTitle = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+
 export default function NormasPlaneamentoPage() {
+  const [documents, setDocuments] = useState<CmsDocumentItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchPublishedDocuments(100)
+      .then((items) => {
+        if (isMounted) setDocuments(items);
+      })
+      .catch(() => {
+        if (isMounted) setDocuments([]);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const findDocument = (title: string, knownSlug?: string) =>
+    documents.find(
+      (document) =>
+        (knownSlug && document.slug === knownSlug) ||
+        normalizeDocumentTitle(document.title) === normalizeDocumentTitle(title),
+    );
+
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
       {/* HEADER & SUB-HEADER WRAPPER */}
@@ -71,13 +119,18 @@ export default function NormasPlaneamentoPage() {
                 </p>
 
                 <ul className="list-disc pl-6 space-y-4 marker:text-[#1C2E56]">
-                  {normasERegulamentos.map((item, index) => (
-                    <li key={index} className="pl-2">
-                      <span className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
+                  {normasERegulamentos.map((item, index) => {
+                    const document = findDocument(item, normasDocumentSlugs[index]);
+                    if (!document?.slug) return null;
+
+                    return (
+                      <li key={document.slug} className="pl-2">
+                        <Link href={`/institucional/documentacao#document-${document.slug}`} className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors">
+                          {item}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 
@@ -93,13 +146,18 @@ export default function NormasPlaneamentoPage() {
                 </p>
 
                 <ul className="list-disc pl-6 space-y-4 marker:text-[#1C2E56]">
-                  {planosEEstrategias.map((item, index) => (
-                    <li key={index} className="pl-2">
-                      <span className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
+                  {planosEEstrategias.map((item, index) => {
+                    const document = findDocument(item, planosDocumentSlugs[index]);
+                    if (!document?.slug) return null;
+
+                    return (
+                      <li key={document.slug} className="pl-2">
+                        <Link href={`/institucional/documentacao#document-${document.slug}`} className="text-[15px] font-semibold underline underline-offset-4 decoration-[#1C2E56]/30 hover:decoration-[#B4142F] hover:text-[#B4142F] transition-colors">
+                          {item}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>

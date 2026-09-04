@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 const ALLOWED_EXACT = new Set([
   "/",
   "/noticias",
+  "/comecar",
   "/contactos",
   "/contactos-uteis",
   "/faq",

@@ -11,6 +11,7 @@ import { fetchEventBySlug, fetchPublishedEvents } from "@/lib/cms";
 import { siteBannerIds } from "@/lib/siteBanners";
 
 export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 // --- HELPER: FORMAT DATES ---
 const formatEventDate = (dateString: string) => {

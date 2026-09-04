@@ -52,9 +52,6 @@ const EventsSection = () => {
   const [latestEvent, setLatestEvent] = useState<LatestEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Toggle this to false once CMS is updated to handle errors via EmptyState
-  const ENABLE_FALLBACK = true;
-
   useEffect(() => {
     let isMounted = true;
 
@@ -101,10 +98,6 @@ const EventsSection = () => {
   }, []);
 
   const isEmpty = !latestEvent;
-  const showEmptyState = isEmpty && !ENABLE_FALLBACK;
-
-  // Render CMS data if available, otherwise use fallback (if enabled)
-  const displayEvent = !isEmpty ? latestEvent : fallbackEvent;
 
   return (
     <section className="py-16 md:py-24 bg-background">

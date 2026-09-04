@@ -492,6 +492,21 @@ export default function ContactPage() {
                           <span className="text-[15px] text-[#1C2E56] truncate">
                             {file ? file.name : "Nenhum ficheiro selecionado"}
                           </span>
+                          {file && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              className="ml-auto h-[34px] px-3 rounded-none text-[13px] font-bold text-[#1C2E56] hover:bg-[#F8F8F8] shrink-0"
+                              onClick={() => {
+                                setFile(null);
+                                if (fileRef.current) {
+                                  fileRef.current.value = "";
+                                }
+                              }}
+                            >
+                              Limpar
+                            </Button>
+                          )}
                         </div>
                         <input
                           ref={fileRef}

@@ -219,7 +219,7 @@ export default function EspacosPublicosPage() {
                     Pesquisar
                   </button>
                 </div>
-                <p className="text-xs text-white/80 font-medium">
+                {/* <p className="text-xs text-white/80 font-medium">
                   Termos Populares:{" "}
                   <span className="underline cursor-pointer hover:text-white ml-1">
                     Feira de Março
@@ -229,7 +229,7 @@ export default function EspacosPublicosPage() {
                   <span className="underline cursor-pointer hover:text-white ml-1">
                     Feira de antiguidades
                   </span>
-                </p>
+                </p> */}
               </div>
             </div>
           </section>

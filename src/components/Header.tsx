@@ -23,7 +23,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     label: "Começar",
-    href: "/comecar",
+    href: "/",
   },
   {
     label: "Organismo",
@@ -278,7 +278,7 @@ const Header = () => {
           {/* LEFT: Logo, Partition Line, and Começar */}
           {/* Adjusted gap down to 4 for smaller desktops, back to 8 for large (xl) */}
           <div className="flex items-center gap-4 xl:gap-8 h-full">
-            <Link href="/comecar" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/header logo1.png"
                 alt="Logo"

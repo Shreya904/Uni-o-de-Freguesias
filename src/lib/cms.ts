@@ -58,6 +58,7 @@ export type CmsNewsItem = {
 
 export type CmsDocumentItem = {
   id: string;
+  slug?: string;
   format: "Documento" | "Audio" | "Video";
   type: string;
   topic: string;
@@ -248,6 +249,7 @@ function mapDocument(d: Record<string, unknown>): CmsDocumentItem {
 
   return {
     id: String(d.id),
+    slug: asText(d.slug),
     format: formatRaw === "Audio" || formatRaw === "Video" ? formatRaw : "Documento",
     type: asText(d.type) || "Avisos",
     topic: asText(d.topic) || "Administrativo",

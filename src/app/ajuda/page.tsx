@@ -171,7 +171,7 @@ export default function CentroAjudaPage() {
                 <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[22px] h-[22px] text-[#111f3d] stroke-[2]" />
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-[13px] text-[#111f3d]">
+              {/* <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-[13px] text-[#111f3d]">
                 <span className="font-bold text-[14px]">Termos Populares</span>
                 <button className="hover:underline hover:underline-offset-2 transition-all">
                   Cookies
@@ -182,7 +182,7 @@ export default function CentroAjudaPage() {
                 <button className="hover:underline hover:underline-offset-2 transition-all">
                   Legislação
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

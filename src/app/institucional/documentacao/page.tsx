@@ -207,6 +207,18 @@ export default function DocumentacaoPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.startsWith("#document-") || documents.length === 0) return;
+
+    requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }, [documents]);
+
   const toggleFilter = (filter: string) => {
     setSelectedFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter],
@@ -290,7 +302,7 @@ export default function DocumentacaoPage() {
                     Pesquisar
                   </button>
                 </div>
-                <p className="text-xs text-white/80 font-medium">
+                {/* <p className="text-xs text-white/80 font-medium">
                   Termos Populares:{" "}
                   <span className="underline cursor-pointer hover:text-white ml-1">
                     Feira de Março
@@ -300,7 +312,7 @@ export default function DocumentacaoPage() {
                   <span className="underline cursor-pointer hover:text-white ml-1">
                     Feira de antiguidades
                   </span>
-                </p>
+                </p> */}
               </div>
             </div>
           </section>
@@ -450,6 +462,7 @@ export default function DocumentacaoPage() {
                 return (
                   <div
                     key={doc.id}
+                    id={doc.slug ? `document-${doc.slug}` : undefined}
                     className="bg-white border-[1.5px] border-[#1c2841] rounded-xl p-6 flex flex-col hover:shadow-lg transition-shadow"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">

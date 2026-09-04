@@ -87,12 +87,12 @@ export default function BalcaoHeader() {
                   </div>
                 )}
               </div>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80 dark:text-white">
+              {/* <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80 dark:text-white">
                 <span className="font-semibold text-white dark:text-white">Termos Populares:</span>
                 <Link href="/balcao-digital/atestados/residencia" className="underline dark:text-white">Atestado de residência</Link>
                 <Link href="/balcao-digital/cemiterios" className="underline dark:text-white">Cemitério</Link>
                 <Link href="/balcao-digital/declaracoes" className="underline dark:text-white">União de facto</Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

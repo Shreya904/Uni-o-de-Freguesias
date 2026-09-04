@@ -1,7 +1,5 @@
-import MaintenancePage from "./maintenance/MaintenancePage";
-
-export { metadata } from "./maintenance/page";
+import HomePage from "@/components/home/HomePage";
 
 export default function Page() {
-  return <MaintenancePage />;
+  return <HomePage />;
 }
