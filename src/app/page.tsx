@@ -1,5 +1,1 @@
-import HomePage from "@/components/home/HomePage";
-
-export default function Page() {
-  return <HomePage />;
-}
+export { default, metadata } from "./maintenance/page";
