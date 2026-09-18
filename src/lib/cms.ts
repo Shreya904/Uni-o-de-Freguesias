@@ -54,8 +54,6 @@ export type CmsNewsItem = {
   isFeatured?: boolean;
 };
 
-// --- UPDATED TYPES ---
-
 export type CmsDocumentItem = {
   id: string;
   slug?: string;
@@ -138,6 +136,17 @@ export type CmsMesaItem = {
   order: number;
 };
 
+export type CmsProposalItem = {
+  id: string;
+  category: string;
+  date: string;
+  rawDate?: string;
+  author: string;
+  title: string;
+  body: string;
+  updatedAt: string;
+};
+
 export interface ReunioesPageData {
   introText: RichTextContent | string;
   documents: CmsDocumentItem[];
@@ -152,7 +161,6 @@ if (!CMS_URL) {
 
 /* ---------------- FETCH ---------------- */
 
-// For standard Collections (returns { docs: [] })
 async function cmsFetch<T>(path: string, query?: Record<string, string | number>) {
   const url = new URL(`${CMS_URL}${path}`);
 
@@ -164,7 +172,7 @@ async function cmsFetch<T>(path: string, query?: Record<string, string | number>
     });
   }
 
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), { next: { revalidate: 60 } });
 
   if (!res.ok) {
     throw new Error(await res.text());
@@ -173,7 +181,6 @@ async function cmsFetch<T>(path: string, query?: Record<string, string | number>
   return (await res.json()) as PayloadList<T>;
 }
 
-// For Globals/Singletons (returns the object directly)
 async function cmsFetchGlobal<T>(path: string, query?: Record<string, string | number>) {
   const url = new URL(`${CMS_URL}${path}`);
 
@@ -220,6 +227,13 @@ function media(v: unknown): string | undefined {
   return undefined;
 }
 
+function formatDatePt(dateStr: string): string {
+  const parsed = new Date(dateStr);
+  return isNaN(parsed.getTime())
+    ? dateStr
+    : parsed.toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
+}
+
 /* ---------------- MAPPERS ---------------- */
 
 function mapNews(n: Record<string, unknown>): CmsNewsItem {
@@ -240,11 +254,6 @@ function mapNews(n: Record<string, unknown>): CmsNewsItem {
 
 function mapDocument(d: Record<string, unknown>): CmsDocumentItem {
   const dateStr = asText(d.date);
-  const dateObj = new Date(dateStr);
-  const formattedDate = isNaN(dateObj.getTime())
-    ? dateStr
-    : dateObj.toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
-
   const formatRaw = asText(d.format);
 
   return {
@@ -253,7 +262,7 @@ function mapDocument(d: Record<string, unknown>): CmsDocumentItem {
     format: formatRaw === "Audio" || formatRaw === "Video" ? formatRaw : "Documento",
     type: asText(d.type) || "Avisos",
     topic: asText(d.topic) || "Administrativo",
-    date: formattedDate,
+    date: formatDatePt(dateStr),
     rawDate: dateStr,
     readTime: asText(d.readTime) || "5min",
     tags: Array.isArray(d.tags)
@@ -344,7 +353,32 @@ function mapMesa(m: Record<string, unknown>): CmsMesaItem {
   };
 }
 
+function mapProposal(p: Record<string, unknown>): CmsProposalItem {
+  const dateStr = asText(p.data || p.createdAt);
+  const updatedStr = asText(p.updatedAt || p.data);
+
+  return {
+    id: String(p.id),
+    category: asText(p.categoria) || "Geral",
+    date: formatDatePt(dateStr),
+    rawDate: dateStr,
+    author: asText(p.autor),
+    title: asText(p.titulo),
+    body: asText(p.descricao),
+    updatedAt: formatDatePt(updatedStr),
+  };
+}
+
 /* ---------------- API FUNCTIONS ---------------- */
+
+export async function fetchApprovedProposals(limit = 50): Promise<CmsProposalItem[]> {
+  const data = await cmsFetch<Record<string, unknown>>("/api/propostas", {
+    "where[status][equals]": "aprovado",
+    sort: "-data",
+    limit,
+  });
+  return (data.docs ?? []).map(mapProposal);
+}
 
 export async function fetchPublishedNews(limit = 50): Promise<CmsNewsItem[]> {
   const data = await cmsFetch<Record<string, unknown>>("/api/news", {
@@ -371,7 +405,7 @@ export async function fetchPublishedDocuments(limit = 50): Promise<CmsDocumentIt
   const data = await cmsFetch<Record<string, unknown>>("/api/documents", {
     "where[isPublished][equals]": "true",
     sort: "-date",
-    depth: "1", // Needed to resolve file media URLs
+    depth: "1",
     limit,
   });
   return (data.docs ?? []).map(mapDocument);
@@ -380,7 +414,7 @@ export async function fetchPublishedDocuments(limit = 50): Promise<CmsDocumentIt
 export async function fetchEditaisDocuments(limit = 50): Promise<CmsDocumentItem[]> {
   const data = await cmsFetch<Record<string, unknown>>("/api/documents", {
     "where[isPublished][equals]": "true",
-    "where[type][equals]": "Editais", // Exact match for your Editais page
+    "where[type][equals]": "Editais",
     sort: "-date",
     depth: "1",
     limit,
@@ -391,7 +425,7 @@ export async function fetchEditaisDocuments(limit = 50): Promise<CmsDocumentItem
 export async function fetchPublishedEvents(limit = 50): Promise<CmsEventItem[]> {
   const data = await cmsFetch<Record<string, unknown>>("/api/events", {
     "where[isPublished][equals]": "true",
-    sort: "date", // upcoming first
+    sort: "date",
     depth: "1",
     limit,
   });

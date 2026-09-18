@@ -1,27 +1,13 @@
 "use client";
-import { useRef, useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Plus, ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BalcaoHeader from "@/components/balcao/BalcaoHeader";
+import EmptyState from "@/components/ui/emptystate";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
-
-const proposals = [
-  {
-    category: "Obras na cidade",
-    date: "18 março, 2027",
-    author: "João Neves",
-    title: "Voltem a abrir o Drinks antigo no sítio onde estava!",
-    body: "Faz muita falta!",
-  },
-  {
-    category: "Formação",
-    date: "18 março, 2027",
-    author: "João Neves",
-    title: "A cidade precisa de arrumadores certificados",
-    body: "Mais não digo...",
-  },
-];
+import { fetchApprovedProposals, type CmsProposalItem } from "@/lib/cms";
 
 const faqAnswer =
   "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
@@ -29,6 +15,7 @@ const faqAnswer =
 function MainFaqs() {
   const [open, setOpen] = useState<number | null>(null);
   const faqs = ["Quero casar, o que devo fazer?", "Sinto-me só preciso de ajuda como fazer?"];
+
   return (
     <div className="space-y-3">
       {faqs.map((faq, i) => (
@@ -81,9 +68,31 @@ function MainFaqs() {
 }
 
 export default function PropostasPage() {
-  const [openCard, setOpenCard] = useState<number | null>(null);
+  const [proposals, setProposals] = useState<CmsProposalItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [openCard, setOpenCard] = useState<string | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  const loadProposals = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchApprovedProposals(50);
+      setProposals(data);
+    } catch (err) {
+      console.error("Erro ao carregar propostas:", err);
+      setError("Não foi possível carregar as propostas neste momento.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProposals();
+  }, []);
 
   return (
     <div className="min-h-screen" ref={rootRef}>
@@ -93,7 +102,7 @@ export default function PropostasPage() {
         {!isFormOpen ? (
           <button
             onClick={() => setIsFormOpen(true)}
-            className="w-full bg-[#1C2E56] text-white rounded-lg py-4 text-lg font-semibold mb-8 flex items-center justify-center gap-2 hover:bg-[#1C2E56]/90 transition"
+            className="w-full bg-[#1C2E56] text-white rounded-lg py-4 text-lg font-semibold mb-8 flex items-center justify-center gap-2 hover:bg-[#1C2E56]/90 transition shadow-sm"
           >
             <Plus className="w-6 h-6" /> Criar proposta
           </button>
@@ -101,11 +110,12 @@ export default function PropostasPage() {
           <div className="bg-white dark:bg-black border border-slate-200 dark:border-white/20 rounded-xl p-6 md:p-8 mb-12 shadow-sm">
             <div className="flex flex-col items-center mb-8">
               <button
+                type="button"
                 onClick={() => setIsFormOpen(false)}
                 className="hover:bg-slate-100 dark:hover:bg-white/10 p-2 rounded-full transition-colors mb-2"
                 aria-label="Fechar formulário"
               >
-                <Plus className="w-8 h-8 font-bold text-[#1C2E56] dark:text-white" />
+                <Plus className="w-8 h-8 font-bold text-[#1C2E56] dark:text-white rotate-45" />
               </button>
               <h2 className="text-xl md:text-2xl font-bold text-[#1C2E56] dark:text-white text-center">
                 Preencha os dados pessoais e faça a sua proposta
@@ -127,7 +137,9 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
+                    name="nome"
                     type="text"
+                    required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
                   />
                 </div>
@@ -139,7 +151,9 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
+                    name="apelido"
                     type="text"
+                    required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
                   />
                 </div>
@@ -152,7 +166,9 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
+                    name="cartao_cidadao"
                     type="text"
+                    required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
                   />
                 </div>
@@ -163,9 +179,16 @@ export default function PropostasPage() {
                       (Necessário)
                     </span>
                   </label>
-                  <select className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none text-[#1C2E56] dark:text-white appearance-none cursor-pointer transition-all">
+                  <select
+                    name="freguesia"
+                    required
+                    className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none text-[#1C2E56] dark:text-white appearance-none cursor-pointer transition-all"
+                  >
                     <option value="" className="dark:bg-black">
                       - Selecione
+                    </option>
+                    <option value="freguesia_local" className="dark:bg-black">
+                      Freguesia Local
                     </option>
                   </select>
                 </div>
@@ -178,7 +201,9 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
+                    name="email"
                     type="email"
+                    required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
                   />
                 </div>
@@ -187,6 +212,7 @@ export default function PropostasPage() {
                     Telefone ou Telemóvel
                   </label>
                   <input
+                    name="telefone"
                     type="tel"
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
                   />
@@ -208,9 +234,11 @@ export default function PropostasPage() {
                 adicionais.
               </p>
               <textarea
+                name="proposta_texto"
                 rows={5}
+                required
                 className="w-full border border-slate-400 dark:border-white/30 rounded-md p-3 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white resize-y transition-all"
-              ></textarea>
+              />
             </div>
 
             {/* Form Footer */}
@@ -221,44 +249,104 @@ export default function PropostasPage() {
                 Clique no botão ao lado para continuar.
               </p>
               <button
+                type="button"
+                disabled={isSubmitting}
                 onClick={async () => {
-                  if (!rootRef.current) return;
-                  await submitBalcaoForm({
-                    root: rootRef.current,
-                    formKey: "proposta",
-                    formTitle: "Proposta",
-                  });
+                  if (!rootRef.current || isSubmitting) return;
+                  setIsSubmitting(true);
+                  try {
+                    await submitBalcaoForm({
+                      root: rootRef.current,
+                      formKey: "proposta",
+                      formTitle: "Proposta",
+                    });
+                    setIsFormOpen(false);
+                    await loadProposals();
+                  } finally {
+                    setIsSubmitting(false);
+                  }
                 }}
-                className="flex items-center justify-center gap-2 border-2 border-[#BE1E2D] text-[#BE1E2D] dark:border-red-500 dark:text-red-500 px-6 py-2.5 rounded-md font-bold hover:bg-[#BE1E2D] hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors w-full md:w-auto whitespace-nowrap"
+                className="flex items-center justify-center gap-2 border-2 border-[#BE1E2D] text-[#BE1E2D] dark:border-red-500 dark:text-red-500 px-6 py-2.5 rounded-md font-bold hover:bg-[#BE1E2D] hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors w-full md:w-auto whitespace-nowrap disabled:opacity-50"
               >
-                Submeter <ChevronRight className="w-5 h-5" />
+                {isSubmitting ? "A submeter..." : "Submeter"} <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
         )}
 
-        <div className="space-y-4 mb-12">
-          {proposals.map((p, i) => (
-            <div key={i} className="border rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {p.category} · {p.date} por {p.author}
-                </p>
-                <button onClick={() => setOpenCard(openCard === i ? null : i)}>
-                  <ChevronDown
-                    className={`w-4 h-4 text-muted-foreground transition-transform ${openCard === i ? "rotate-180" : ""}`}
-                  />
-                </button>
-              </div>
-              <h3 className="font-bold text-foreground">{p.title}</h3>
-              {openCard === i && <p className="text-sm text-muted-foreground mt-2">{p.body}</p>}
-              <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground border-t pt-3">
-                <span>Gostou desta ideia? 👍 👎</span>
-                <span>Atualizado a 29 abril, 2026</span>
-                <span>Partilhar 🔗</span>
-              </div>
+        {/* Dynamic Proposals List / Error / Empty States */}
+        <div className="space-y-3 mb-12">
+          {loading ? (
+            <div className="py-12 text-center text-sm text-muted-foreground animate-pulse">
+              A carregar propostas...
             </div>
-          ))}
+          ) : error ? (
+            <EmptyState
+              title="Erro ao carregar"
+              description={error}
+              primaryAction={{
+                label: "Tentar novamente",
+                onClick: loadProposals,
+              }}
+            />
+          ) : proposals.length === 0 ? (
+            <EmptyState
+              title="Sem propostas"
+              description="Ainda não existem propostas publicadas nesta secção. Seja o primeiro a submeter uma proposta para a freguesia."
+              primaryAction={{
+                label: "Criar primeira proposta",
+                onClick: () => setIsFormOpen(true),
+              }}
+            />
+          ) : (
+            proposals.map((p) => {
+              const isOpen = openCard === p.id;
+              return (
+                <div
+                  key={p.id}
+                  className="group bg-white dark:bg-zinc-950 border border-slate-200 dark:border-white/10 rounded-xl transition-all duration-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-sm overflow-hidden"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenCard(isOpen ? null : p.id)}
+                    className="w-full p-5 text-left flex items-start justify-between gap-4"
+                    aria-expanded={isOpen}
+                  >
+                    <div className="space-y-1.5 pr-2">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+                        <span className="inline-flex items-center rounded-md bg-slate-100 dark:bg-white/10 px-2 py-0.5 font-medium text-[#1C2E56] dark:text-zinc-200">
+                          {p.category}
+                        </span>
+                        <span>•</span>
+                        <span>{p.date}</span>
+                        <span>•</span>
+                        <span className="font-medium text-slate-700 dark:text-zinc-300">
+                          {p.author}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-base md:text-lg text-[#1C2E56] dark:text-white leading-snug group-hover:text-[#1C2E56]/90">
+                        {p.title}
+                      </h3>
+                    </div>
+
+                    <div className="p-1 rounded-md text-slate-400 group-hover:text-slate-600 dark:group-hover:text-white transition-colors shrink-0 mt-0.5">
+                      <ChevronDown
+                        className={`w-5 h-5 transition-transform duration-200 ${
+                          isOpen ? "rotate-180 text-[#1C2E56] dark:text-white" : ""
+                        }`}
+                      />
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-1 text-sm text-slate-600 dark:text-zinc-300 border-t border-slate-100 dark:border-white/5">
+                      <p className="mt-3 whitespace-pre-line leading-relaxed">{p.body}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
 
         <div className="border-t pt-8">
