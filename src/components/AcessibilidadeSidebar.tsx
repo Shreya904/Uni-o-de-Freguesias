@@ -46,11 +46,8 @@ export default function AcessibilidadeSidebar() {
     };
   }, [pathname]);
 
-  const faqs = [
-    "Preciso de usar autocolantes para ouvir as entrevistas?",
-    "Devo usar sempre desodorizante?",
-    "Devo sempre ter o som ao meu telefone?",
-  ];
+  // Placeholder questions removed before go-live; add real FAQ content here.
+  const faqs: string[] = [];
 
   useEffect(() => {
     if (largeFont) {
