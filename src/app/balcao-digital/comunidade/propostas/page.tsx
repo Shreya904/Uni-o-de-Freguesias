@@ -10,13 +10,6 @@ const proposals = [
   {
     category: "Obras na cidade",
     date: "18 março, 2027",
-    author: "Joaquim de Almeida",
-    title: "Precisamos de um Aeroporto na Cidade",
-    body: "Aveiro tem muito turismo e se tivéssemos um aeroporto como o de Lisboa, no lugar do Estádio Municipal íamos ser a maior centro cidade do centro!",
-  },
-  {
-    category: "Obras na cidade",
-    date: "18 março, 2027",
     author: "João Neves",
     title: "Voltem a abrir o Drinks antigo no sítio onde estava!",
     body: "Faz muita falta!",

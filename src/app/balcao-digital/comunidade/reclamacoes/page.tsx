@@ -21,18 +21,34 @@ function MainFaqs() {
             className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white"
           >
             {faq}
-            <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
+            />
           </button>
           {open === i && (
             <div className="px-4 pb-4 text-sm text-muted-foreground border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
-                <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
-                <li>📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática</li>
-                <li>📄 consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis online</li>
-                <li>🏛 explore documentos relacionados com iniciativas, projetos e processos participativos da freguesia</li>
+                <li>
+                  🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave
+                  ou assunto
+                </li>
+                <li>
+                  📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática
+                </li>
+                <li>
+                  📄 consulte regulamentos, editais, atas, formulários e documentos administrativos
+                  disponíveis online
+                </li>
+                <li>
+                  🏛 explore documentos relacionados com iniciativas, projetos e processos
+                  participativos da freguesia
+                </li>
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
-                <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
+                <li>
+                  ⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e
+                  atualizações.
+                </li>
               </ul>
               <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
@@ -55,9 +71,15 @@ export default function ReclamacoesPage() {
       <Header />
       <BalcaoHeader />
       <main className="container max-w-2xl mx-auto px-4 py-12">
-        <h1 className="font-display text-3xl font-bold text-foreground text-center mb-2">Reclamações e Sugestões</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground text-center mb-2">
+          Reclamações e Sugestões
+        </h1>
+
         <p className="text-muted-foreground text-sm text-center mb-8 max-w-lg mx-auto">
-          Submeta o seu pedido de emissão de declaração ou certidão administrativa através do balcão digital. Preencha os dados necessários e indique o assunto ou tipo de documento pretendido para que o processo possa ser analisado pelos serviços da junta.
+          Apresente uma reclamação ou deixe uma sugestão à Junta de Freguesia através do balcão
+          digital. Indique a natureza do assunto, descreva a situação com o máximo de detalhe
+          possível e deixe os seus contactos para que os serviços possam analisar o pedido e dar-lhe
+          resposta.
         </p>
         <div className="flex items-center justify-center gap-16 mb-10">
           {["Dados", "Confirmação"].map((label, i) => {
@@ -68,12 +90,18 @@ export default function ReclamacoesPage() {
               <div key={label} className="flex flex-col items-center gap-2">
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${
-                    isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground"
+                    isActive || isDone
+                      ? "bg-[#C41230] text-white border-[#C41230]"
+                      : "border-border text-muted-foreground"
                   }`}
                 >
                   {n}
                 </div>
-                <span className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}>{label}</span>
+                <span
+                  className={`text-xs ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}
+                >
+                  {label}
+                </span>
               </div>
             );
           })}
@@ -93,11 +121,16 @@ export default function ReclamacoesPage() {
               </select>
             </div>
             <div>
-              <h2 className="font-bold text-foreground mb-4">2 — Qual é a sua reclamação ou sugestão?</h2>
+              <h2 className="font-bold text-foreground mb-4">
+                2 — Qual é a sua reclamação ou sugestão?
+              </h2>
               <label className="text-sm text-muted-foreground">
                 Reclamação ou sugestão <span className="text-xs">(Necessário)</span>
               </label>
-              <textarea placeholder="Mensagem..." className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-32 resize-none" />
+              <textarea
+                placeholder="Mensagem..."
+                className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-32 resize-none"
+              />
             </div>
             <div>
               <h2 className="font-bold text-foreground mb-4">3 — Os seus dados</h2>
@@ -127,7 +160,9 @@ export default function ReclamacoesPage() {
               </div>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <p className="text-xs text-muted-foreground">Agora só falta confirmar. Vamos a isso!</p>
+              <p className="text-xs text-muted-foreground">
+                Agora só falta confirmar. Vamos a isso!
+              </p>
               <button
                 onClick={() => setStep(2)}
                 className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
@@ -140,7 +175,9 @@ export default function ReclamacoesPage() {
         {step === 2 && (
           <div>
             <h2 className="font-bold text-foreground mb-4">2 — Confirmação</h2>
-            <p className="text-sm text-muted-foreground mb-6">A sua reclamação será analisada e receberá resposta por email.</p>
+            <p className="text-sm text-muted-foreground mb-6">
+              A sua reclamação será analisada e receberá resposta por email.
+            </p>
             <button
               onClick={async () => {
                 if (!rootRef.current) return;

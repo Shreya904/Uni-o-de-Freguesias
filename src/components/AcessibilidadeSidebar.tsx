@@ -259,7 +259,7 @@ export default function AcessibilidadeSidebar() {
             </Link>
           </div>
 
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             {faqs.map((faq, i) => (
               <div
                 key={i}
@@ -289,12 +289,9 @@ export default function AcessibilidadeSidebar() {
                 )}
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </>
   );
 }
-
-
-
