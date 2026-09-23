@@ -6,6 +6,7 @@ import BalcaoHeader from "@/components/balcao/BalcaoHeader";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
+import { toast } from "sonner";
 
 const faqAnswer =
   "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
@@ -66,6 +67,7 @@ function MainFaqs() {
 
 export default function ReclamacoesPage() {
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   return (
     <div className="min-h-screen" ref={rootRef}>
@@ -152,7 +154,7 @@ export default function ReclamacoesPage() {
                   <label className="text-sm text-muted-foreground">
                     Email <span className="text-xs">(Necessário)</span>
                   </label>
-                  <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+                  <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground">Telefone ou Telemóvel</label>
@@ -201,17 +203,27 @@ export default function ReclamacoesPage() {
             </p>
             <button
               onClick={async (event) => {
-                if (!validateAcknowledgements(event.currentTarget)) return;
+                if (!validateAcknowledgements(event.currentTarget) || isSubmitting) return;
                 if (!rootRef.current) return;
-                await submitBalcaoForm({
-                  root: rootRef.current,
-                  formKey: "reclamacao",
-                  formTitle: "Reclamações e Sugestões",
-                });
+                setIsSubmitting(true);
+                try {
+                  await submitBalcaoForm({
+                    root: rootRef.current,
+                    formKey: "reclamacao",
+                    formTitle: "Reclamações e Sugestões",
+                  });
+                  toast.success("Reclamação submetida com sucesso!");
+                  setStep(1);
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : "Não foi possível submeter a reclamação.");
+                } finally {
+                  setIsSubmitting(false);
+                }
               }}
+              disabled={isSubmitting}
               className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
             >
-              Submeter <ChevronRight className="w-4 h-4" />
+              {isSubmitting ? "A submeter..." : "Submeter"} <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         )}

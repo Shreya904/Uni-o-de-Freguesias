@@ -208,6 +208,7 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
               <StepConfirmacao
                 onSubmit={async () => {
                   if (!rootRef.current) return;
+                  try {
                   await submitBalcaoForm({
                     root: rootRef.current,
                     formKey:
@@ -218,6 +219,9 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
                   });
                   toast.success("Declaração submetida com sucesso!");
                   resetWizard();
+                  } catch (error) {
+                    toast.error(error instanceof Error ? error.message : "Não foi possível submeter a declaração.");
+                  }
                 }}
               />
             )}
@@ -354,7 +358,7 @@ function ProponenteFields({ label }: { label: string }) {
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Email <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">

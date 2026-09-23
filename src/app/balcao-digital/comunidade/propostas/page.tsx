@@ -9,6 +9,7 @@ import EmptyState from "@/components/ui/emptystate";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { validateRequiredFields } from "@/components/balcao/validateRequiredFields";
 import { fetchApprovedProposals, type CmsProposalItem } from "@/lib/cms";
+import { toast } from "sonner";
 
 const faqAnswer =
   "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
@@ -264,8 +265,11 @@ export default function PropostasPage() {
                       formKey: "proposta",
                       formTitle: "Proposta",
                     });
+                    toast.success("Proposta submetida com sucesso!");
                     setIsFormOpen(false);
                     await loadProposals();
+                  } catch (error) {
+                    toast.error(error instanceof Error ? error.message : "Não foi possível submeter a proposta.");
                   } finally {
                     setIsSubmitting(false);
                   }

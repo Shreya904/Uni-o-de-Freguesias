@@ -11,10 +11,13 @@ export function validateRequiredFields(button: HTMLButtonElement) {
       ?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>("input, textarea, select")
       .forEach((control) => {
         control.required = true;
+        if (control instanceof HTMLInputElement && label.textContent?.includes("Email")) {
+          control.type = "email";
+        }
         if (control instanceof HTMLSelectElement && control.options[0]?.text.includes("Selecione")) {
           control.options[0].value = "";
         }
-        setPortugueseValidityMessage(control, "Por favor, preencha este campo.");
+        setPortugueseValidityMessage(control);
       });
   });
 
@@ -44,9 +47,14 @@ export function validateAcknowledgements(button: HTMLButtonElement) {
 
 function setPortugueseValidityMessage(
   control: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
-  message: string,
+  requiredMessage = "Por favor, preencha este campo.",
 ) {
-  control.setCustomValidity(control.validity.valueMissing ? message : "");
+  const message = control.validity.valueMissing
+    ? requiredMessage
+    : control.validity.typeMismatch
+      ? "Introduza um endereço de e-mail válido."
+      : "";
+  control.setCustomValidity(message);
   control.addEventListener(
     "input",
     () => control.setCustomValidity(""),

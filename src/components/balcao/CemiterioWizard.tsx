@@ -158,20 +158,24 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
           <StepConfirmacao
             onSubmit={async () => {
               if (!rootRef.current) return;
-              await submitBalcaoForm({
-                root: rootRef.current,
-                formKey:
-                  active === "concessao"
-                    ? "cemiterio_concessao"
-                    : active === "atualizacao"
-                      ? "cemiterio_atualizacao"
-                    : active === "licenca"
-                      ? "cemiterio_licenca"
-                      : "cemiterio_requerimento",
-                formTitle: title,
-              });
-              toast.success("Pedido submetido com sucesso!");
-              resetWizard();
+              try {
+                await submitBalcaoForm({
+                  root: rootRef.current,
+                  formKey:
+                    active === "concessao"
+                      ? "cemiterio_concessao"
+                      : active === "atualizacao"
+                        ? "cemiterio_atualizacao"
+                        : active === "licenca"
+                          ? "cemiterio_licenca"
+                          : "cemiterio_requerimento",
+                  formTitle: title,
+                });
+                toast.success("Pedido submetido com sucesso!");
+                resetWizard();
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Não foi possível submeter o pedido.");
+              }
             }}
           />
         )}
@@ -223,7 +227,7 @@ function StepRequerente({ onContinue }: { onContinue: () => void }) {
         <div />
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Email <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Telefone ou Telemóvel</label>
