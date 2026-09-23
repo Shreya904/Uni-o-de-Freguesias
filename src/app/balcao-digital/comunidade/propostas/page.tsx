@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import BalcaoHeader from "@/components/balcao/BalcaoHeader";
 import EmptyState from "@/components/ui/emptystate";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
+import { validateRequiredFields } from "@/components/balcao/validateRequiredFields";
 import { fetchApprovedProposals, type CmsProposalItem } from "@/lib/cms";
 
 const faqAnswer =
@@ -107,7 +108,7 @@ export default function PropostasPage() {
             <Plus className="w-6 h-6" /> Criar proposta
           </button>
         ) : (
-          <div className="bg-white dark:bg-black border border-slate-200 dark:border-white/20 rounded-xl p-6 md:p-8 mb-12 shadow-sm">
+          <div className="bg-white dark:bg-black border border-slate-200 dark:border-white/20 rounded-xl p-6 md:p-8 mb-12 shadow-sm" data-required-fields>
             <div className="flex flex-col items-center mb-8">
               <button
                 type="button"
@@ -187,8 +188,11 @@ export default function PropostasPage() {
                     <option value="" className="dark:bg-black">
                       - Selecione
                     </option>
-                    <option value="freguesia_local" className="dark:bg-black">
-                      Freguesia Local
+                    <option value="gloria" className="dark:bg-black">
+                      Glória
+                    </option>
+                    <option value="vera-cruz" className="dark:bg-black">
+                      Vera Cruz
                     </option>
                   </select>
                 </div>
@@ -251,8 +255,8 @@ export default function PropostasPage() {
               <button
                 type="button"
                 disabled={isSubmitting}
-                onClick={async () => {
-                  if (!rootRef.current || isSubmitting) return;
+                onClick={async (event) => {
+                  if (!rootRef.current || isSubmitting || !validateRequiredFields(event.currentTarget)) return;
                   setIsSubmitting(true);
                   try {
                     await submitBalcaoForm({

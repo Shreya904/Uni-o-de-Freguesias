@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import BalcaoHeader from "@/components/balcao/BalcaoHeader";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
+import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
 
 const faqAnswer =
   "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
@@ -107,7 +108,7 @@ export default function ReclamacoesPage() {
           })}
         </div>
         {step === 1 && (
-          <div className="space-y-8">
+          <div className="space-y-8" data-required-fields>
             <div>
               <h2 className="font-bold text-foreground mb-4">1 — Natureza do problema?</h2>
               <label className="text-sm text-muted-foreground">
@@ -164,7 +165,7 @@ export default function ReclamacoesPage() {
                 Agora só falta confirmar. Vamos a isso!
               </p>
               <button
-                onClick={() => setStep(2)}
+                onClick={(event) => validateRequiredFields(event.currentTarget) && setStep(2)}
                 className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
               >
                 Continuar <ChevronRight className="w-4 h-4" />
@@ -173,13 +174,34 @@ export default function ReclamacoesPage() {
           </div>
         )}
         {step === 2 && (
-          <div>
+          <div data-required-acknowledgements>
             <h2 className="font-bold text-foreground mb-4">2 — Confirmação</h2>
+            <p className="text-sm text-muted-foreground mb-2">
+              A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.
+            </p>
             <p className="text-sm text-muted-foreground mb-6">
-              A sua reclamação será analisada e receberá resposta por email.
+              Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065
+            </p>
+            <div className="space-y-3 mb-6 max-w-2xl">
+              <label className="flex items-start gap-2 text-sm text-muted-foreground">
+                <input type="checkbox" className="mt-1 accent-[#C41230]" />
+                Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar informação sobre assuntos da autarquia e para fins estatísticos.
+              </label>
+              <label className="flex items-start gap-2 text-sm text-muted-foreground">
+                <input type="checkbox" className="mt-1 accent-[#C41230]" />
+                Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos Administrativos, os documentos apresentados no âmbito do presente processo são documentos administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso integral a todos aqueles que o solicitem.
+              </label>
+            </div>
+            <div className="max-w-xl mb-4">
+              <label className="text-sm text-muted-foreground">Descrição</label>
+              <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20" />
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
             </p>
             <button
-              onClick={async () => {
+              onClick={async (event) => {
+                if (!validateAcknowledgements(event.currentTarget)) return;
                 if (!rootRef.current) return;
                 await submitBalcaoForm({
                   root: rootRef.current,

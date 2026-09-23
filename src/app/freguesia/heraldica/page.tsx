@@ -169,10 +169,10 @@ export default function HeraldicaPage() {
                   <strong className="font-extrabold">Área total:</strong> 45,32 km²
                 </p>
                 <p>
-                  <strong className="font-extrabold">Habitantes (Censas 2011):</strong> 18.756
+                  <strong className="font-extrabold">Habitantes (Censos 2011):</strong> 18.756
                 </p>
                 <p>
-                  <strong className="font-extrabold">Habitantes (Censas 2021):</strong> 21.227
+                  <strong className="font-extrabold">Habitantes (Censos 2021):</strong> 21.227
                 </p>
 
                 {/* Styled External Resource Link Block */}

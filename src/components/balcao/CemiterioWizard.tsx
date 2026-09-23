@@ -4,6 +4,7 @@ import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
 import AttachmentField from "@/components/balcao/AttachmentField";
+import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
 
 type CemiterioType = "concessao" | "atualizacao" | "licenca" | "requerimento";
 
@@ -184,7 +185,7 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
 
 function StepRequerente({ onContinue }: { onContinue: () => void }) {
   return (
-    <div>
+    <div data-required-fields>
       <p className="font-bold text-foreground dark:text-white mb-6">1 — Dados do(s) requerente(s)</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-4">
         <div>
@@ -205,7 +206,7 @@ function StepRequerente({ onContinue }: { onContinue: () => void }) {
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Freguesia <span className="text-xs">(Necessário)</span></label>
-          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70"><option>— Selecione</option></select>
+          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70"><option value="">— Selecione</option><option value="gloria">Glória</option><option value="vera-cruz">Vera Cruz</option></select>
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/70">Cartão de Cidadão <span className="text-xs">(Necessário)</span></label>
@@ -230,14 +231,14 @@ function StepRequerente({ onContinue }: { onContinue: () => void }) {
         </div>
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
-      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
+      <button onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
     </div>
   );
 }
 
 function StepObjeto({ onContinue }: { onContinue: () => void }) {
   return (
-    <div>
+    <div data-required-fields>
       <p className="font-bold text-foreground dark:text-white mb-6">2 — Objeto do requerimento</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-4">
         <div className="md:col-span-2">
@@ -268,7 +269,7 @@ function StepObjeto({ onContinue }: { onContinue: () => void }) {
         </div>
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
-      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
+      <button onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
     </div>
   );
 }
@@ -298,9 +299,9 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
 
 function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
-    <div>
+    <div data-required-acknowledgements>
       <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias de Glória e Vera Cruz podem ser consultados em www.ufgloriaveracruz.pt.</p>
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.</p>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065</p>
       <div className="space-y-3 mb-6 max-w-2xl">
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
@@ -319,7 +320,7 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Tudo preenchido e pronto a enviar! Resta clicar no botão ao lado para confirmar o envio do seu pedido.</p>
       <button
-        onClick={onSubmit}
+        onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
         Confirmar <ChevronRight className="w-4 h-4" />

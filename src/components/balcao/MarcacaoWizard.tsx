@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
+import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
 
 type AppointmentType = "presidente" | "cemiterio";
 
@@ -337,7 +338,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
 
 function StepDados({ onContinue }: { onContinue: () => void }) {
   return (
-    <div>
+    <div data-required-fields>
       <p className="font-bold text-foreground dark:text-white mb-4">2 – Os seus dados pessoais</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mb-4">
         <div>
@@ -388,7 +389,7 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
         continuar.
       </p>
       <button
-        onClick={onContinue}
+        onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
         Continuar <ChevronRight className="w-4 h-4" />
@@ -399,11 +400,10 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
 
 function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
-    <div>
+    <div data-required-acknowledgements>
       <p className="font-bold text-foreground dark:text-white mb-4">3 – Confirmação</p>
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-4">
-        Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias da Glória
-        e Vera Cruz podem ser consultados em www.ufgloriavcruz.pt
+        A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.
       </p>
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-6">
         Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427
@@ -438,7 +438,7 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
         continuar.
       </p>
       <button
-        onClick={onSubmit}
+        onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
         Continuar <ChevronRight className="w-4 h-4" />

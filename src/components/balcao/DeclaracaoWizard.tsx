@@ -4,6 +4,7 @@ import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
 import AttachmentField from "@/components/balcao/AttachmentField";
+import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
 
 type DeclaracaoType = "comunhao" | "uniao";
 
@@ -313,7 +314,9 @@ function ProponenteFields({ label }: { label: string }) {
             Freguesia <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
           <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70 dark:bg-black dark:border-white/20">
-            <option>— Selecione</option>
+            <option value="">— Selecione</option>
+            <option value="gloria">Glória</option>
+            <option value="vera-cruz">Vera Cruz</option>
           </select>
         </div>
         <div>
@@ -366,7 +369,7 @@ function ProponenteFields({ label }: { label: string }) {
 
 function StepProponentes({ onContinue }: { onContinue: () => void }) {
   return (
-    <div>
+    <div data-required-fields>
       <p className="font-bold text-foreground dark:text-white mb-6">1A — Dados do 1º Proponente</p>
       <ProponenteFields label="1A — Dados do 1º Proponente" />
       <p className="font-bold text-foreground dark:text-white mb-6">1B — Dados do 2º Proponente</p>
@@ -376,7 +379,7 @@ function StepProponentes({ onContinue }: { onContinue: () => void }) {
         continuar.
       </p>
       <button
-        onClick={onContinue}
+        onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
         Continuar <ChevronRight className="w-4 h-4" />
@@ -448,11 +451,10 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
 
 function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
-    <div>
+    <div data-required-acknowledgements>
       <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-2">
-        Os formulários/declarações/requerimentos e os regulamentos da União das Freguesias de Glória
-        e Vera Cruz podem ser consultados em www.ufgloriaveracruz.pt.
+        A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.
       </p>
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-6">
         Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427
@@ -487,7 +489,7 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
         seu pedido.
       </p>
       <button
-        onClick={onSubmit}
+        onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
         Confirmar <ChevronRight className="w-4 h-4" />

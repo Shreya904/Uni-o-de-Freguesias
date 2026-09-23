@@ -56,8 +56,13 @@ export default function ContactPage() {
     setFile(f || null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!e.currentTarget.checkValidity()) {
+      e.currentTarget.reportValidity();
+      return;
+    }
 
     if (
       !formData.name ||
@@ -353,7 +358,19 @@ export default function ContactPage() {
                       correspondência.
                     </p>
 
-                    <form onSubmit={handleSubmit} className="space-y-8 w-full">
+                    <form
+                      onSubmit={handleSubmit}
+                      onInvalid={(event) => {
+                        const control = event.target as HTMLInputElement | HTMLTextAreaElement;
+                        if (control.validity.valueMissing) {
+                          control.setCustomValidity("Por favor, preencha este campo.");
+                        }
+                      }}
+                      onInput={(event) => {
+                        (event.target as HTMLInputElement | HTMLTextAreaElement).setCustomValidity("");
+                      }}
+                      className="space-y-8 w-full"
+                    >
                       {/* Name & Surname Group */}
                       <div className="grid md:grid-cols-2 gap-8">
                         <div className="space-y-3">
