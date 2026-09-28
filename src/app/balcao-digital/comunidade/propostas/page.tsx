@@ -76,7 +76,7 @@ export default function PropostasPage() {
   const [openCard, setOpenCard] = useState<string | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const loadProposals = async () => {
     try {
@@ -97,7 +97,7 @@ export default function PropostasPage() {
   }, []);
 
   return (
-    <div className="min-h-screen" ref={rootRef}>
+    <div className="min-h-screen">
       <Header />
       <BalcaoHeader />
       <main className="container max-w-3xl mx-auto px-4 py-10">
@@ -109,7 +109,11 @@ export default function PropostasPage() {
             <Plus className="w-6 h-6" /> Criar proposta
           </button>
         ) : (
-          <div className="bg-white dark:bg-black border border-slate-200 dark:border-white/20 rounded-xl p-6 md:p-8 mb-12 shadow-sm" data-required-fields>
+          <div
+            ref={formRef}
+            className="bg-white dark:bg-black border border-slate-200 dark:border-white/20 rounded-xl p-6 md:p-8 mb-12 shadow-sm"
+            data-required-fields
+          >
             <div className="flex flex-col items-center mb-8">
               <button
                 type="button"
@@ -124,7 +128,7 @@ export default function PropostasPage() {
               </h2>
             </div>
 
-            {/* Step 1: Personal Data */}
+            {/* Secção 1: Dados Pessoais */}
             <div className="mb-8">
               <h3 className="font-bold text-[#1C2E56] dark:text-white mb-6 text-lg">
                 1 - Os seus dados pessoais
@@ -139,7 +143,7 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
-                    name="nome"
+                    name="Nome"
                     type="text"
                     required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
@@ -153,7 +157,7 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
-                    name="apelido"
+                    name="Apelido"
                     type="text"
                     required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
@@ -168,7 +172,7 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
-                    name="cartao_cidadao"
+                    name="Cartão de Cidadão"
                     type="text"
                     required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
@@ -182,17 +186,17 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <select
-                    name="freguesia"
+                    name="Freguesia"
                     required
-                    className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none text-[#1C2E56] dark:text-white appearance-none cursor-pointer transition-all"
+                    className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none text-[#1C2E56] dark:text-white cursor-pointer transition-all"
                   >
                     <option value="" className="dark:bg-black">
                       - Selecione
                     </option>
-                    <option value="gloria" className="dark:bg-black">
+                    <option value="Glória" className="dark:bg-black">
                       Glória
                     </option>
-                    <option value="vera-cruz" className="dark:bg-black">
+                    <option value="Vera Cruz" className="dark:bg-black">
                       Vera Cruz
                     </option>
                   </select>
@@ -206,7 +210,7 @@ export default function PropostasPage() {
                     </span>
                   </label>
                   <input
-                    name="email"
+                    name="Email"
                     type="email"
                     required
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
@@ -217,7 +221,7 @@ export default function PropostasPage() {
                     Telefone ou Telemóvel
                   </label>
                   <input
-                    name="telefone"
+                    name="Telefone ou Telemóvel"
                     type="tel"
                     className="w-full border border-slate-400 dark:border-white/30 rounded-md p-2.5 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white transition-all"
                   />
@@ -227,7 +231,7 @@ export default function PropostasPage() {
 
             <hr className="border-t border-dashed border-slate-300 dark:border-white/20 my-8" />
 
-            {/* Step 2: Proposal Data */}
+            {/* Secção 2: Conteúdo da Proposta */}
             <div>
               <h3 className="font-bold text-[#1C2E56] dark:text-white mb-4 text-lg">
                 2 - A sua proposta
@@ -239,29 +243,33 @@ export default function PropostasPage() {
                 adicionais.
               </p>
               <textarea
-                name="proposta_texto"
+                name="Descrição da Proposta"
                 rows={5}
                 required
+                placeholder="Descreva a sua proposta aqui..."
                 className="w-full border border-slate-400 dark:border-white/30 rounded-md p-3 bg-transparent focus:ring-2 focus:ring-[#1C2E56] dark:focus:ring-white outline-none dark:text-white resize-y transition-all"
               />
             </div>
 
-            {/* Form Footer */}
+            {/* Rodapé do Formulário */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-8 gap-4">
               <p className="text-sm text-[#1C2E56] dark:text-white/80 max-w-md leading-relaxed">
-                Agora só falta preencher os dados do objeto do requerimento.
-                <br />
-                Clique no botão ao lado para continuar.
+                Reveja os dados inseridos e clique em Submeter para enviar a sua proposta.
               </p>
               <button
                 type="button"
                 disabled={isSubmitting}
                 onClick={async (event) => {
-                  if (!rootRef.current || isSubmitting || !validateRequiredFields(event.currentTarget)) return;
+                  if (
+                    !formRef.current ||
+                    isSubmitting ||
+                    !validateRequiredFields(event.currentTarget)
+                  )
+                    return;
                   setIsSubmitting(true);
                   try {
                     await submitBalcaoForm({
-                      root: rootRef.current,
+                      root: formRef.current,
                       formKey: "proposta",
                       formTitle: "Proposta",
                     });
@@ -269,7 +277,11 @@ export default function PropostasPage() {
                     setIsFormOpen(false);
                     await loadProposals();
                   } catch (error) {
-                    toast.error(error instanceof Error ? error.message : "Não foi possível submeter a proposta.");
+                    toast.error(
+                      error instanceof Error
+                        ? error.message
+                        : "Não foi possível submeter a proposta.",
+                    );
                   } finally {
                     setIsSubmitting(false);
                   }

@@ -4,26 +4,33 @@ import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
 import AttachmentField from "@/components/balcao/AttachmentField";
-import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
+import {
+  validateAcknowledgements,
+  validateRequiredFields,
+} from "@/components/balcao/validateRequiredFields";
 
 type CemiterioType = "concessao" | "atualizacao" | "licenca" | "requerimento";
 
 const config: Record<CemiterioType, { title: string; description: string }> = {
   concessao: {
     title: "Concessão de Terreno",
-    description: "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
+    description:
+      "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
   },
   atualizacao: {
     title: "Atualização da Concessão",
-    description: "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
+    description:
+      "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
   },
   licenca: {
     title: "Licença de Obras",
-    description: "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
+    description:
+      "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
   },
   requerimento: {
     title: "Requerimento para Inumação, Cremação, Trasladação e Exumação",
-    description: "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
+    description:
+      "Preencha os dados relativos ao terreno pretendido, indicando a finalidade do pedido e a informação necessária para que os serviços da junta possam analisar, validar e dar seguimento ao processo.",
   },
 };
 
@@ -31,22 +38,37 @@ const steps = ["Requerente(s)", "Objeto", "Documentos", "Confirmação"];
 
 const sidebarItems: { label: string; href: string; type: CemiterioType }[] = [
   { label: "Concessão de terreno", href: "/balcao-digital/cemiterios", type: "concessao" },
-  { label: "Atualização da concessão", href: "/balcao-digital/cemiterios/atualizacao", type: "atualizacao" },
+  {
+    label: "Atualização da concessão",
+    href: "/balcao-digital/cemiterios/atualizacao",
+    type: "atualizacao",
+  },
   { label: "Licença de obras", href: "/balcao-digital/cemiterios/licenca", type: "licenca" },
-  { label: "Requerimento para inumação, cremação, trasladação e exumação", href: "/balcao-digital/cemiterios/requerimento", type: "requerimento" },
+  {
+    label: "Requerimento para inumação, cremação, trasladação e exumação",
+    href: "/balcao-digital/cemiterios/requerimento",
+    type: "requerimento",
+  },
 ];
 
-const faqAnswer = "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
+const faqAnswer =
+  "A pesquisa de documentos pode ser realizada através do centro de documentação da plataforma, onde se encontram disponíveis diferentes conteúdos administrativos, regulamentos, atas, formulários, editais e outros documentos relacionados com a atividade da Junta de Freguesia. O sistema permite uma navegação simples e organizada para facilitar o acesso à informação.";
 
 function SidebarFaqs() {
   const [open, setOpen] = useState<number | null>(null);
   return (
     <div className="space-y-2">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70" onClick={() => setOpen(open === i ? null : i)}>
+        <div
+          key={i}
+          className="border rounded-lg p-3 bg-amber-50 dark:bg-black dark:border-white/20 cursor-pointer text-xs text-muted-foreground dark:text-white/70"
+          onClick={() => setOpen(open === i ? null : i)}
+        >
           <div className="flex items-center justify-between">
             <span>O que fazer se um ficheiro não abrir corretamente?</span>
-            <ChevronDown className={`w-3 h-3 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-3 h-3 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
+            />
           </div>
           {open === i && <p className="mt-2">Deve tentar novamente :)</p>}
         </div>
@@ -62,20 +84,39 @@ function MainFaqs() {
     <div className="space-y-3">
       {faqs.map((faq, i) => (
         <div key={i} className="bg-amber-50 dark:bg-black rounded-lg overflow-hidden">
-          <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white">
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            className="w-full flex items-center justify-between p-4 text-left font-medium text-foreground dark:text-white"
+          >
             {faq}
-            <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-4 h-4 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
+            />
           </button>
           {open === i && (
             <div className="px-4 pb-4 text-sm text-muted-foreground dark:text-white/70 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
               <p className="mt-3 mb-3">{faqAnswer}</p>
               <ul className="space-y-1 mb-3 text-xs">
-                <li>🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave ou assunto</li>
-                <li>📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática</li>
-                <li>📄 consulte regulamentos, editais, atas, formulários e documentos administrativos disponíveis online</li>
-                <li>🏛 explore documentos relacionados com iniciativas, projetos e processos participativos da freguesia</li>
+                <li>
+                  🔍 utilize a barra de pesquisa para procurar documentos por título, palavra-chave
+                  ou assunto
+                </li>
+                <li>
+                  📋 filtre os conteúdos por categoria, data, tipo de documento ou área temática
+                </li>
+                <li>
+                  📄 consulte regulamentos, editais, atas, formulários e documentos administrativos
+                  disponíveis online
+                </li>
+                <li>
+                  🏛 explore documentos relacionados com iniciativas, projetos e processos
+                  participativos da freguesia
+                </li>
                 <li>📥 descarregue documentos em diferentes formatos sempre que disponíveis</li>
-                <li>⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e atualizações.</li>
+                <li>
+                  ⭐ utilize os destaques e documentos recentes para acompanhar novas publicações e
+                  atualizações.
+                </li>
               </ul>
               <div className="flex items-center gap-4 text-xs text-muted-foreground dark:text-white/70 pt-2 border-t border-amber-200 dark:border-white/20 dark:text-white/70">
                 <span>Atualizado a 29 abril, 2026</span>
@@ -92,12 +133,13 @@ function MainFaqs() {
 
 export default function CemiterioWizard({ active }: { active: CemiterioType }) {
   const [step, setStep] = useState(1);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 4));
   const { title, description } = config[active];
+
   const resetWizard = () => {
-    if (!rootRef.current) return;
-    rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+    if (!formRef.current) return;
+    formRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
       if (control instanceof HTMLInputElement) {
         if (control.type === "checkbox" || control.type === "radio") {
           control.checked = false;
@@ -118,14 +160,28 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10" ref={rootRef}>
+    <div className="container max-w-6xl mx-auto px-4 py-10 flex gap-10">
       <aside className="hidden md:block w-72 shrink-0 text-sm">
         <p className="font-bold text-foreground mb-3 dark:text-white">O que precisa?</p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 dark:text-white/70">
           {sidebarItems.map((item) => (
             <li key={item.type} className="flex items-start gap-2">
-              <input type="radio" readOnly checked={active === item.type} className="accent-[#C41230] mt-0.5 shrink-0" />
-              <a href={item.href} className={active === item.type ? "text-[#C41230] font-medium dark:text-white" : "hover:text-foreground transition dark:text-white/70"}>{item.label}</a>
+              <input
+                type="radio"
+                readOnly
+                checked={active === item.type}
+                className="accent-[#C41230] mt-0.5 shrink-0"
+              />
+              <a
+                href={item.href}
+                className={
+                  active === item.type
+                    ? "text-[#C41230] font-medium dark:text-white"
+                    : "hover:text-foreground transition dark:text-white/70"
+                }
+              >
+                {item.label}
+              </a>
             </li>
           ))}
         </ul>
@@ -134,8 +190,12 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
       </aside>
 
       <div className="flex-1">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3 dark:text-white">{title}</h1>
-        <p className="text-muted-foreground dark:text-white/70 text-sm leading-relaxed mb-8 max-w-2xl dark:text-white/80">{description}</p>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3 dark:text-white">
+          {title}
+        </h1>
+        <p className="text-muted-foreground dark:text-white/70 text-sm leading-relaxed mb-8 max-w-2xl dark:text-white/80">
+          {description}
+        </p>
 
         <div className="flex items-start gap-8 mb-10">
           {steps.map((label, i) => {
@@ -144,43 +204,64 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
             const isDone = n < step;
             return (
               <div key={label} className="flex flex-col items-center gap-2 min-w-[60px]">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground dark:text-white/70"}`}>{n}</div>
-                <span className={`text-xs text-center ${isActive ? "text-[#C41230] font-medium" : "text-muted-foreground dark:text-white/70"}`}>{label}</span>
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${isActive || isDone ? "bg-[#C41230] text-white border-[#C41230]" : "border-border text-muted-foreground dark:text-white/70"}`}
+                >
+                  {n}
+                </div>
+                <span
+                  className={`text-xs text-center ${isActive ? "text-[#C41230] font-medium" : "text-muted-foreground dark:text-white/70"}`}
+                >
+                  {label}
+                </span>
               </div>
             );
           })}
         </div>
 
-        {step === 1 && <StepRequerente onContinue={next} />}
-        {step === 2 && <StepObjeto onContinue={next} />}
-        {step === 3 && <StepDocumentos onContinue={next} />}
-        {step === 4 && (
-          <StepConfirmacao
-            onSubmit={async () => {
-              if (!rootRef.current) return;
-              try {
-                await submitBalcaoForm({
-                  root: rootRef.current,
-                  formKey:
-                    active === "concessao"
-                      ? "cemiterio_concessao"
-                      : active === "atualizacao"
-                        ? "cemiterio_atualizacao"
-                        : active === "licenca"
-                          ? "cemiterio_licenca"
-                          : "cemiterio_requerimento",
-                  formTitle: title,
-                });
-                toast.success("Pedido submetido com sucesso!");
-                resetWizard();
-              } catch (error) {
-                toast.error(error instanceof Error ? error.message : "Não foi possível submeter o pedido.");
-              }
-            }}
-          />
-        )}
+        {/* Form Container scoped with formRef */}
+        <div ref={formRef}>
+          <div className={step === 1 ? "block" : "hidden"}>
+            <StepRequerente onContinue={next} />
+          </div>
+          <div className={step === 2 ? "block" : "hidden"}>
+            <StepObjeto onContinue={next} />
+          </div>
+          <div className={step === 3 ? "block" : "hidden"}>
+            <StepDocumentos onContinue={next} />
+          </div>
+          <div className={step === 4 ? "block" : "hidden"}>
+            <StepConfirmacao
+              onSubmit={async () => {
+                if (!formRef.current) return;
+                try {
+                  await submitBalcaoForm({
+                    root: formRef.current,
+                    formKey:
+                      active === "concessao"
+                        ? "cemiterio_concessao"
+                        : active === "atualizacao"
+                          ? "cemiterio_atualizacao"
+                          : active === "licenca"
+                            ? "cemiterio_licenca"
+                            : "cemiterio_requerimento",
+                    formTitle: title,
+                  });
+                  toast.success("Pedido submetido com sucesso!");
+                  resetWizard();
+                } catch (error) {
+                  toast.error(
+                    error instanceof Error ? error.message : "Não foi possível submeter o pedido.",
+                  );
+                }
+              }}
+            />
+          </div>
+        </div>
 
-        <p className="font-bold text-foreground dark:text-white mb-3 mt-12">Outros assuntos populares</p>
+        <p className="font-bold text-foreground dark:text-white mb-3 mt-12">
+          Outros assuntos populares
+        </p>
         <MainFaqs />
       </div>
     </div>
@@ -190,52 +271,118 @@ export default function CemiterioWizard({ active }: { active: CemiterioType }) {
 function StepRequerente({ onContinue }: { onContinue: () => void }) {
   return (
     <div data-required-fields>
-      <p className="font-bold text-foreground dark:text-white mb-6">1 — Dados do(s) requerente(s)</p>
+      <p className="font-bold text-foreground dark:text-white mb-6">
+        1 — Dados do(s) requerente(s)
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-4">
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Nome <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Nome <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Nome"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Apelido <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Apelido <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Apelido"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div className="md:col-span-2">
-          <label className="text-sm text-muted-foreground dark:text-white/70">Morada <span className="text-xs">(Necessário)</span></label>
-          <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Morada <span className="text-xs">(Necessário)</span>
+          </label>
+          <textarea
+            name="Morada"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Código Postal <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Código Postal <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Código Postal"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Freguesia <span className="text-xs">(Necessário)</span></label>
-          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70"><option value="">— Selecione</option><option value="gloria">Glória</option><option value="vera-cruz">Vera Cruz</option></select>
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Freguesia <span className="text-xs">(Necessário)</span>
+          </label>
+          <select
+            name="Freguesia"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70"
+          >
+            <option value="">— Selecione</option>
+            <option value="Glória">Glória</option>
+            <option value="Vera Cruz">Vera Cruz</option>
+          </select>
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Cartão de Cidadão <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Cartão de Cidadão <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Cartão de Cidadão"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Válido até <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Válido até <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Validade do Cartão de Cidadão"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">NIF <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            NIF <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="NIF"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div />
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Email <span className="text-xs">(Necessário)</span></label>
-          <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Email <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Email"
+            type="email"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Telefone ou Telemóvel</label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Telefone ou Telemóvel
+          </label>
+          <input
+            name="Telefone ou Telemóvel"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
       </div>
-      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
-      <button onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
+        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
+        continuar.
+      </p>
+      <button
+        type="button"
+        onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
+        className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+      >
+        Continuar <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -246,34 +393,69 @@ function StepObjeto({ onContinue }: { onContinue: () => void }) {
       <p className="font-bold text-foreground dark:text-white mb-6">2 — Objeto do requerimento</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mb-4">
         <div className="md:col-span-2">
-          <label className="text-sm text-muted-foreground dark:text-white/70">Tipo de pedido <span className="text-xs">(Necessário)</span></label>
-          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70">
-            <option>— Selecione</option>
-            <option>Inumação</option>
-            <option>Cremação</option>
-            <option>Trasladação</option>
-            <option>Exumação</option>
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Tipo de pedido <span className="text-xs">(Necessário)</span>
+          </label>
+          <select
+            name="Tipo de pedido"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70"
+          >
+            <option value="">— Selecione</option>
+            <option value="Inumação">Inumação</option>
+            <option value="Cremação">Cremação</option>
+            <option value="Trasladação">Trasladação</option>
+            <option value="Exumação">Exumação</option>
           </select>
         </div>
         <div className="md:col-span-2">
-          <label className="text-sm text-muted-foreground dark:text-white/70">Nome do falecido <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Nome do falecido <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Nome do falecido"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Data do óbito <span className="text-xs">(Necessário)</span></label>
-          <input type="date" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Data do óbito <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Data do óbito"
+            type="date"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
-          <label className="text-sm text-muted-foreground dark:text-white/70">Local do óbito <span className="text-xs">(Necessário)</span></label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Local do óbito <span className="text-xs">(Necessário)</span>
+          </label>
+          <input
+            name="Local do óbito"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div className="md:col-span-2">
-          <label className="text-sm text-muted-foreground dark:text-white/70">Observações</label>
-          <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
+          <label className="text-sm text-muted-foreground dark:text-white/70">
+            Observações do Objeto
+          </label>
+          <textarea
+            name="Observações do Objeto"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
       </div>
-      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.</p>
-      <button onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
+        Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
+        continuar.
+      </p>
+      <button
+        type="button"
+        onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
+        className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+      >
+        Continuar <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -283,7 +465,8 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
     <div>
       <p className="font-bold text-foreground dark:text-white mb-2">3 — Documentos instrutórios</p>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-6">
-        Limite de 2 MB. Ficheiros maiores do que este não serão aceites pelo sistema.<br />
+        Limite de 2 MB. Ficheiros maiores do que este não serão aceites pelo sistema.
+        <br />
         Tipos permitidos: gif, jpg, jpeg, png, txt, pdf, doc, docx, ppt, pptx, xls, xlsx.
       </p>
       <div className="space-y-4 max-w-xl mb-6">
@@ -295,8 +478,16 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
           <AttachmentField key={i} label={label} />
         ))}
       </div>
-      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Agora só falta confirmar, está quase.</p>
-      <button onClick={onContinue} className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90">Continuar <ChevronRight className="w-4 h-4" /></button>
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
+        Agora só falta confirmar, está quase.
+      </p>
+      <button
+        type="button"
+        onClick={onContinue}
+        className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+      >
+        Continuar <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -305,25 +496,56 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
   return (
     <div data-required-acknowledgements>
       <p className="font-bold text-foreground dark:text-white mb-4">4 — Confirmação</p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.</p>
-      <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065</p>
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">
+        A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.
+      </p>
+      <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">
+        Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427
+        065
+      </p>
       <div className="space-y-3 mb-6 max-w-2xl">
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
-          Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar informação sobre assuntos da autarquia e para fins estatísticos.
+          <input
+            name="Aceitou tratamento de dados"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
+          Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
+          pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
+          informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/70">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
-          Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos Administrativos, os documentos apresentados no âmbito do presente processo são documentos administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso integral a todos aqueles que o solicitem.
+          <input
+            name="Aceitou acesso a documentos administrativos"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
+          Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos
+          Administrativos, os documentos apresentados no âmbito do presente processo são documentos
+          administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso
+          integral a todos aqueles que o solicitem.
         </label>
       </div>
-      <p className="text-xs text-muted-foreground dark:text-white/70 mb-2">Para mais informações sobre as práticas de privacidade da União das Freguesias de Glória e Vera Cruz consulte a nossa página da privacidade ou envie-nos um email para direitoprivacidade.fgloriavcruz@gmail.com</p>
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-2">
+        Para mais informações sobre as práticas de privacidade da União das Freguesias de Glória e
+        Vera Cruz consulte a nossa página da privacidade ou envie-nos um email para
+        direitoprivacidade.fgloriavcruz@gmail.com
+      </p>
       <div className="max-w-xl mb-4 mt-4">
-        <label className="text-sm text-muted-foreground dark:text-white/70">Observações</label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24" />
+        <label className="text-sm text-muted-foreground dark:text-white/70">
+          Observações de Confirmação
+        </label>
+        <textarea
+          name="Observações de Confirmação"
+          className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24"
+        />
       </div>
-      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">Tudo preenchido e pronto a enviar! Resta clicar no botão ao lado para confirmar o envio do seu pedido.</p>
+      <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
+        Tudo preenchido e pronto a enviar! Resta clicar no botão ao lado para confirmar o envio do
+        seu pedido.
+      </p>
       <button
+        type="button"
         onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -332,5 +554,3 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
     </div>
   );
 }
-
-

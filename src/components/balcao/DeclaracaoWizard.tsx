@@ -4,7 +4,10 @@ import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
 import AttachmentField from "@/components/balcao/AttachmentField";
-import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
+import {
+  validateAcknowledgements,
+  validateRequiredFields,
+} from "@/components/balcao/validateRequiredFields";
 
 type DeclaracaoType = "comunhao" | "uniao";
 
@@ -53,7 +56,7 @@ function MainFaqs() {
               className={`w-4 h-4 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${open === i ? "rotate-180" : ""}`}
             />
           </button>
-          {open === i && (
+          {open && open === i && (
             <div className="px-4 pb-4 border-t border-amber-200 dark:border-white/20">
               <p className="mt-3 mb-3 text-sm text-muted-foreground dark:text-white/80">
                 {faqAnswer}
@@ -99,11 +102,12 @@ function MainFaqs() {
 
 export default function DeclaracaoWizard({ active }: { active: DeclaracaoType }) {
   const [step, setStep] = useState(1);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 4));
+
   const resetWizard = () => {
-    if (!rootRef.current) return;
-    rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+    if (!formRef.current) return;
+    formRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
       if (control instanceof HTMLInputElement) {
         if (control.type === "checkbox" || control.type === "radio") {
           control.checked = false;
@@ -124,7 +128,7 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
   };
 
   return (
-    <div className="balcao-shell" ref={rootRef}>
+    <div className="balcao-shell">
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">Que declaração precisa?</p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
@@ -201,30 +205,41 @@ export default function DeclaracaoWizard({ active }: { active: DeclaracaoType })
                 );
               })}
             </div>
-            {step === 1 && <StepProponentes onContinue={next} />}
-            {step === 2 && <StepDocumentos onContinue={next} />}
-            {step === 3 && <StepPagamento onContinue={next} />}
-            {step === 4 && (
-              <StepConfirmacao
-                onSubmit={async () => {
-                  if (!rootRef.current) return;
-                  try {
-                  await submitBalcaoForm({
-                    root: rootRef.current,
-                    formKey:
-                      active === "uniao"
-                        ? "declaracao_uniao_de_facto"
-                        : "declaracao_comunhao",
-                    formTitle: active === "uniao" ? "União de facto" : "Comunhão de mesa e habitação",
-                  });
-                  toast.success("Declaração submetida com sucesso!");
-                  resetWizard();
-                  } catch (error) {
-                    toast.error(error instanceof Error ? error.message : "Não foi possível submeter a declaração.");
-                  }
-                }}
-              />
-            )}
+
+            {/* Scoped form container */}
+            <div ref={formRef}>
+              <div className={step === 1 ? "block" : "hidden"}>
+                <StepProponentes onContinue={next} />
+              </div>
+              <div className={step === 2 ? "block" : "hidden"}>
+                <StepDocumentos onContinue={next} />
+              </div>
+              <div className={step === 3 ? "block" : "hidden"}>
+                <StepPagamento onContinue={next} />
+              </div>
+              <div className={step === 4 ? "block" : "hidden"}>
+                <StepConfirmacao
+                  onSubmit={async () => {
+                    if (!formRef.current) return;
+                    try {
+                      await submitBalcaoForm({
+                        root: formRef.current,
+                        formKey: "declaracao_uniao_de_facto",
+                        formTitle: "Declaração - União de Facto",
+                      });
+                      toast.success("Declaração submetida com sucesso!");
+                      resetWizard();
+                    } catch (error) {
+                      toast.error(
+                        error instanceof Error
+                          ? error.message
+                          : "Não foi possível submeter a declaração.",
+                      );
+                    }
+                  }}
+                />
+              </div>
+            </div>
           </>
         )}
 
@@ -284,7 +299,7 @@ function ComunhaoContent() {
   );
 }
 
-function ProponenteFields({ label }: { label: string }) {
+function ProponenteFields({ label, prefix }: { label: string; prefix: string }) {
   return (
     <div className="mb-8">
       <p className="font-semibold text-foreground dark:text-white mb-4">{label}</p>
@@ -293,47 +308,68 @@ function ProponenteFields({ label }: { label: string }) {
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Nome <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Nome`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Apelido <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Apelido`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div className="md:col-span-2">
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Morada <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-16 dark:bg-black dark:border-white/20 dark:text-white" />
+          <textarea
+            name={`${prefix} — Morada`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-16 dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Código Postal <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Código Postal`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Freguesia <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70 dark:bg-black dark:border-white/20">
+          <select
+            name={`${prefix} — Freguesia`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground dark:text-white/70 dark:bg-black dark:border-white/20"
+          >
             <option value="">— Selecione</option>
-            <option value="gloria">Glória</option>
-            <option value="vera-cruz">Vera Cruz</option>
+            <option value="Glória">Glória</option>
+            <option value="Vera Cruz">Vera Cruz</option>
           </select>
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Cartão de Cidadão <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Cartão de Cidadão`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Válido até <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Validade do Cartão de Cidadão`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div className="md:col-span-2">
           <label className="text-sm text-muted-foreground dark:text-white/80">
@@ -341,14 +377,17 @@ function ProponenteFields({ label }: { label: string }) {
           </label>
           <div className="flex gap-2 mt-1">
             <input
+              name={`${prefix} — Data de Nascimento (Dia)`}
               placeholder="Dia"
               className="w-20 border rounded-md px-3 py-2 text-sm dark:bg-black dark:border-white/20 dark:text-white"
             />
             <input
+              name={`${prefix} — Data de Nascimento (Mês)`}
               placeholder="Mês"
               className="w-20 border rounded-md px-3 py-2 text-sm dark:bg-black dark:border-white/20 dark:text-white"
             />
             <input
+              name={`${prefix} — Data de Nascimento (Ano)`}
               placeholder="Ano"
               className="w-24 border rounded-md px-3 py-2 text-sm dark:bg-black dark:border-white/20 dark:text-white"
             />
@@ -358,13 +397,20 @@ function ProponenteFields({ label }: { label: string }) {
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Email <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Email`}
+            type="email"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Telefone ou Telemóvel
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name={`${prefix} — Telefone ou Telemóvel`}
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
       </div>
     </div>
@@ -375,14 +421,15 @@ function StepProponentes({ onContinue }: { onContinue: () => void }) {
   return (
     <div data-required-fields>
       <p className="font-bold text-foreground dark:text-white mb-6">1A — Dados do 1º Proponente</p>
-      <ProponenteFields label="1A — Dados do 1º Proponente" />
+      <ProponenteFields label="1A — Dados do 1º Proponente" prefix="1º Proponente" />
       <p className="font-bold text-foreground dark:text-white mb-6">1B — Dados do 2º Proponente</p>
-      <ProponenteFields label="1B — Dados do 2º Proponente" />
+      <ProponenteFields label="1B — Dados do 2º Proponente" prefix="2º Proponente" />
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
       <button
+        type="button"
         onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -409,8 +456,8 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
             2{idx === 0 ? "A" : "B"} — Documentos do {label}
           </p>
           <div className="space-y-3 max-w-xl">
-            <AttachmentField label="Carregar a fotocópia do Cartão de Cidadão" />
-            <AttachmentField label="Carregar a fotocópia do Cartão de Contribuinte" />
+            <AttachmentField label={`Carregar a fotocópia do Cartão de Cidadão (${label})`} />
+            <AttachmentField label={`Carregar a fotocópia do Cartão de Contribuinte (${label})`} />
           </div>
         </div>
       ))}
@@ -418,6 +465,7 @@ function StepDocumentos({ onContinue }: { onContinue: () => void }) {
         Agora só falta confirmar, está quase.
       </p>
       <button
+        type="button"
         onClick={onContinue}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -434,7 +482,10 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-2">
         Qual é o método que prefere usar para efetuar o pagamento?
       </p>
-      <button className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">Na Junta</button>
+      <input type="hidden" name="Método de Pagamento" value="Presencial (Na Junta)" />
+      <button type="button" className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">
+        Na Junta
+      </button>
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-6">
         Deverá deslocar-se aos serviços da junta para efetuar o pagamento e confirmar a sua
         participação.
@@ -444,6 +495,7 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
         continuar.
       </p>
       <button
+        type="button"
         onClick={onContinue}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -466,13 +518,21 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
+          <input
+            name="Aceitou tratamento de dados"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
           Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
           pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
           informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
+          <input
+            name="Aceitou acesso a documentos administrativos"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
           Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos
           Administrativos, os documentos apresentados no âmbito do presente processo são documentos
           administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso
@@ -486,13 +546,17 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </p>
       <div className="max-w-xl mb-4 mt-4">
         <label className="text-sm text-muted-foreground dark:text-white/80">Observações</label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24 dark:bg-black dark:border-white/20 dark:text-white" />
+        <textarea
+          name="Observações de Confirmação"
+          className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24 dark:bg-black dark:border-white/20 dark:text-white"
+        />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Tudo preenchido e pronto a enviar! Resta clicar no botão ao lado para confirmar o envio do
         seu pedido.
       </p>
       <button
+        type="button"
         onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >

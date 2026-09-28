@@ -3,7 +3,10 @@ import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
-import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
+import {
+  validateAcknowledgements,
+  validateRequiredFields,
+} from "@/components/balcao/validateRequiredFields";
 
 type AppointmentType = "presidente" | "cemiterio";
 
@@ -64,7 +67,7 @@ function MainFaqs() {
               className={`w-4 h-4 shrink-0 text-muted-foreground dark:text-white/70 transition-transform ${open === i ? "rotate-180" : ""}`}
             />
           </button>
-          {open === i && (
+          {open && (
             <div className="px-4 pb-4 border-t border-amber-200 dark:border-white/20">
               <p className="mt-3 mb-3 text-sm text-muted-foreground dark:text-white/80">
                 {faqAnswer}
@@ -111,12 +114,12 @@ function MainFaqs() {
 export default function MarcacaoWizard() {
   const [type, setType] = useState<AppointmentType>("presidente");
   const [step, setStep] = useState(1);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const next = () => setStep((s) => Math.min(s + 1, 3));
   const resetWizard = () => {
-    if (!rootRef.current) return;
-    rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+    if (!formRef.current) return;
+    formRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
       if (control instanceof HTMLInputElement) {
         if (control.type === "checkbox" || control.type === "radio") {
           control.checked = false;
@@ -138,7 +141,7 @@ export default function MarcacaoWizard() {
   };
 
   return (
-    <div className="balcao-shell" ref={rootRef}>
+    <div className="balcao-shell">
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">Com quem quer reunir?</p>
         <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
@@ -229,26 +232,37 @@ export default function MarcacaoWizard() {
           })}
         </div>
 
-        {step === 1 && <StepMarcacao onContinue={next} />}
-        {step === 2 && <StepDados onContinue={next} />}
-        {step === 3 && (
+        {/* Scoped Form Container */}
+        <div ref={formRef}>
+          <div className={step === 1 ? "block" : "hidden"}>
+            <StepMarcacao type={type} onContinue={next} />
+          </div>
+          <div className={step === 2 ? "block" : "hidden"}>
+            <StepDados onContinue={next} />
+          </div>
+          <div className={step === 3 ? "block" : "hidden"}>
             <StepConfirmacao
               onSubmit={async () => {
-                if (!rootRef.current) return;
+                if (!formRef.current) return;
                 try {
-                await submitBalcaoForm({
-                  root: rootRef.current,
-                  formKey: "marcacao",
-                  formTitle: `Agendamento - ${titles[type]}`,
-                });
-                toast.success("MarcaÃ§Ã£o submetida com sucesso!");
-                resetWizard();
+                  await submitBalcaoForm({
+                    root: formRef.current,
+                    formKey: "marcacao",
+                    formTitle: `Agendamento - ${titles[type]}`,
+                  });
+                  toast.success("Marcação submetida com sucesso!");
+                  resetWizard();
                 } catch (error) {
-                  toast.error(error instanceof Error ? error.message : "Não foi possível submeter a marcação.");
+                  toast.error(
+                    error instanceof Error
+                      ? error.message
+                      : "Não foi possível submeter a marcação.",
+                  );
                 }
               }}
             />
-        )}
+          </div>
+        </div>
 
         <p className="balcao-section-title mb-3 mt-12 text-foreground dark:text-white">
           Outros assuntos populares
@@ -259,26 +273,32 @@ export default function MarcacaoWizard() {
   );
 }
 
-function StepMarcacao({ onContinue }: { onContinue: () => void }) {
+function StepMarcacao({ type, onContinue }: { type: AppointmentType; onContinue: () => void }) {
   const days = [
     29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     24, 25, 26, 27, 28, 29, 30, 1, 2,
   ];
   const [selectedDay, setSelectedDay] = useState(14);
+  const [selectedSlot, setSelectedSlot] = useState("16:30 – 17:00");
 
   return (
     <div>
+      {/* Hidden inputs to pass selected calendar values to the collector */}
+      <input type="hidden" name="Tipo de Reunião" value={titles[type]} />
+      <input type="hidden" name="Data do Agendamento" value={`${selectedDay} de Janeiro de 2026`} />
+      <input type="hidden" name="Horário Selecionado" value={selectedSlot} />
+
       <p className="font-bold text-foreground dark:text-white mb-4">
         1 – Quando é que lhe dá jeito?
       </p>
       <div className="flex flex-wrap gap-6">
         <div className="border dark:border-white/20 rounded-xl p-4 w-72">
           <div className="flex items-center justify-between mb-3 text-foreground dark:text-white">
-            <button>
+            <button type="button">
               <ChevronLeft className="w-4 h-4" />
             </button>
             <span className="text-sm font-medium">Janeiro 2026</span>
-            <button>
+            <button type="button">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -292,6 +312,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
           <div className="grid grid-cols-7 gap-1 text-xs">
             {days.map((d, i) => (
               <button
+                type="button"
                 key={i}
                 onClick={() => setSelectedDay(d)}
                 className={`h-7 rounded-full ${
@@ -308,11 +329,11 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
 
         <div className="border dark:border-white/20 rounded-xl p-4 w-56">
           <div className="flex items-center justify-between mb-3 text-foreground dark:text-white">
-            <button>
+            <button type="button">
               <ChevronLeft className="w-4 h-4" />
             </button>
             <span className="text-sm font-medium">{selectedDay} janeiro</span>
-            <button>
+            <button type="button">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -320,10 +341,26 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
             Horário disponível
           </p>
           <div className="space-y-2">
-            <button className="w-full border dark:border-white/20 rounded-md py-2 text-sm text-muted-foreground dark:text-white/70 hover:bg-muted dark:hover:bg-white/10">
+            <button
+              type="button"
+              onClick={() => setSelectedSlot("15:30 – 16:00")}
+              className={`w-full rounded-md py-2 text-sm transition-colors ${
+                selectedSlot === "15:30 – 16:00"
+                  ? "bg-[#1C2E56] text-white"
+                  : "border dark:border-white/20 text-muted-foreground dark:text-white/70 hover:bg-muted dark:hover:bg-white/10"
+              }`}
+            >
               15:30 – 16:00
             </button>
-            <button className="w-full bg-[#1C2E56] text-white rounded-md py-2 text-sm hover:bg-[#1C2E56]/90">
+            <button
+              type="button"
+              onClick={() => setSelectedSlot("16:30 – 17:00")}
+              className={`w-full rounded-md py-2 text-sm transition-colors ${
+                selectedSlot === "16:30 – 17:00"
+                  ? "bg-[#1C2E56] text-white"
+                  : "border dark:border-white/20 text-muted-foreground dark:text-white/70 hover:bg-muted dark:hover:bg-white/10"
+              }`}
+            >
               16:30 – 17:00
             </button>
           </div>
@@ -331,6 +368,7 @@ function StepMarcacao({ onContinue }: { onContinue: () => void }) {
       </div>
 
       <button
+        type="button"
         onClick={onContinue}
         className="mt-6 inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -349,50 +387,73 @@ function StepDados({ onContinue }: { onContinue: () => void }) {
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Nome <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Nome"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Apelido <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Apelido"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Idade <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Idade"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Freguesia <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Freguesia"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Email <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Email"
+            type="email"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Telefone ou Telemóvel
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Telefone ou Telemóvel"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
       </div>
       <div className="max-w-xl mb-2">
         <label className="text-sm text-muted-foreground dark:text-white/80">
           Assunto <span className="text-xs dark:text-white/60">(Necessário)</span>
         </label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24 dark:bg-black dark:border-white/20 dark:text-white" />
+        <textarea
+          name="Assunto da Reunião"
+          className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-24 dark:bg-black dark:border-white/20 dark:text-white"
+        />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
       <button
+        type="button"
         onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -415,13 +476,21 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
+          <input
+            name="Aceitou tratamento de dados"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
           Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
           pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
           informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
+          <input
+            name="Aceitou acesso a documentos administrativos"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
           Tomei conhecimento que, de acordo com o atendimento da Comissão de Acesso aos Documentos
           Administrativos, os documentos apresentados no âmbito do presente processo são documentos
           administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso
@@ -435,13 +504,17 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </p>
       <div className="max-w-xl mb-4">
         <label className="text-sm text-muted-foreground dark:text-white/80">Observações</label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
+        <textarea
+          name="Observações"
+          className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white"
+        />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
       <button
+        type="button"
         onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >

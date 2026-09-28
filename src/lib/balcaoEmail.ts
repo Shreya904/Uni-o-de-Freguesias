@@ -18,23 +18,23 @@ export type BalcaoFormKey =
   | "canideos";
 
 export const BALCAO_EMAILS: Record<BalcaoFormKey, string> = {
-  marcacao: "secretaria.fgloriavcruz@gmail.com",
-  inscricao_passeios: "secretaria.fgloriavcruz@gmail.com",
-  inscricao_almocos: "secretaria.fgloriavcruz@gmail.com",
-  inscricao_hidroginastica: "secretaria.fgloriavcruz@gmail.com",
-  declaracao_uniao_de_facto: "secretaria.fgloriavcruz@gmail.com",
-  declaracao_comunhao: "secretaria.fgloriavcruz@gmail.com",
-  cemiterio_concessao: "cemiterio.fgloriavcruz@gmail.com",
-  cemiterio_atualizacao: "secretaria.fgloriavcruz@gmail.com",
-  cemiterio_licenca: "secretaria.fgloriavcruz@gmail.com",
-  cemiterio_requerimento: "secretaria.fgloriavcruz@gmail.com",
-  atestado_prova_de_vida: "secretaria.fgloriavcruz@gmail.com",
-  atestado_residencia: "presidente.fgloriavcruz@gmail.com",
-  atestado_residencia_escolas: "servicos.fgloriavcruz@gmail.com",
-  atestado_outros: "secretaria.fgloriavcruz@gmail.com",
-  proposta: "servicos.fgloriavcruz@gmail.com",
-  reclamacao: "servicos.fgloriavcruz@gmail.com",
-  canideos: "servicos.fgloriavcruz@gmail.com",
+  marcacao: "office@uhxilab.com",
+  inscricao_passeios: "office@uhxilab.com",
+  inscricao_almocos: "office@uhxilab.com",
+  inscricao_hidroginastica: "office@uhxilab.com",
+  declaracao_uniao_de_facto: "office@uhxilab.com",
+  declaracao_comunhao: "office@uhxilab.com",
+  cemiterio_concessao: "office@uhxilab.com",
+  cemiterio_atualizacao: "office@uhxilab.com",
+  cemiterio_licenca: "office@uhxilab.com",
+  cemiterio_requerimento: "office@uhxilab.com",
+  atestado_prova_de_vida: "office@uhxilab.com",
+  atestado_residencia: "office@uhxilab.com",
+  atestado_residencia_escolas: "office@uhxilab.com",
+  atestado_outros: "office@uhxilab.com",
+  proposta: "office@uhxilab.com",
+  reclamacao: "office@uhxilab.com",
+  canideos: "office@uhxilab.com",
 };
 
 export type NormalizedField = {
@@ -56,33 +56,102 @@ export function collectBalcaoFields(root: HTMLElement): {
   const files: { name: string; file: File }[] = [];
 
   controls.forEach((control, index) => {
-    if (control instanceof HTMLInputElement && control.type === "radio") return;
-    if (control instanceof HTMLInputElement && control.type === "checkbox") {
-      fields.push({
-        label: getLabel(control, index),
-        value: control.checked ? "Sim" : "Não",
-      });
+    // Ignore submit/button controls
+    if (
+      control instanceof HTMLInputElement &&
+      (control.type === "submit" || control.type === "button")
+    ) {
       return;
     }
-    if (control instanceof HTMLInputElement && control.type === "file") {
-      const file = control.files?.[0];
-      if (file) {
-        files.push({ name: getLabel(control, index), file });
+
+    // Skip unchecked radios so we only record the selected value
+    if (control instanceof HTMLInputElement && control.type === "radio") {
+      if (control.checked) {
+        fields.push({
+          label: getLabel(control, index),
+          value: control.value || "Selecionado",
+        });
       }
       return;
     }
 
+    const label = getLabel(control, index);
+
+    // Checkboxes
+    if (control instanceof HTMLInputElement && control.type === "checkbox") {
+      fields.push({
+        label,
+        value: control.checked ? "Sim" : "Não",
+      });
+      return;
+    }
+
+    // File attachments
+    if (control instanceof HTMLInputElement && control.type === "file") {
+      const fileList = control.files;
+      if (fileList && fileList.length > 0) {
+        Array.from(fileList).forEach((file) => {
+          files.push({ name: label, file });
+        });
+      }
+      return;
+    }
+
+    // Standard text, email, select, textarea
+    const rawVal = control.value?.trim();
     fields.push({
-      label: getLabel(control, index),
-      value: control.value?.trim() || "",
+      label,
+      value: rawVal && rawVal !== "— Selecione" ? rawVal : "Não preenchido",
     });
   });
 
   return { fields, files };
 }
 
-function getLabel(control: Element, index: number) {
+function cleanLabelText(text: string): string {
+  return text
+    .replace(/\(Necessário\)|\*/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getLabel(control: HTMLElement, index: number): string {
+  // 1. Prioritize explicit name or aria-label attributes
+  const directName = control.getAttribute("name");
+  if (directName && directName.trim()) return directName.trim();
+
+  const ariaLabel = control.getAttribute("aria-label");
+  if (ariaLabel && ariaLabel.trim()) return ariaLabel.trim();
+
+  // 2. Check for an explicit `<label for="...">`
+  if (control.id) {
+    const explicitLabel = document.querySelector(`label[for="${CSS.escape(control.id)}"]`);
+    if (explicitLabel?.textContent) {
+      const cleaned = cleanLabelText(explicitLabel.textContent);
+      if (cleaned) return cleaned;
+    }
+  }
+
+  // 3. Check if wrapped inside a `<label>`
+  const parentLabel = control.closest("label");
+  if (parentLabel) {
+    const clone = parentLabel.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll("input, textarea, select").forEach((el) => el.remove());
+    const cleaned = cleanLabelText(clone.textContent || "");
+    if (cleaned) return cleaned;
+  }
+
+  // 4. Look for the nearest label inside the parent container
   const container = control.closest("div");
-  const label = container?.querySelector("label")?.textContent?.trim();
-  return label || `Campo ${index + 1}`;
+  const containerLabel = container?.querySelector("label")?.textContent;
+  if (containerLabel) {
+    const cleaned = cleanLabelText(containerLabel);
+    if (cleaned) return cleaned;
+  }
+
+  // 5. Placeholder fallback before numeric index
+  const placeholder = control.getAttribute("placeholder");
+  if (placeholder && placeholder.trim()) return placeholder.trim();
+
+  return `Campo ${index + 1}`;
 }

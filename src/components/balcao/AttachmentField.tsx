@@ -44,7 +44,7 @@ export default function AttachmentField({
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
-      <span className="text-sm text-muted-foreground dark:text-white/80 sm:w-56 shrink-0">
+      <span className="text-sm text-muted-foreground dark:text-white/80 sm:w-56 shrink-0 font-medium">
         {label}
       </span>
       <div className="flex flex-col gap-2">
@@ -56,6 +56,8 @@ export default function AttachmentField({
             <input
               ref={inputRef}
               id={inputId}
+              name={label}
+              aria-label={label}
               type="file"
               className="hidden"
               accept={accept}

@@ -3,7 +3,10 @@ import { useRef, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
 import { toast } from "sonner";
-import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
+import {
+  validateAcknowledgements,
+  validateRequiredFields,
+} from "@/components/balcao/validateRequiredFields";
 
 type InscricaoType = "passeios" | "almosos" | "hidroginastica";
 
@@ -126,16 +129,38 @@ function MainFaqs() {
 
 export default function InscricaoWizard({ active }: { active: InscricaoType }) {
   const [step, setStep] = useState(1);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => Math.min(s + 1, 3));
 
+  const resetWizard = () => {
+    if (!formRef.current) return;
+    formRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
+      if (control instanceof HTMLInputElement) {
+        if (control.type === "checkbox" || control.type === "radio") {
+          control.checked = false;
+        } else if (control.type !== "file") {
+          control.value = "";
+        }
+        return;
+      }
+      if (control instanceof HTMLTextAreaElement) {
+        control.value = "";
+        return;
+      }
+      if (control instanceof HTMLSelectElement) {
+        control.selectedIndex = 0;
+      }
+    });
+    setStep(1);
+  };
+
   return (
-    <div className="balcao-shell" ref={rootRef}>
+    <div className="balcao-shell">
       <aside className="balcao-sidebar">
         <p className="font-bold text-foreground mb-3 dark:text-white">
           Em que atividades se quer inscrever?
         </p>
-        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8 ">
+        <ul className="space-y-3 text-muted-foreground dark:text-white/70 mb-8">
           {(["passeios", "almosos", "hidroginastica"] as InscricaoType[]).map((t) => (
             <li key={t} className="flex items-center gap-2">
               <input type="radio" readOnly checked={active === t} className="accent-[#C41230]" />
@@ -188,48 +213,42 @@ export default function InscricaoWizard({ active }: { active: InscricaoType }) {
           })}
         </div>
 
-        {step === 1 && <StepDados active={active} onContinue={next} />}
-        {step === 2 && <StepPagamento onContinue={next} />}
-        {step === 3 && (
-          <StepConfirmacao
-            onSubmit={async () => {
-              if (!rootRef.current) return;
-              try {
-              await submitBalcaoForm({
-                root: rootRef.current,
-                formKey:
-                  active === "passeios"
-                    ? "inscricao_passeios"
-                  : active === "almosos"
-                      ? "inscricao_almocos"
-                      : "inscricao_hidroginastica",
-                formTitle: titles[active],
-              });
-              toast.success("Inscrição submetida com sucesso!");
-              rootRef.current.querySelectorAll("input, textarea, select").forEach((control) => {
-                if (control instanceof HTMLInputElement) {
-                  if (control.type === "checkbox" || control.type === "radio") {
-                    control.checked = false;
-                  } else if (control.type !== "file") {
-                    control.value = "";
-                  }
-                  return;
+        {/* Scoped form container */}
+        <div ref={formRef}>
+          <div className={step === 1 ? "block" : "hidden"}>
+            <StepDados active={active} onContinue={next} />
+          </div>
+          <div className={step === 2 ? "block" : "hidden"}>
+            <StepPagamento onContinue={next} />
+          </div>
+          <div className={step === 3 ? "block" : "hidden"}>
+            <StepConfirmacao
+              onSubmit={async () => {
+                if (!formRef.current) return;
+                try {
+                  await submitBalcaoForm({
+                    root: formRef.current,
+                    formKey:
+                      active === "passeios"
+                        ? "inscricao_passeios"
+                        : active === "almosos"
+                          ? "inscricao_almocos"
+                          : "inscricao_hidroginastica",
+                    formTitle: titles[active],
+                  });
+                  toast.success("Inscrição submetida com sucesso!");
+                  resetWizard();
+                } catch (error) {
+                  toast.error(
+                    error instanceof Error
+                      ? error.message
+                      : "Não foi possível submeter a inscrição.",
+                  );
                 }
-                if (control instanceof HTMLTextAreaElement) {
-                  control.value = "";
-                  return;
-                }
-                if (control instanceof HTMLSelectElement) {
-                  control.selectedIndex = 0;
-                }
-              });
-              setStep(1);
-              } catch (error) {
-                toast.error(error instanceof Error ? error.message : "Não foi possível submeter a inscrição.");
-              }
-            }}
-          />
-        )}
+              }}
+            />
+          </div>
+        </div>
 
         <p className="balcao-section-title mb-3 mt-12 text-foreground dark:text-white">
           Outros assuntos populares
@@ -249,31 +268,44 @@ function StepDados({ active, onContinue }: { active: InscricaoType; onContinue: 
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Nome <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Nome"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Apelido <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Apelido"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Idade <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Idade"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Freguesia <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Freguesia"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             {dateLabels[active]}
           </label>
           <input
+            name={dateLabels[active]}
             type="date"
             className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
           />
@@ -283,13 +315,20 @@ function StepDados({ active, onContinue }: { active: InscricaoType; onContinue: 
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Email <span className="text-xs dark:text-white/60">(Necessário)</span>
           </label>
-          <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Email"
+            type="email"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
         <div>
           <label className="text-sm text-muted-foreground dark:text-white/80">
             Telefone ou Telemóvel
           </label>
-          <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white" />
+          <input
+            name="Telefone ou Telemóvel"
+            className="w-full border rounded-md px-3 py-2 mt-1 text-sm dark:bg-black dark:border-white/20 dark:text-white"
+          />
         </div>
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
@@ -297,6 +336,7 @@ function StepDados({ active, onContinue }: { active: InscricaoType; onContinue: 
         continuar.
       </p>
       <button
+        type="button"
         onClick={(event) => validateRequiredFields(event.currentTarget) && onContinue()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -313,7 +353,10 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
       <p className="text-sm text-muted-foreground dark:text-white/80 mb-2">
         Qual o método que prefere usar para efetuar o pagamento?
       </p>
-      <button className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">Na Junta</button>
+      <input type="hidden" name="Método de Pagamento" value="Presencial (Na Junta)" />
+      <button type="button" className="bg-[#C41230] text-white text-xs rounded px-3 py-1 mb-4">
+        Na Junta
+      </button>
       <p className="text-sm text-muted-foreground dark:text-white/70 mb-6">
         Deverá deslocar-se aos serviços da junta para efetuar o pagamento e confirmar a sua
         participação.
@@ -323,6 +366,7 @@ function StepPagamento({ onContinue }: { onContinue: () => void }) {
         continuar.
       </p>
       <button
+        type="button"
         onClick={onContinue}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
@@ -345,13 +389,21 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </p>
       <div className="space-y-3 mb-6 max-w-2xl">
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
+          <input
+            name="Aceitou tratamento de dados"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
           Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados
           pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar
           informação sobre assuntos da autarquia e para fins estatísticos.
         </label>
         <label className="flex items-start gap-2 text-sm text-muted-foreground dark:text-white/80">
-          <input type="checkbox" className="mt-1 accent-[#C41230]" />
+          <input
+            name="Aceitou acesso a documentos administrativos"
+            type="checkbox"
+            className="mt-1 accent-[#C41230]"
+          />
           Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos
           Administrativos, os documentos apresentados no âmbito do presente processo são documentos
           administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso
@@ -360,17 +412,21 @@ function StepConfirmacao({ onSubmit }: { onSubmit: () => Promise<void> }) {
       </div>
       <div className="max-w-xl mb-4">
         <label className="text-sm text-muted-foreground dark:text-white/80">Descrição</label>
-        <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white" />
+        <textarea
+          name="Descrição / Observações"
+          className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20 dark:bg-black dark:border-white/20 dark:text-white"
+        />
       </div>
       <p className="text-xs text-muted-foreground dark:text-white/70 mb-4">
         Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para
         continuar.
       </p>
       <button
+        type="button"
         onClick={(event) => validateAcknowledgements(event.currentTarget) && onSubmit()}
         className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
       >
-        Continuar <ChevronRight className="w-4 h-4" />
+        Confirmar e Submeter <ChevronRight className="w-4 h-4" />
       </button>
     </div>
   );

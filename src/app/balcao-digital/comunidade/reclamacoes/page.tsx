@@ -5,7 +5,10 @@ import Footer from "@/components/Footer";
 import BalcaoHeader from "@/components/balcao/BalcaoHeader";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { submitBalcaoForm } from "@/lib/balcaoSubmit";
-import { validateAcknowledgements, validateRequiredFields } from "@/components/balcao/validateRequiredFields";
+import {
+  validateAcknowledgements,
+  validateRequiredFields,
+} from "@/components/balcao/validateRequiredFields";
 import { toast } from "sonner";
 
 const faqAnswer =
@@ -69,6 +72,7 @@ export default function ReclamacoesPage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="min-h-screen" ref={rootRef}>
       <Header />
@@ -109,99 +113,138 @@ export default function ReclamacoesPage() {
             );
           })}
         </div>
-        {step === 1 && (
-          <div className="space-y-8" data-required-fields>
-            <div>
-              <h2 className="font-bold text-foreground mb-4">1 — Natureza do problema?</h2>
-              <label className="text-sm text-muted-foreground">
-                Tipo de problema <span className="text-xs">(Necessário)</span>
-              </label>
-              <select className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground">
-                <option>— Selecione</option>
-                <option>Espaço público</option>
-                <option>Serviços</option>
-                <option>Outro</option>
-              </select>
-            </div>
-            <div>
-              <h2 className="font-bold text-foreground mb-4">
-                2 — Qual é a sua reclamação ou sugestão?
-              </h2>
-              <label className="text-sm text-muted-foreground">
-                Reclamação ou sugestão <span className="text-xs">(Necessário)</span>
-              </label>
-              <textarea
-                placeholder="Mensagem..."
-                className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-32 resize-none"
-              />
-            </div>
-            <div>
-              <h2 className="font-bold text-foreground mb-4">3 — Os seus dados</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-muted-foreground">
-                    Nome <span className="text-xs">(Necessário)</span>
-                  </label>
-                  <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">
-                    Apelido <span className="text-xs">(Necessário)</span>
-                  </label>
-                  <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">
-                    Email <span className="text-xs">(Necessário)</span>
-                  </label>
-                  <input type="email" className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Telefone ou Telemóvel</label>
-                  <input className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
-                </div>
+
+        {/* Step 1 remains mounted in the DOM to keep its values */}
+        <div className={step === 1 ? "space-y-8" : "hidden"} data-required-fields>
+          <div>
+            <h2 className="font-bold text-foreground mb-4">1 — Natureza do problema?</h2>
+            <label className="text-sm text-muted-foreground">
+              Tipo de problema <span className="text-xs">(Necessário)</span>
+            </label>
+            <select
+              name="Tipo de problema"
+              className="w-full border rounded-md px-3 py-2 mt-1 text-sm text-muted-foreground"
+            >
+              <option value="">— Selecione</option>
+              <option value="Espaço público">Espaço público</option>
+              <option value="Serviços">Serviços</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div>
+            <h2 className="font-bold text-foreground mb-4">
+              2 — Qual é a sua reclamação ou sugestão?
+            </h2>
+            <label className="text-sm text-muted-foreground">
+              Reclamação ou sugestão <span className="text-xs">(Necessário)</span>
+            </label>
+            <textarea
+              name="Reclamação ou sugestão"
+              placeholder="Mensagem..."
+              className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-32 resize-none"
+            />
+          </div>
+          <div>
+            <h2 className="font-bold text-foreground mb-4">3 — Os seus dados</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm text-muted-foreground">
+                  Nome <span className="text-xs">(Necessário)</span>
+                </label>
+                <input name="Nome" className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">
+                  Apelido <span className="text-xs">(Necessário)</span>
+                </label>
+                <input name="Apelido" className="w-full border rounded-md px-3 py-2 mt-1 text-sm" />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">
+                  Email <span className="text-xs">(Necessário)</span>
+                </label>
+                <input
+                  name="Email"
+                  type="email"
+                  className="w-full border rounded-md px-3 py-2 mt-1 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Telefone ou Telemóvel</label>
+                <input
+                  name="Telefone ou Telemóvel"
+                  className="w-full border rounded-md px-3 py-2 mt-1 text-sm"
+                />
               </div>
             </div>
-            <div className="flex items-center justify-between pt-2">
-              <p className="text-xs text-muted-foreground">
-                Agora só falta confirmar. Vamos a isso!
-              </p>
-              <button
-                onClick={(event) => validateRequiredFields(event.currentTarget) && setStep(2)}
-                className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
-              >
-                Continuar <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
-        )}
-        {step === 2 && (
-          <div data-required-acknowledgements>
-            <h2 className="font-bold text-foreground mb-4">2 — Confirmação</h2>
-            <p className="text-sm text-muted-foreground mb-2">
-              A confirmação da inscrição será enviada para o respectivo endereço de e-mail responsável.
-            </p>
-            <p className="text-sm text-muted-foreground mb-6">
-              Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234 427 065
-            </p>
-            <div className="space-y-3 mb-6 max-w-2xl">
-              <label className="flex items-start gap-2 text-sm text-muted-foreground">
-                <input type="checkbox" className="mt-1 accent-[#C41230]" />
-                Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus dados pessoais para dar resposta aos seus pedidos, instrução dos seus processos, prestar informação sobre assuntos da autarquia e para fins estatísticos.
-              </label>
-              <label className="flex items-start gap-2 text-sm text-muted-foreground">
-                <input type="checkbox" className="mt-1 accent-[#C41230]" />
-                Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos Documentos Administrativos, os documentos apresentados no âmbito do presente processo são documentos administrativos, pelo que a Junta de Freguesia estará obrigada a garantir o seu acesso integral a todos aqueles que o solicitem.
-              </label>
-            </div>
-            <div className="max-w-xl mb-4">
-              <label className="text-sm text-muted-foreground">Descrição</label>
-              <textarea className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20" />
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado para continuar.
-            </p>
+          <div className="flex items-center justify-between pt-2">
+            <p className="text-xs text-muted-foreground">Agora só falta confirmar. Vamos a isso!</p>
             <button
+              type="button"
+              onClick={(event) => validateRequiredFields(event.currentTarget) && setStep(2)}
+              className="inline-flex items-center gap-1 bg-[#C41230] text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-[#C41230]/90"
+            >
+              Continuar <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Step 2 remains mounted in the DOM to keep its values */}
+        <div className={step === 2 ? "block" : "hidden"} data-required-acknowledgements>
+          <h2 className="font-bold text-foreground mb-4">2 — Confirmação</h2>
+          <p className="text-sm text-muted-foreground mb-2">
+            A confirmação da inscrição será enviada para o respectivo endereço de e-mail
+            responsável.
+          </p>
+          <p className="text-sm text-muted-foreground mb-6">
+            Para qualquer esclarecimento poderá contactar os nossos serviços através do número 234
+            427 065
+          </p>
+          <div className="space-y-3 mb-6 max-w-2xl">
+            <label className="flex items-start gap-2 text-sm text-muted-foreground">
+              <input
+                name="Tomei conhecimento sobre o tratamento de dados pessoais"
+                type="checkbox"
+                className="mt-1 accent-[#C41230]"
+              />
+              Tomei conhecimento que a União de Freguesias da Glória e Vera Cruz utiliza os seus
+              dados pessoais para dar resposta aos seus pedidos, instrução dos seus processos,
+              prestar informação sobre assuntos da autarquia e para fins estatísticos.
+            </label>
+            <label className="flex items-start gap-2 text-sm text-muted-foreground">
+              <input
+                name="Tomei conhecimento sobre o acesso aos documentos administrativos"
+                type="checkbox"
+                className="mt-1 accent-[#C41230]"
+              />
+              Tomei conhecimento que, de acordo com o entendimento da Comissão de Acesso aos
+              Documentos Administrativos, os documentos apresentados no âmbito do presente processo
+              são documentos administrativos, pelo que a Junta de Freguesia estará obrigada a
+              garantir o seu acesso integral a todos aqueles que o solicitem.
+            </label>
+          </div>
+          <div className="max-w-xl mb-4">
+            <label className="text-sm text-muted-foreground">Descrição</label>
+            <textarea
+              name="Descrição adicional"
+              className="w-full border rounded-md px-3 py-2 mt-1 text-sm h-20"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mb-4">
+            Agora só falta preencher os dados do objeto do requerimento. Clique no botão ao lado
+            para continuar.
+          </p>
+          <div className="flex items-center justify-between pt-2">
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Voltar atrás
+            </button>
+            <button
+              type="button"
               onClick={async (event) => {
                 if (!validateAcknowledgements(event.currentTarget) || isSubmitting) return;
                 if (!rootRef.current) return;
@@ -215,7 +258,11 @@ export default function ReclamacoesPage() {
                   toast.success("Reclamação submetida com sucesso!");
                   setStep(1);
                 } catch (error) {
-                  toast.error(error instanceof Error ? error.message : "Não foi possível submeter a reclamação.");
+                  toast.error(
+                    error instanceof Error
+                      ? error.message
+                      : "Não foi possível submeter a reclamação.",
+                  );
                 } finally {
                   setIsSubmitting(false);
                 }
@@ -226,7 +273,8 @@ export default function ReclamacoesPage() {
               {isSubmitting ? "A submeter..." : "Submeter"} <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-        )}
+        </div>
+
         <div className="border-t mt-12 pt-8">
           <p className="font-bold text-foreground mb-3">Outros assuntos populares</p>
           <MainFaqs />
