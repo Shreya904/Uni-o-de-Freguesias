@@ -15,57 +15,12 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { fetchPublishedEvents } from "@/lib/cms";
+import { fetchPublishedEvents, type CmsEventItem } from "@/lib/cms";
 
-// --- TYPES FOR CMS ARCHITECTURE ---
-export interface EventItem {
-  id: string;
-  slug: string;
-  categoryTop: string;
-  categorySub: string;
-  priceType: string;
-  title: string;
-  description: string;
-  dateStr: string;
-  timeStr: string;
-  location: string;
-  mainImage: string;
-  registrationLink: string;
-  rawDate?: string; // Added to easily match events to calendar grid cells
-  isFeatured?: boolean;
-}
+export type EventItem = CmsEventItem;
 
 const isExternalRegistrationLink = (url?: string | null) => {
   return typeof url === "string" && url.startsWith("http");
-};
-
-// Helper to determine time-based categories dynamically (Updated for "Amanhã")
-const getCategorySub = (eventDateStr: string): string => {
-  if (!eventDateStr) return "Futuro";
-
-  const eventDate = new Date(eventDateStr);
-  const today = new Date();
-
-  // Reset times for accurate day comparison
-  today.setHours(0, 0, 0, 0);
-  const compareDate = new Date(eventDate);
-  compareDate.setHours(0, 0, 0, 0);
-
-  const diffTime = compareDate.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return "Hoje";
-  if (diffDays === 1) return "Amanhã";
-  if (diffDays >= 0 && diffDays <= 7) return "Esta semana";
-  if (diffDays > 7 && diffDays <= 31) return "Este mês";
-
-  return "Futuro";
-};
-
-// Helper to normalize legacy DB categories for the frontend
-const normalizeCategory = (category?: string): string => {
-  if (category === "Mercados") return "Feiras e Mercados";
-  return category || "Outros";
 };
 
 // --- FALLBACK DATA ---
@@ -77,13 +32,20 @@ const fallbackEvents: EventItem[] = [
     categorySub: "Esta semana",
     priceType: "Gratuito",
     title: "Ginástica de Manutenção",
+    excerpt: "Inscrições abertas a partir de 1 de setembro de 2025.",
     description: "Inscrições abertas a partir de 1 de setembro de 2025.",
+    date: "2025-09-01T10:00:00Z",
+    rawDate: "2025-09-01T10:00:00Z",
     dateStr: "1 setembro 2025",
+    displayDate: "1 setembro 2025",
+    time: "10:00 - 11:00",
     timeStr: "10:00 - 11:00",
     location: "Polo Glória e Polo Vera Cruz",
     mainImage: "/evento-ginastica.jpg",
+    galleryImages: [],
     registrationLink: "/inscricoes",
-    rawDate: "2025-09-01T10:00:00Z",
+    isPast: false,
+    isFeatured: true,
   },
   {
     id: "2",
@@ -92,13 +54,22 @@ const fallbackEvents: EventItem[] = [
     categorySub: "Este mês",
     priceType: "Gratuito",
     title: "Musiria — Projeto de Música Gratuito",
+    excerpt:
+      "MUSIRIA: um Projeto da União das Freguesias de Glória e Vera Cruz. Aulas e Ensaios de Música GRATUITOS — para todas as idades!",
     description:
       "MUSIRIA: um Projeto da União das Freguesias de Glória e Vera Cruz. Aulas e Ensaios de Música GRATUITOS — para todas as idades!",
+    date: "",
+    rawDate: "",
     dateStr: "Segundas e Quintas-feiras",
+    displayDate: "Segundas e Quintas-feiras",
+    time: "18:30-19:30",
     timeStr: "18:30-19:30",
     location: "Polo Vera Cruz",
     mainImage: "/evento-musiria.jpg",
+    galleryImages: [],
     registrationLink: "/inscricoes",
+    isPast: false,
+    isFeatured: true,
   },
 ];
 
@@ -117,9 +88,8 @@ const CalendarView = ({ events }: { events: EventItem[] }) => {
     0,
   ).getDate();
   let firstDayIndex = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay() - 1;
-  if (firstDayIndex === -1) firstDayIndex = 6; // Adjust so Monday is 0, Sunday is 6
+  if (firstDayIndex === -1) firstDayIndex = 6;
 
-  // Create an array of 42 cells (6 weeks) to maintain a perfect grid
   const days = Array.from({ length: 42 }, (_, i) => {
     const dayNumber = i - firstDayIndex + 1;
     if (dayNumber > 0 && dayNumber <= daysInMonth) {
@@ -128,7 +98,6 @@ const CalendarView = ({ events }: { events: EventItem[] }) => {
     return null;
   });
 
-  // Drop the last row if it's completely empty
   if (days.slice(35).every((d) => d === null)) {
     days.splice(35);
   }
@@ -150,7 +119,6 @@ const CalendarView = ({ events }: { events: EventItem[] }) => {
 
   return (
     <div className="w-full bg-white animate-in fade-in duration-300">
-      {/* Month Navigation */}
       <div className="flex items-center justify-center gap-12 py-6 mb-4">
         <button onClick={prevMonth} className="text-[#253e6b] hover:text-black transition-colors">
           <ChevronLeft className="w-6 h-6 stroke-[3]" />
@@ -163,7 +131,6 @@ const CalendarView = ({ events }: { events: EventItem[] }) => {
         </button>
       </div>
 
-      {/* Responsive Grid Wrapper */}
       <div className="w-full overflow-x-auto pb-4">
         <div className="min-w-[900px] border border-gray-200">
           <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50/50">
@@ -234,11 +201,8 @@ export default function EventsPage() {
   const [sortAsc, setSortAsc] = useState(false);
   const [sortTouched, setSortTouched] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
-
-  // NEW: State to toggle between grid cards and the calendar widget
   const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
 
-  // Dynamic Dates for Sidebar Headers
   const todayDate = new Date();
   const tomorrowDate = new Date(todayDate);
   tomorrowDate.setDate(tomorrowDate.getDate() + 1);
@@ -248,15 +212,12 @@ export default function EventsPage() {
 
   const hojeLabel = formatShortDate(todayDate);
   const amanhaLabel = formatShortDate(tomorrowDate);
-  const featuredEvents = useMemo(
-    () => {
-      const selected = events.filter((event) => event.isFeatured);
-      return (selected.length > 0 ? selected : events).slice(0, 2);
-    },
-    [events],
-  );
 
-  // Filter Categories
+  const featuredEvents = useMemo(() => {
+    const selected = events.filter((event) => event.isFeatured);
+    return (selected.length > 0 ? selected : events).slice(0, 2);
+  }, [events]);
+
   const filterCategories = [
     {
       title: "Tipo (todos)",
@@ -287,32 +248,7 @@ export default function EventsPage() {
 
         if (mounted) {
           if (cmsData && cmsData.length > 0) {
-            const mappedEvents: EventItem[] = cmsData.map((doc) => {
-              const fallbackFormattedDate = doc.date
-                ? new Date(doc.date).toLocaleDateString("pt-PT", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })
-                : "";
-
-              return {
-                id: doc.id,
-                slug: doc.slug,
-                categoryTop: normalizeCategory(doc.categoryTop),
-                categorySub: getCategorySub(doc.date),
-                priceType: doc.priceType || "Gratuito",
-                title: doc.title,
-                description: doc.excerpt || "",
-                dateStr: doc.displayDate || fallbackFormattedDate,
-                timeStr: doc.time || "",
-                location: doc.location || "",
-                mainImage: doc.mainImage || "",
-                registrationLink: doc.registrationLink || "",
-                rawDate: doc.date || "", // Capture raw date for calendar
-              };
-            });
-            setEvents(mappedEvents);
+            setEvents(cmsData);
           } else {
             setEvents(fallbackEvents);
           }
@@ -341,21 +277,21 @@ export default function EventsPage() {
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter(
-        (e) => e.title.toLowerCase().includes(query) || e.description.toLowerCase().includes(query),
+        (e) =>
+          e.title.toLowerCase().includes(query) ||
+          (typeof e.excerpt === "string" && e.excerpt.toLowerCase().includes(query)) ||
+          (typeof e.description === "string" && e.description.toLowerCase().includes(query)),
       );
     }
 
     if (selectedFilters.length > 0) {
       result = result.filter((e) => {
-        // Direct matches for Top Categories and Price
         if (selectedFilters.includes(e.categoryTop) || selectedFilters.includes(e.priceType))
           return true;
 
-        // Intelligent Date Matching
         if (selectedFilters.includes("Hoje") && e.categorySub === "Hoje") return true;
         if (selectedFilters.includes("Amanhã") && e.categorySub === "Amanhã") return true;
 
-        // "Esta semana" should include today, tomorrow, and the rest of the week
         if (
           selectedFilters.includes("Esta semana") &&
           ["Hoje", "Amanhã", "Esta semana"].includes(e.categorySub)
@@ -422,17 +358,6 @@ export default function EventsPage() {
                     Pesquisar
                   </button>
                 </div>
-                {/* <p className="text-xs text-white/80 font-medium">
-                  Termos Populares:{" "}
-                  <span className="underline cursor-pointer hover:text-white ml-1">
-                    Feira de Março
-                  </span>
-                  , <span className="underline cursor-pointer hover:text-white ml-1">Passeios</span>
-                  ,{" "}
-                  <span className="underline cursor-pointer hover:text-white ml-1">
-                    Feira de antiguidades
-                  </span>
-                </p> */}
               </div>
             </div>
           </section>
@@ -442,7 +367,6 @@ export default function EventsPage() {
         <section className="container max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
           {/* LEFT SIDEBAR */}
           <aside className="w-full lg:w-[320px] shrink-0">
-            {/* UPDATED: Grouped Date Filters based on image aesthetic */}
             <div className="flex w-full border border-gray-300 rounded-md overflow-hidden mb-10">
               <button
                 onClick={() => toggleFilter("Hoje")}
@@ -453,7 +377,9 @@ export default function EventsPage() {
                 }`}
               >
                 <span
-                  className={`block text-xs font-medium mb-0.5 ${selectedFilters.includes("Hoje") ? "text-white/80" : "text-[#253e6b]/70"}`}
+                  className={`block text-xs font-medium mb-0.5 ${
+                    selectedFilters.includes("Hoje") ? "text-white/80" : "text-[#253e6b]/70"
+                  }`}
                 >
                   Hoje
                 </span>
@@ -469,7 +395,9 @@ export default function EventsPage() {
                 }`}
               >
                 <span
-                  className={`block text-xs font-medium mb-0.5 ${selectedFilters.includes("Amanhã") ? "text-white/80" : "text-[#253e6b]/70"}`}
+                  className={`block text-xs font-medium mb-0.5 ${
+                    selectedFilters.includes("Amanhã") ? "text-white/80" : "text-[#253e6b]/70"
+                  }`}
                 >
                   Amanhã
                 </span>
@@ -485,7 +413,9 @@ export default function EventsPage() {
                 }`}
               >
                 <span
-                  className={`block text-xs font-medium mb-0.5 ${selectedFilters.includes("Esta semana") ? "text-white/80" : "text-[#253e6b]/70"}`}
+                  className={`block text-xs font-medium mb-0.5 ${
+                    selectedFilters.includes("Esta semana") ? "text-white/80" : "text-[#253e6b]/70"
+                  }`}
                 >
                   Esta
                 </span>
@@ -576,7 +506,6 @@ export default function EventsPage() {
 
           {/* RIGHT MAIN CONTENT */}
           <div className="flex-1 w-full min-w-0">
-            {/* Header, Sorting & View Toggle */}
             <div className="flex items-center justify-between mb-8 text-sm text-[#253e6b] font-semibold border-b border-gray-200 pb-4">
               <div />
               <div className="flex items-center gap-4 ml-auto">
@@ -616,7 +545,6 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                {/* View Mode Toggle */}
                 <button
                   onClick={() => setViewMode((prev) => (prev === "grid" ? "calendar" : "grid"))}
                   className="p-2 bg-[#1c2841] text-white rounded-md hover:bg-[#253e6b] transition-colors shadow-sm"
@@ -631,7 +559,6 @@ export default function EventsPage() {
               </div>
             </div>
 
-            {/* Conditionally Render View */}
             {viewMode === "calendar" ? (
               <CalendarView events={filteredAndSortedEvents} />
             ) : (
@@ -657,7 +584,7 @@ export default function EventsPage() {
                         </Link>
 
                         <p className="text-[15px] text-[#253e6b]/80 font-medium leading-relaxed mb-6">
-                          {event.description}
+                          {event.excerpt}
                         </p>
 
                         <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[15px] text-[#253e6b]/90 mb-6">

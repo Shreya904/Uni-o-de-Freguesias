@@ -76,13 +76,17 @@ export type CmsEventItem = {
   id: string;
   slug: string;
   categoryTop: string;
+  categorySub: string;
   priceType: string;
   title: string;
   excerpt: string;
   description: RichTextContent | string;
   date: string;
+  rawDate?: string;
+  dateStr: string;
   displayDate: string;
   time: string;
+  timeStr: string;
   location: string;
   registrationLink: string;
   isPast: boolean;
@@ -234,6 +238,32 @@ function formatDatePt(dateStr: string): string {
     : parsed.toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" });
 }
 
+function normalizeCategory(category?: string): string {
+  if (category === "Mercados") return "Feiras e Mercados";
+  return category || "Outros";
+}
+
+function getCategorySub(eventDateStr: string): string {
+  if (!eventDateStr) return "Futuro";
+
+  const eventDate = new Date(eventDateStr);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  const compareDate = new Date(eventDate);
+  compareDate.setHours(0, 0, 0, 0);
+
+  const diffTime = compareDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Hoje";
+  if (diffDays === 1) return "Amanhã";
+  if (diffDays >= 0 && diffDays <= 7) return "Esta semana";
+  if (diffDays > 7 && diffDays <= 31) return "Este mês";
+
+  return "Futuro";
+}
+
 /* ---------------- MAPPERS ---------------- */
 
 function mapNews(n: Record<string, unknown>): CmsNewsItem {
@@ -278,17 +308,25 @@ function mapDocument(d: Record<string, unknown>): CmsDocumentItem {
 }
 
 function mapEvent(e: Record<string, unknown>): CmsEventItem {
+  const rawDate = asText(e.date);
+  const displayDate = asText(e.displayDate);
+  const time = asText(e.time);
+
   return {
     id: String(e.id),
     slug: asText(e.slug),
-    categoryTop: asText(e.categoryTop) || "Outros",
+    categoryTop: normalizeCategory(asText(e.categoryTop)),
+    categorySub: getCategorySub(rawDate),
     priceType: asText(e.priceType) || "Gratuito",
     title: asText(e.title),
     excerpt: asText(e.excerpt),
     description: (e.description as RichTextContent | string | undefined) ?? "",
-    date: asText(e.date),
-    displayDate: asText(e.displayDate),
-    time: asText(e.time),
+    date: rawDate,
+    rawDate: rawDate,
+    displayDate: displayDate,
+    dateStr: displayDate || formatDatePt(rawDate),
+    time: time,
+    timeStr: time,
     location: asText(e.location),
     registrationLink: asText(e.registrationLink) || "/balcao-digital/inscricoes",
     isPast: Boolean(e.isPast),
@@ -514,4 +552,27 @@ export async function fetchReunioesAssembleia(): Promise<ReunioesPageData | null
     console.error("Error fetching Reunioes Assembleia:", error);
     return null;
   }
+}
+export async function fetchLatestFeaturedEvent(): Promise<CmsEventItem | null> {
+  const data = await cmsFetch<Record<string, unknown>>("/api/events", {
+    "where[isPublished][equals]": "true",
+    "where[isFeatured][equals]": "true",
+    sort: "-date",
+    depth: "1",
+    limit: 1,
+  });
+
+  const item = data.docs?.[0];
+  if (item) return mapEvent(item);
+
+  // Fallback: If no featured event exists, grab the newest published event
+  const fallbackData = await cmsFetch<Record<string, unknown>>("/api/events", {
+    "where[isPublished][equals]": "true",
+    sort: "-date",
+    depth: "1",
+    limit: 1,
+  });
+
+  const fallbackItem = fallbackData.docs?.[0];
+  return fallbackItem ? mapEvent(fallbackItem) : null;
 }

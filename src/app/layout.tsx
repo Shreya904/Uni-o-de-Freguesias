@@ -7,7 +7,7 @@ import AcessibilidadeSidebar from "@/components/AcessibilidadeSidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "União de Freguesias Community Hub",
+  title: "União das Freguesias Community Hub",
   description: "Centro Comunitário da União de Freguesias",
 };
 

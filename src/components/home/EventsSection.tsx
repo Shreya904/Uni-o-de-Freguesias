@@ -5,99 +5,40 @@ import { useEffect, useState } from "react";
 import { FileEdit } from "lucide-react";
 import EmptyState from "@/components/ui/emptystate";
 import { motion } from "framer-motion";
-import { fetchPublishedEvents } from "@/lib/cms"; // <-- Using your centralized CMS fetcher
-
-// --- TYPES & INTERFACES ---
-interface LatestEvent {
-  id: string;
-  title: string;
-  description: string;
-  dateStr: string;
-  time: string;
-  location: string;
-  imageUrl: string;
-  price: string;
-  hasRegistration: boolean;
-  registrationLink: string;
-}
-
-// Helper to format real CMS dates to match the "18 abril (domingo)" format
-const formatFullDate = (value: string) => {
-  try {
-    const date = new Date(value);
-    const day = date.getDate();
-    const month = date.toLocaleDateString("pt-PT", { month: "long" });
-    const weekday = date.toLocaleDateString("pt-PT", { weekday: "long" });
-    return `${day} ${month} (${weekday})`;
-  } catch {
-    return value;
-  }
-};
-
-const fallbackEvent: LatestEvent = {
-  id: "fallback-1",
-  title: "Campeonato Junior\nOs Cagaretes",
-  description:
-    "O Campeonato Júnior “Os Cagaretes” reuniu jovens atletas da região numa jornada dedicada ao desporto, convívio e participação comunitária, promovendo o espírito de equipa e a formação desportiva local.",
-  dateStr: "18 abril (domingo)",
-  time: "11:00",
-  location: "Estádio Municipal",
-  imageUrl: "/agenda-ex.png",
-  price: "Gratuito",
-  hasRegistration: true,
-  registrationLink: "/balcao-digital/inscricoes",
-};
+import { fetchLatestFeaturedEvent, type CmsEventItem } from "@/lib/cms";
 
 const EventsSection = () => {
-  const [latestEvent, setLatestEvent] = useState<LatestEvent | null>(null);
+  const [featuredEvent, setFeaturedEvent] = useState<CmsEventItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    const loadEvent = async () => {
+    const loadFeaturedEvent = async () => {
       try {
-        // Fetch 1 event using your unified CMS API
-        const events = await fetchPublishedEvents(1);
+        const event = await fetchLatestFeaturedEvent();
 
         if (isMounted) {
-          if (events && events.length > 0) {
-            const doc = events[0];
-
-            setLatestEvent({
-              id: doc.id,
-              title: doc.title,
-              description: doc.excerpt || "",
-              dateStr: doc.displayDate || (doc.date ? formatFullDate(doc.date) : ""),
-              time: doc.time || "",
-              location: doc.location || "",
-              imageUrl: doc.mainImage || fallbackEvent.imageUrl,
-              price: doc.priceType || "Gratuito",
-              hasRegistration: true,
-              registrationLink: doc.registrationLink || "/balcao-digital/inscricoes",
-            });
-          } else {
-            setLatestEvent(null);
-          }
+          setFeaturedEvent(event);
           setIsLoading(false);
         }
       } catch (error) {
-        console.error("Failed to fetch latest event from CMS:", error);
+        console.error("Failed to fetch featured event from CMS:", error);
         if (isMounted) {
-          setLatestEvent(null);
+          setFeaturedEvent(null);
           setIsLoading(false);
         }
       }
     };
 
-    void loadEvent();
+    void loadFeaturedEvent();
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const isEmpty = !latestEvent;
+  const isEmpty = !featuredEvent;
 
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -133,7 +74,7 @@ const EventsSection = () => {
           <div className="flex-1 w-full flex lg:justify-end">
             {isLoading ? (
               <div className="w-full max-w-[420px] lg:ml-auto h-[500px] animate-pulse bg-slate-100 rounded-lg border border-slate-200" />
-             ) : isEmpty ? (
+            ) : isEmpty ? (
               <EmptyState
                 title="Sem eventos agendados"
                 description="Fique atento — novos eventos serão adicionados em breve."
@@ -150,56 +91,71 @@ const EventsSection = () => {
                 className="w-full max-w-[420px] lg:ml-auto bg-white border-2 border-[#1e3050] p-5 rounded-md shadow-sm"
               >
                 {/* Image */}
-                <div className="w-full h-[220px] mb-5 overflow-hidden border border-slate-100">
-                  <img
-                    src={latestEvent.imageUrl}
-                    alt={latestEvent.title.replace("\n", " ")}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                {featuredEvent.mainImage && (
+                  <Link
+                    href={`/eventos/${featuredEvent.slug}`}
+                    className="block w-full h-[220px] mb-5 overflow-hidden border border-slate-100 rounded-sm hover:opacity-90 transition-opacity"
+                  >
+                    <img
+                      src={featuredEvent.mainImage}
+                      alt={featuredEvent.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </Link>
+                )}
 
                 {/* Body */}
                 <div>
-                  <h4 className="text-[22px] font-bold text-[#1e3050] whitespace-pre-line leading-tight mb-3">
-                    {latestEvent.title}
-                  </h4>
+                  <Link href={`/eventos/${featuredEvent.slug}`}>
+                    <h4 className="text-[22px] font-bold text-[#1e3050] whitespace-pre-line leading-tight mb-3 hover:text-blue-800 transition-colors">
+                      {featuredEvent.title}
+                    </h4>
+                  </Link>
                   <p className="text-[15px] font-medium text-[#1e3050] leading-relaxed mb-6">
-                    {latestEvent.description}
+                    {featuredEvent.excerpt}
                   </p>
 
                   {/* Details */}
                   <div className="space-y-2 text-[15px] mb-6">
                     <p className="text-[#1e3050]">
                       <span className="font-bold">Data:</span>{" "}
-                      <span className="font-medium">{latestEvent.dateStr}</span>
+                      <span className="font-medium">{featuredEvent.dateStr}</span>
                     </p>
                     <p className="text-[#1e3050]">
                       <span className="font-bold">Hora:</span>{" "}
-                      <span className="font-medium">{latestEvent.time}</span>
+                      <span className="font-medium">{featuredEvent.timeStr}</span>
                     </p>
                     <p className="text-[#1e3050]">
                       <span className="font-bold">Local:</span>{" "}
-                      <span className="font-medium">{latestEvent.location}</span>
+                      <span className="font-medium">{featuredEvent.location}</span>
                     </p>
                   </div>
 
                   <hr className="border-[#1e3050]/20 border-t-2 mb-4" />
 
-                  {/* Footer Elements (Link) */}
-                  <Link
-                    href={latestEvent.registrationLink}
-                    className="inline-flex items-center gap-4 text-[#1e3050] hover:opacity-75 transition-opacity"
-                  >
-                    <span className="font-bold text-[16px]">{latestEvent.price}</span>
-                    {latestEvent.hasRegistration && (
+                  {/* Footer Elements (Price & Registration) */}
+                  <div className="flex items-center gap-4 text-[#1e3050]">
+                    <span className="font-bold text-[16px]">{featuredEvent.priceType}</span>
+                    {featuredEvent.registrationLink && (
                       <>
-                        <span className="w-0.5 h-5 bg-[#1e3050]/30"></span>
-                        <span className="flex items-center gap-1.5 text-[16px] font-bold">
+                        <span className="w-0.5 h-5 bg-[#1e3050]/30" />
+                        <Link
+                          href={featuredEvent.registrationLink}
+                          target={
+                            featuredEvent.registrationLink.startsWith("http") ? "_blank" : undefined
+                          }
+                          rel={
+                            featuredEvent.registrationLink.startsWith("http")
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
+                          className="inline-flex items-center gap-1.5 text-[16px] font-bold hover:text-blue-800 transition-colors"
+                        >
                           Inscrição <FileEdit className="w-4 h-4 ml-1" />
-                        </span>
+                        </Link>
                       </>
                     )}
-                  </Link>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -211,4 +167,3 @@ const EventsSection = () => {
 };
 
 export default EventsSection;
-

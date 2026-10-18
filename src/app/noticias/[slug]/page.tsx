@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import EventGallery from "@/components/EventGallery";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import SiteBanner from "@/components/SiteBanner";
 import { fetchNewsBySlug, fetchPublishedNews } from "@/lib/cms";
@@ -82,6 +83,8 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                   />
                 </div>
               )}
+
+              <EventGallery images={newsItem.galleryImages} />
             </div>
 
             <aside className="lg:col-span-4 mt-12 lg:mt-0 flex flex-col">

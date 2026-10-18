@@ -4,7 +4,7 @@ import { Calendar, Clock, MapPin, FileEdit } from "lucide-react";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import EventGallery from "@/components/EventGallery"; // <-- Imported the new component
+import EventGallery from "@/components/EventGallery";
 import SiteBanner from "@/components/SiteBanner";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import { fetchEventBySlug, fetchPublishedEvents } from "@/lib/cms";
@@ -23,12 +23,6 @@ const formatEventDate = (dateString: string) => {
   return `${day} ${capitalizedMonth} ${year}`;
 };
 
-// Helper to normalize legacy DB categories for the frontend
-const normalizeCategory = (category?: string): string => {
-  if (category === "Mercados") return "Feiras e Mercados";
-  return category || "Outros";
-};
-
 export async function generateStaticParams() {
   try {
     const events = await fetchPublishedEvents();
@@ -44,11 +38,20 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   const { slug } = await params;
 
   const eventItem = await fetchEventBySlug(slug);
-  const allEvents = await fetchPublishedEvents(4);
+  const allEvents = await fetchPublishedEvents(100);
 
   if (!eventItem) notFound();
 
-  const otherEvents = allEvents.filter((e) => e.id !== eventItem.id).slice(0, 3);
+  // Filter out the current event and sort by latest date first (including future dates)
+  const otherEvents = allEvents
+    .filter((e) => e.id !== eventItem.id)
+    .sort((a, b) => {
+      const dateA = a.rawDate || a.date ? new Date(a.rawDate || a.date).getTime() : 0;
+      const dateB = b.rawDate || b.date ? new Date(b.rawDate || b.date).getTime() : 0;
+      return dateB - dateA;
+    })
+    .slice(0, 3);
+
   const finalDisplayDate =
     eventItem.displayDate || (eventItem.date ? formatEventDate(eventItem.date) : "");
 
@@ -73,9 +76,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
             {/* LEFT MAIN ARTICLE */}
             <div className="lg:col-span-8">
-              {/* Category Tag (Normalized) */}
+              {/* Category Tag */}
               <div className="mb-4 inline-block bg-gray-100 dark:bg-gray-800 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#253e6b] dark:text-blue-300 rounded-sm">
-                {normalizeCategory(eventItem.categoryTop)}
+                {eventItem.categoryTop}
               </div>
 
               {/* Title */}
@@ -126,7 +129,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </div>
               </div>
 
-              {/* Rich Text Description (Moved BEFORE Main Image) */}
+              {/* Rich Text Description */}
               <div className="mb-10">
                 <RichTextRenderer
                   content={eventItem.description}
@@ -202,7 +205,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </div>
               </div>
 
-              {/* SMALL RIGHT BANNER - Placed immediately beneath the events, sticking on scroll */}
+              {/* SMALL RIGHT BANNER */}
               <SiteBanner bannerId={siteBannerIds.eventosSlugPharmacy} />
             </aside>
           </div>
