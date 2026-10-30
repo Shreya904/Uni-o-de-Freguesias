@@ -49,7 +49,7 @@ const EventsSection = () => {
             <h2 className="text-[36px] md:text-[44px] leading-[1.15] font-bold text-[#1e3050] dark:text-white mb-4">
               Descubra o que
               <br />
-              pode fazer na
+              acontece na
               <br />
               nossa freguesia
             </h2>
@@ -63,10 +63,9 @@ const EventsSection = () => {
               </Link>
             </h3>
             <p className="text-[16px] font-medium text-[#1e3050] dark:text-white/90 leading-relaxed">
-              O Centro de Documentação reúne regulamentos, editais, atas, formulários, documentos
-              administrativos e outros conteúdos relacionados com a atividade da Junta de Freguesia.
-              Utilize a pesquisa e os filtros disponíveis para encontrar rapidamente a informação ou
-              documento que procura.
+              Feiras e mercados, cultura, desporto e atividades para todas as idades: a Agenda reúne
+              os eventos de Glória e Vera Cruz e da cidade. Consulte datas, horários e locais e
+              saiba como participar.
             </p>
           </div>
 
